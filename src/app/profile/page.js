@@ -1,28 +1,91 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Sidebar from "@/components/Sidebar";
 import { useAuth } from "@/context/AuthContext";
+import { authService } from "@/services/authService";
 
 export default function ProfilePage() {
-  const { user, setUser } = useAuth();
+  const { user, setUser, refreshProfile } = useAuth();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Profile forms fields state
   const [isEditing, setIsEditing] = useState(false);
-  const [username, setUsername] = useState(user?.username || "Alex Rivera");
-  const [bio, setBio] = useState(
-    "Senior Product Designer & System Architect. Obsessed with high-fidelity glassmorphism and real-time communication systems. Building the future of digital connectivity at NexusChat. Always open to collaborative architectural discussions."
-  );
-  const [location, setLocation] = useState("San Francisco, CA");
-  const [phone, setPhone] = useState("+1 (555) 892-4410");
+  const [username, setUsername] = useState("");
+  const [bio, setBio] = useState("");
+  const [location, setLocation] = useState("");
+  const [phone, setPhone] = useState("");
+  const [avatar, setAvatar] = useState("");
 
-  const handleSave = () => {
-    setUser((prev) => {
-      if (!prev) return null;
-      return { ...prev, username };
-    });
-    setIsEditing(false);
+  // Sync state with local context user initially
+  useEffect(() => {
+    if (user) {
+      setUsername(user.username || "");
+      setBio(user.bio || "");
+      setLocation(user.location || "");
+      setPhone(user.phone || "");
+      setAvatar(user.avatar || "");
+    }
+  }, [user]);
+
+  // Fetch complete profile from backend on mount
+  useEffect(() => {
+    const fetchProfileData = async () => {
+      setIsLoading(true);
+      try {
+        if (refreshProfile) {
+          const data = await refreshProfile();
+          if (data) {
+            setUsername(data.username || "");
+            setBio(data.bio || "");
+            setLocation(data.location || "");
+            setPhone(data.phone || "");
+            setAvatar(data.avatar || "");
+          }
+        }
+      } catch (err) {
+        console.error("Failed to fetch fresh profile:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchProfileData();
+  }, [refreshProfile]);
+
+  const handleSave = async () => {
+    setIsLoading(true);
+    try {
+      const res = await authService.updateProfile({
+        username,
+        bio,
+        location,
+        phone,
+        avatar,
+      });
+      if (res.success && res.data) {
+        setUser((prev) => {
+          const updated = {
+            ...prev,
+            username: res.data.username,
+            bio: res.data.bio,
+            location: res.data.location,
+            phone: res.data.phone,
+            avatar: res.data.avatar,
+          };
+          localStorage.setItem("nexus_user", JSON.stringify(updated));
+          return updated;
+        });
+        setIsEditing(false);
+      } else {
+        alert(res.message || "Failed to update profile");
+      }
+    } catch (err) {
+      console.error("Error updating profile:", err);
+      alert(err.message || "An error occurred while updating profile");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -97,13 +160,22 @@ export default function ProfilePage() {
                       className="w-full h-full object-cover"
                       alt="User Avatar"
                       src={
-                        user?.avatar ||
+                        avatar ||
                         "https://lh3.googleusercontent.com/aida-public/AB6AXuCrQcF8dQPorLSDZ4Rd1sli_xw8cyVmzXJ-0WVavbWWmVasHbiE1InjgGpFJ2ulQgzGd4jUPk-9tobCI4JlXzfiN-Y1mws5XYx3NeywpFbIii-mOafHKwBhSzQE7UEYzlAwc_h1UKzjXQQK1baB1hvtRIZpcHusTy2ZplWy7GUZEBqiNzAbEmWItZlhbR0MYIa3W7-cCJl-CJKdX3GaDUAGcB2mZ-RK2nekLQ5VrFJfFR6IDejct2fsPA"
                       }
                     />
                   </div>
                 </div>
-                <button className="absolute bottom-2 right-2 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-surface-container border border-white/10 flex items-center justify-center text-primary hover:bg-primary hover:text-on-primary transition-all shadow-lg">
+                <button
+                  onClick={() => {
+                    const url = prompt("Enter avatar image URL:", avatar);
+                    if (url !== null) {
+                      setAvatar(url);
+                      setIsEditing(true);
+                    }
+                  }}
+                  className="absolute bottom-2 right-2 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-surface-container border border-white/10 flex items-center justify-center text-primary hover:bg-primary hover:text-on-primary transition-all shadow-lg"
+                >
                   <span className="material-symbols-outlined text-[16px] sm:text-[20px]">edit</span>
                 </button>
               </div>
@@ -235,19 +307,21 @@ export default function ProfilePage() {
               </div>
 
               {/* Actions Card */}
-              <div className="glass-card p-4 rounded-2xl flex flex-col gap-3">
+               <div className="glass-card p-4 rounded-2xl flex flex-col gap-3">
                 {isEditing ? (
                   <>
                     <button
                       onClick={handleSave}
-                      className="primary-gradient w-full py-4 rounded-2xl font-label-md text-label-md text-on-primary font-bold flex items-center justify-center gap-2 shadow-lg shadow-primary/20 hover:brightness-110 active:scale-95 transition-all"
+                      disabled={isLoading}
+                      className="primary-gradient w-full py-4 rounded-2xl font-label-md text-label-md text-on-primary font-bold flex items-center justify-center gap-2 shadow-lg shadow-primary/20 hover:brightness-110 active:scale-95 transition-all disabled:opacity-50"
                     >
                       <span className="material-symbols-outlined">save</span>
-                      Save Changes
+                      {isLoading ? "Saving..." : "Save Changes"}
                     </button>
                     <button
                       onClick={() => setIsEditing(false)}
-                      className="w-full py-4 rounded-2xl font-label-md text-label-md border border-white/10 hover:bg-white/5 active:scale-95 transition-all flex items-center justify-center gap-2"
+                      disabled={isLoading}
+                      className="w-full py-4 rounded-2xl font-label-md text-label-md border border-white/10 hover:bg-white/5 active:scale-95 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                     >
                       Cancel
                     </button>
@@ -256,7 +330,8 @@ export default function ProfilePage() {
                   <>
                     <button
                       onClick={() => setIsEditing(true)}
-                      className="primary-gradient w-full py-4 rounded-2xl font-label-md text-label-md text-on-primary font-bold flex items-center justify-center gap-2 shadow-lg shadow-primary/20 hover:brightness-110 active:scale-95 transition-all"
+                      disabled={isLoading}
+                      className="primary-gradient w-full py-4 rounded-2xl font-label-md text-label-md text-on-primary font-bold flex items-center justify-center gap-2 shadow-lg shadow-primary/20 hover:brightness-110 active:scale-95 transition-all disabled:opacity-50"
                     >
                       <span className="material-symbols-outlined">edit_note</span>
                       Edit Profile
@@ -309,6 +384,14 @@ export default function ProfilePage() {
             </div>
           </div>
         </div>
+        {isLoading && (
+          <div className="absolute inset-0 bg-background/50 backdrop-blur-sm z-50 flex items-center justify-center">
+            <div className="flex flex-col items-center gap-3">
+              <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+              <p className="text-sm font-semibold text-primary">Loading profile...</p>
+            </div>
+          </div>
+        )}
       </main>
     </div>
   );

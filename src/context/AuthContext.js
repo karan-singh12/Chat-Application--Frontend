@@ -32,6 +32,9 @@ export function AuthProvider({ children }) {
           username: res.data.user.username,
           role: res.data.user.role,
           avatar: res.data.user.avatar,
+          bio: res.data.user.bio,
+          phone: res.data.user.phone,
+          location: res.data.user.location,
           credits: res.data.user.credits,
           isPro: res.data.user.isPro,
         };
@@ -59,6 +62,9 @@ export function AuthProvider({ children }) {
           username: res.data.user.username,
           role: res.data.user.role,
           avatar: res.data.user.avatar,
+          bio: res.data.user.bio,
+          phone: res.data.user.phone,
+          location: res.data.user.location,
           credits: res.data.user.credits,
           isPro: res.data.user.isPro,
         };
@@ -86,6 +92,34 @@ export function AuthProvider({ children }) {
     router.push("/login");
   };
 
+  const refreshProfile = async () => {
+    try {
+      const res = await authService.getProfile();
+      if (res.success && res.data) {
+        setUser((prev) => {
+          const updated = {
+            ...prev,
+            email: res.data.email,
+            username: res.data.username,
+            role: res.data.role,
+            bio: res.data.bio,
+            phone: res.data.phone,
+            location: res.data.location,
+            avatar: res.data.avatar,
+            credits: res.data.credits,
+            isPro: res.data.isPro,
+          };
+          localStorage.setItem("nexus_user", JSON.stringify(updated));
+          return updated;
+        });
+        return res.data;
+      }
+    } catch (err) {
+      console.error("Auth refreshProfile error:", err);
+    }
+    return null;
+  };
+
   const updateCredits = (amount) => {
     setUser(prev => {
       if (!prev) return null;
@@ -96,7 +130,7 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, loading, login, signup, logout, updateCredits, setUser }}>
+    <AuthContext.Provider value={{ user, token, loading, login, signup, logout, updateCredits, setUser, refreshProfile }}>
       {children}
     </AuthContext.Provider>
   );

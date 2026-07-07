@@ -17,4 +17,14 @@ export const authService = {
     });
     return res;
   },
+
+  async getProfile() {
+    const res = await apiClient.get("/users/profile");
+    return res;
+  },
+
+  async updateProfile(profileData) {
+    const res = await apiClient.put("/users/profile", profileData);
+    return res;
+  },
 };
