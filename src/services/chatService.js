@@ -1,30 +1,38 @@
 import apiClient from "./apiClient";
 
 export const chatService = {
-  async getChats() {
-    const res = await apiClient.get("/chats");
-    return res.chats || [];
+  // ─── Conversations (1:1) ────────────────────────────────────────────────────
+
+  async getConversations() {
+    const res = await apiClient.get("/conversations");
+    return res.data?.conversations || [];
   },
 
-  async getMessages(chatId) {
-    const res = await apiClient.get(`/messages?chatId=${chatId}`);
-    return res.messages || [];
+  async createConversation(otherUserId) {
+    const res = await apiClient.post("/conversations", { otherUserId });
+    return res.data?.conversation || null;
   },
 
-  async sendMessage(chatId, text) {
-    const res = await apiClient.post("/messages", {
-      chatId,
-      text,
-    });
-    return res;
+  async getConversationMessages(conversationId) {
+    const res = await apiClient.get(`/conversations/${conversationId}/messages`);
+    return res.data?.messages || [];
   },
 
-  async reactToMessage(chatId, messageId, emoji) {
-    const res = await apiClient.post("/messages/react", {
-      chatId,
-      messageId,
-      emoji,
-    });
-    return res;
+  // ─── Groups ─────────────────────────────────────────────────────────────────
+
+  async getGroups() {
+    const res = await apiClient.get("/groups");
+    return res.data?.groups || [];
+  },
+
+  async createGroup(name, memberIds, avatar) {
+    const res = await apiClient.post("/groups", { name, memberIds, avatar });
+    return res.data?.group || null;
+  },
+
+  async getGroupMessages(groupId) {
+    const res = await apiClient.get(`/groups/${groupId}/messages`);
+    return res.data?.messages || [];
   },
 };
+

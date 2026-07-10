@@ -10,129 +10,132 @@ export default function Sidebar({ isOpen, onClose }) {
   const { logout, user } = useAuth();
 
   const menuItems = [
+    { name: "Feed", path: "/feed", icon: "feed" },
     { name: "Chats", path: "/dashboard", icon: "chat" },
     { name: "Friends", path: "/friends", icon: "group" },
+    { name: "Notifications", path: "/notifications", icon: "notifications" },
     { name: "Settings", path: "/settings", icon: "settings" },
   ];
 
-  const sidebarClass = `fixed top-0 bottom-0 left-0 h-screen w-64 md:w-sidebar-width bg-surface/50 backdrop-blur-xl border-r border-white/10 shadow-2xl shadow-primary/10 flex flex-col py-p-lg z-50 transition-all duration-300 md:translate-x-0 ${
-    isOpen ? "translate-x-0" : "-translate-x-full"
-  }`;
-
   return (
     <>
-      {/* Mobile Drawer Overlay */}
-      {isOpen && (
-        <div
-          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 md:hidden"
-          onClick={onClose}
-        />
-      )}
-
-      <aside className={sidebarClass}>
-        <div className="px-4 md:px-0 mb-8 flex md:flex-col justify-between md:justify-center items-center gap-4">
-          {/* Logo Mark for Desktop */}
-          <div className="hidden md:flex w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-tertiary items-center justify-center text-white font-extrabold text-lg shadow-lg shadow-primary/20 select-none">
+      {/* Desktop Sidebar (hidden on mobile, visible on md+) */}
+      <aside className="fixed top-0 bottom-0 left-0 h-screen w-sidebar-width bg-surface-container-low border-r border-white/5 flex flex-col py-5 z-50 hidden md:flex items-center justify-between">
+        {/* Top Logo */}
+        <div className="flex flex-col items-center">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-primary-fixed-dim flex items-center justify-center text-white font-black text-sm shadow-md shadow-primary/20 select-none hover:scale-103 transition-transform duration-300">
             N
           </div>
-          {/* Full Logo for Mobile Drawer */}
-          <div className="md:hidden">
-            <h1 className="font-headline-md text-headline-md font-extrabold bg-gradient-to-br from-primary to-tertiary bg-clip-text text-transparent">
-              NexusChat
-            </h1>
-            <div className="flex items-center gap-2 mt-1">
-              <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-              <span className="text-label-sm font-label-sm text-on-surface-variant">Online</span>
-            </div>
-          </div>
-          {/* Close button for mobile */}
-          <button
-            className="md:hidden p-1 rounded-full hover:bg-white/10 text-on-surface-variant"
-            onClick={onClose}
-          >
-            <span className="material-symbols-outlined text-[20px]">close</span>
-          </button>
         </div>
 
-        <nav className="flex-1 space-y-2 flex flex-col items-center md:items-stretch">
+        {/* Nav Items */}
+        <nav className="w-full flex flex-col gap-4 px-2">
           {menuItems.map((item) => {
             const isActive = pathname === item.path;
             return (
               <Link
                 key={item.name}
                 href={item.path}
-                onClick={onClose}
-                className={`w-full flex items-center justify-start md:justify-center gap-4 px-6 md:px-0 md:py-3 transition-all duration-300 active:scale-95 relative group ${
-                  isActive
-                    ? "bg-white/5 border-l-4 border-primary text-primary md:border-l-0 md:border-r-4 md:border-primary md:bg-primary/10"
-                    : "text-on-surface-variant hover:bg-white/3 hover:text-on-surface md:hover:bg-white/5"
-                }`}
+                className="group flex flex-col items-center w-full relative transition-all duration-300 py-1"
               >
-                <div className="flex items-center justify-center md:w-full py-2">
+                {/* Active Highlight Capsule */}
+                <div
+                  className={`w-9 h-7.5 rounded-lg flex items-center justify-center transition-all duration-300 relative ${
+                    isActive
+                      ? "bg-primary/20 text-primary"
+                      : "text-on-surface-variant hover:bg-white/5 hover:text-on-surface"
+                  }`}
+                >
                   <span
-                    className="material-symbols-outlined text-[24px]"
+                    className="material-symbols-outlined text-[17px] transition-transform duration-200 group-hover:scale-105"
                     style={{ fontVariationSettings: isActive ? "'FILL' 1" : "'FILL' 0" }}
                   >
                     {item.icon}
                   </span>
                 </div>
-                {/* Text for Mobile */}
-                <span className="font-label-md text-label-md md:hidden">{item.name}</span>
-                {/* Tooltip for Desktop Hover */}
-                <span className="hidden md:block absolute left-[76px] bg-surface-container-high border border-white/10 px-3 py-1.5 rounded-lg text-xs text-white font-semibold whitespace-nowrap opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100 pointer-events-none transition-all duration-200 z-50 shadow-2xl">
+                
+                {/* Desktop Hover Tooltip */}
+                <div className="absolute left-[48px] bg-surface-container-high border border-white/10 px-2 py-1 rounded-md text-[9px] text-white font-bold whitespace-nowrap opacity-0 translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 pointer-events-none transition-all duration-200 z-50 shadow-xl">
                   {item.name}
-                </span>
+                </div>
               </Link>
             );
           })}
         </nav>
 
-        <div className="px-4 md:px-0 mt-auto flex flex-col items-center w-full">
-          {/* Profile Card / Avatar Trigger */}
-          <div className="relative group w-full flex justify-center mb-4">
-            <div className="flex items-center gap-3 p-3 md:p-1 md:rounded-full rounded-xl bg-white/5 md:bg-transparent md:border md:border-white/10 w-full md:w-12 md:h-12 justify-center">
-              <img
-                className="w-10 h-10 md:w-full md:h-full rounded-full object-cover border border-white/10"
-                alt="User Avatar"
-                src={
-                  user?.avatar ||
-                  "https://lh3.googleusercontent.com/aida-public/AB6AXuCrQcF8dQPorLSDZ4Rd1sli_xw8cyVmzXJ-0WVavbWWmVasHbiE1InjgGpFJ2ulQgzGd4jUPk-9tobCI4JlXzfiN-Y1mws5XYx3NeywpFbIii-mOafHKwBhSzQE7UEYzlAwc_h1UKzjXQQK1baB1hvtRIZpcHusTy2ZplWy7GUZEBqiNzAbEmWItZlhbR0MYIa3W7-cCJl-CJKdX3GaDUAGcB2mZ-RK2nekLQ5VrFJfFR6IDejct2fsPA"
-                }
-              />
-              <div className="flex-1 overflow-hidden md:hidden">
-                <p className="font-label-md text-label-md truncate">{user?.username || "Alex Rivera"}</p>
-                <p className="text-[10px] text-on-surface-variant opacity-60 uppercase tracking-widest">
-                  {user?.isPro ? "Pro Member" : "Free Member"}
-                </p>
-              </div>
+        {/* Bottom Avatar & Logout */}
+        <div className="flex flex-col items-center gap-4 w-full px-2">
+          <Link href="/profile" className="group relative flex justify-center w-8 h-8 rounded-full border border-white/10 p-0.5 hover:border-primary/50 transition-colors">
+            <img
+              className="w-full h-full rounded-full object-cover"
+              alt="Avatar"
+              src={user?.avatar || "https://lh3.googleusercontent.com/aida-public/AB6AXuCrQcF8dQPorLSDZ4Rd1sli_xw8cyVmzXJ-0WVavbWWmVasHbiE1InjgGpFJ2ulQgzGd4jUPk-9tobCI4JlXzfiN-Y1mws5XYx3NeywpFbIii-mOafHKwBhSzQE7UEYzlAwc_h1UKzjXQQK1baB1hvtRIZpcHusTy2ZplWy7GUZEBqiNzAbEmWItZlhbR0MYIa3W7-cCJl-CJKdX3GaDUAGcB2mZ-RK2nekLQ5VrFJfFR6IDejct2fsPA"}
+            />
+            <div className="absolute left-[48px] bg-surface-container-high border border-white/10 px-2 py-1 rounded-md text-[9px] text-white font-bold whitespace-nowrap opacity-0 translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 pointer-events-none transition-all duration-200 z-50 shadow-xl">
+              Profile Settings
             </div>
-            {/* Desktop Profile Info Tooltip */}
-            <span className="hidden md:block absolute left-[76px] bg-surface-container-high border border-white/10 px-3 py-1.5 rounded-lg text-xs text-white font-semibold whitespace-nowrap opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100 pointer-events-none transition-all duration-200 z-50 shadow-2xl">
-              {user?.username || "Profile"} ({user?.isPro ? "Pro" : "Free"})
-            </span>
-          </div>
+          </Link>
 
-          {/* Logout Trigger */}
-          <div className="relative group w-full flex justify-center px-4 md:px-0">
-            <button
-              onClick={() => {
-                onClose();
-                logout();
-              }}
-              className="w-full md:w-12 md:h-12 flex items-center justify-center gap-2 md:p-0 px-4 py-3 rounded-xl border border-white/10 text-on-surface-variant hover:bg-red-500/10 hover:text-red-400 transition-all duration-300"
-            >
-              <span className="material-symbols-outlined group-hover:rotate-12 transition-transform">
-                logout
-              </span>
-              <span className="font-label-md text-label-md md:hidden">Logout</span>
-            </button>
-            {/* Desktop Logout Tooltip */}
-            <span className="hidden md:block absolute left-[76px] bg-red-950/80 border border-red-500/20 px-3 py-1.5 rounded-lg text-xs text-red-300 font-semibold whitespace-nowrap opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100 pointer-events-none transition-all duration-200 z-50 shadow-2xl">
-              Logout
+          <button
+            onClick={logout}
+            className="group relative w-8 h-8 flex items-center justify-center rounded-lg hover:bg-red-500/10 text-on-surface-variant hover:text-red-400 transition-all duration-300 cursor-pointer"
+          >
+            <span className="material-symbols-outlined text-[17px] transition-transform duration-300 group-hover:scale-105">
+              logout
             </span>
-          </div>
+            <div className="absolute left-[48px] bg-red-950/80 border border-red-500/20 px-2 py-1 rounded-md text-[9px] text-red-300 font-bold whitespace-nowrap opacity-0 translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 pointer-events-none transition-all duration-200 z-50 shadow-xl">
+              Logout
+            </div>
+          </button>
         </div>
       </aside>
+
+      {/* Mobile Bottom Navigation Bar (visible only on mobile) */}
+      <nav className="fixed bottom-0 left-0 right-0 h-16 bg-surface-container-low/90 backdrop-blur-xl border-t border-white/5 flex items-center justify-around z-50 md:hidden pb-safe shadow-xl">
+        {menuItems.map((item) => {
+          const isActive = pathname === item.path;
+          return (
+            <Link
+              key={item.name}
+              href={item.path}
+              className="flex flex-col items-center justify-center flex-1 py-1 relative group active:scale-95 transition-transform"
+            >
+              {/* Active highlights capsule */}
+              <div
+                className={`w-12 h-7.5 rounded-full flex items-center justify-center transition-all duration-300 ${
+                  isActive ? "bg-primary/20 text-primary" : "text-on-surface-variant"
+                }`}
+              >
+                <span
+                  className="material-symbols-outlined text-[18px]"
+                  style={{ fontVariationSettings: isActive ? "'FILL' 1" : "'FILL' 0" }}
+                >
+                  {item.icon}
+                </span>
+              </div>
+              <span className={`text-[9px] mt-1 font-semibold ${isActive ? "text-primary" : "text-on-surface-variant"}`}>
+                {item.name}
+              </span>
+            </Link>
+          );
+        })}
+        {/* Avatar linked to profile */}
+        <Link
+          href="/profile"
+          className="flex flex-col items-center justify-center flex-1 py-1 active:scale-95 transition-transform"
+        >
+          <div className={`w-7 h-7 rounded-full border p-0.5 transition-colors ${pathname === "/profile" ? "border-primary" : "border-white/10"}`}>
+            <img
+              className="w-full h-full rounded-full object-cover"
+              alt="Avatar"
+              src={user?.avatar || "https://lh3.googleusercontent.com/aida-public/AB6AXuCrQcF8dQPorLSDZ4Rd1sli_xw8cyVmzXJ-0WVavbWWmVasHbiE1InjgGpFJ2ulQgzGd4jUPk-9tobCI4JlXzfiN-Y1mws5XYx3NeywpFbIii-mOafHKwBhSzQE7UEYzlAwc_h1UKzjXQQK1baB1hvtRIZpcHusTy2ZplWy7GUZEBqiNzAbEmWItZlhbR0MYIa3W7-cCJl-CJKdX3GaDUAGcB2mZ-RK2nekLQ5VrFJfFR6IDejct2fsPA"}
+            />
+          </div>
+          <span className={`text-[9px] mt-1 font-semibold ${pathname === "/profile" ? "text-primary" : "text-on-surface-variant"}`}>
+            Profile
+          </span>
+        </Link>
+      </nav>
     </>
   );
 }

@@ -77,64 +77,64 @@ export default function SignUpPage() {
   };
 
   return (
-    <div className="font-body-md text-on-surface p-gutter min-h-screen flex items-center justify-center relative overflow-hidden">
+    <div className="font-body-md text-on-surface p-gutter min-h-screen flex items-center justify-center relative overflow-hidden bg-background-app">
       {/* Ambient Blobs */}
-      <div className="ambient-blob top-[-10%] left-[-10%]"></div>
+      <div className="ambient-blob top-[-10%] left-[-10%] opacity-40"></div>
       <div
-        className="ambient-blob bottom-[-10%] right-[-10%]"
+        className="ambient-blob bottom-[-10%] right-[-10%] opacity-40"
         style={{
           animationDelay: "-5s",
-          background: "radial-gradient(circle, rgba(139, 92, 246, 0.1) 0%, transparent 70%)",
+          background: "radial-gradient(circle, rgba(77, 94, 247, 0.08) 0%, transparent 70%)",
         }}
       ></div>
 
-      <main className="w-full max-w-[440px] z-10">
+      <main className="w-full max-w-[430px] z-10 select-none">
         <div
           ref={cardRef}
-          className="glass-card rounded-xl p-10 flex flex-col items-center"
+          className="bg-surface-container/45 backdrop-blur-xl border border-white/5 rounded-[32px] p-8 sm:p-10 flex flex-col items-center shadow-2xl"
         >
           {/* Brand Identity */}
-          <div className="mb-10 text-center">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-xl bg-gradient-to-br from-primary to-tertiary mb-6 shadow-lg shadow-primary/20">
+          <div className="mb-8 text-center">
+            <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-primary-fixed-dim mb-4 shadow-lg shadow-primary/20">
               <span
-                className="material-symbols-outlined text-on-primary text-[32px]"
+                className="material-symbols-outlined text-white text-[28px]"
                 style={{ fontVariationSettings: "'FILL' 1" }}
               >
                 hub
               </span>
             </div>
-            <h1 className="font-headline-lg text-headline-lg bg-gradient-to-br from-primary to-tertiary bg-clip-text text-transparent mb-2">
+            <h1 className="text-2xl font-black text-white tracking-tight">
               NexusChat
             </h1>
-            <p className="font-label-md text-label-md text-on-surface-variant">
-              Create your account to connect globally
+            <p className="text-[11px] text-on-surface-variant font-semibold mt-1">
+              Create an account and connect globally
             </p>
           </div>
 
           {/* Messages */}
           {errorMsg && (
-            <div className="w-full mb-6 p-3 rounded-lg bg-error-container/20 border border-error/30 text-error text-sm font-label-md text-center">
+            <div className="w-full mb-5 p-3.5 rounded-2xl bg-error/10 border border-error/20 text-error text-xs font-semibold text-center select-text">
               {errorMsg}
             </div>
           )}
           {successMsg && (
-            <div className="w-full mb-6 p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-sm font-label-md text-center">
+            <div className="w-full mb-5 p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold text-center select-text">
               {successMsg}
             </div>
           )}
 
           {/* Signup Form */}
-          <form className="w-full space-y-5" onSubmit={handleSubmit}>
-            <div className="space-y-1.5">
-              <label className="font-label-sm text-label-sm text-on-surface-variant ml-1" htmlFor="username">
+          <form className="w-full space-y-4" onSubmit={handleSubmit}>
+            <div className="space-y-1">
+              <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider ml-4" htmlFor="username">
                 Username
               </label>
               <div className="relative">
-                <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]">
+                <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">
                   person
                 </span>
                 <input
-                  className="input-glass w-full h-12 pl-12 pr-4 rounded-lg font-body-md text-on-surface placeholder:text-outline/50 outline-none"
+                  className="w-full h-11 pl-11 pr-4 bg-white/5 border border-white/5 rounded-full text-xs text-white placeholder:text-on-surface-variant/40 focus:outline-none focus:border-primary/50 focus:bg-white/10 transition-all"
                   id="username"
                   placeholder="e.g. jordan_dev"
                   type="text"
@@ -145,16 +145,16 @@ export default function SignUpPage() {
               </div>
             </div>
 
-            <div className="space-y-1.5">
-              <label className="font-label-sm text-label-sm text-on-surface-variant ml-1" htmlFor="email">
+            <div className="space-y-1">
+              <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider ml-4" htmlFor="email">
                 Email Address
               </label>
               <div className="relative">
-                <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]">
+                <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">
                   mail
                 </span>
                 <input
-                  className="input-glass w-full h-12 pl-12 pr-4 rounded-lg font-body-md text-on-surface placeholder:text-outline/50 outline-none"
+                  className="w-full h-11 pl-11 pr-4 bg-white/5 border border-white/5 rounded-full text-xs text-white placeholder:text-on-surface-variant/40 focus:outline-none focus:border-primary/50 focus:bg-white/10 transition-all"
                   id="email"
                   placeholder="name@company.com"
                   type="email"
@@ -165,16 +165,16 @@ export default function SignUpPage() {
               </div>
             </div>
 
-            <div className="space-y-1.5">
-              <label className="font-label-sm text-label-sm text-on-surface-variant ml-1" htmlFor="password">
+            <div className="space-y-1">
+              <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider ml-4" htmlFor="password">
                 Password
               </label>
               <div className="relative">
-                <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]">
+                <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">
                   lock
                 </span>
                 <input
-                  className="input-glass w-full h-12 pl-12 pr-4 rounded-lg font-body-md text-on-surface placeholder:text-outline/50 outline-none"
+                  className="w-full h-11 pl-11 pr-4 bg-white/5 border border-white/5 rounded-full text-xs text-white placeholder:text-on-surface-variant/40 focus:outline-none focus:border-primary/50 focus:bg-white/10 transition-all"
                   id="password"
                   placeholder="Min. 8 characters"
                   type="password"
@@ -185,27 +185,27 @@ export default function SignUpPage() {
               </div>
             </div>
 
-            <div className="flex items-start gap-2 py-1.5">
+            <div className="flex items-start gap-2.5 px-2 py-1">
               <div className="relative flex items-center mt-0.5">
                 <input
-                  className="peer appearance-none w-5 h-5 rounded border border-white/10 bg-white/5 checked:bg-primary checked:border-primary transition-all cursor-pointer"
+                  className="peer appearance-none w-4.5 h-4.5 rounded border border-white/10 bg-white/5 checked:bg-primary checked:border-primary transition-all cursor-pointer"
                   type="checkbox"
                   id="agree"
                   checked={agree}
                   onChange={(e) => setAgree(e.target.checked)}
                   disabled={isLoading}
                 />
-                <span className="material-symbols-outlined absolute inset-0 text-on-primary text-[16px] hidden peer-checked:flex items-center justify-center pointer-events-none">
+                <span className="material-symbols-outlined absolute inset-0 text-white text-[12px] hidden peer-checked:flex items-center justify-center pointer-events-none">
                   check
                 </span>
               </div>
               <label
                 htmlFor="agree"
-                className="font-label-md text-label-md text-on-surface-variant cursor-pointer select-none leading-tight"
+                className="text-[11px] font-semibold text-on-surface-variant cursor-pointer select-none leading-tight"
               >
                 I agree to the{" "}
                 <a href="#" className="text-primary hover:underline">
-                  Terms of Service
+                  Terms
                 </a>{" "}
                 and{" "}
                 <a href="#" className="text-primary hover:underline">
@@ -215,29 +215,29 @@ export default function SignUpPage() {
             </div>
 
             <button
-              className="btn-gradient w-full h-12 rounded-lg font-label-md text-on-primary font-bold shadow-xl shadow-primary/20 flex items-center justify-center gap-2"
+              className="btn-primary w-full h-11 rounded-full text-white font-bold flex items-center justify-center gap-2 shadow-lg shadow-primary/20 hover:scale-[1.01] active:scale-[0.99] transition-all cursor-pointer text-xs mt-3"
               type="submit"
               disabled={isLoading}
             >
               {isLoading ? "Signing up..." : "Sign Up"}
-              <span className="material-symbols-outlined text-[18px]">person_add</span>
+              <span className="material-symbols-outlined text-[16px]">person_add</span>
             </button>
           </form>
 
           {/* Divider */}
-          <div className="w-full flex items-center gap-4 my-8">
-            <div className="h-[1px] flex-grow bg-white/10"></div>
-            <span className="font-label-sm text-label-sm text-outline uppercase tracking-widest">
+          <div className="w-full flex items-center gap-3 my-6">
+            <div className="h-[1px] flex-grow bg-white/5"></div>
+            <span className="text-[9px] font-bold text-on-surface-variant/50 uppercase tracking-widest">
               or signup with
             </span>
-            <div className="h-[1px] flex-grow bg-white/10"></div>
+            <div className="h-[1px] flex-grow bg-white/5"></div>
           </div>
 
           {/* Social signup simulation */}
-          <div className="w-full grid grid-cols-2 gap-4 mb-8">
+          <div className="w-full grid grid-cols-2 gap-3 mb-6">
             <button
               onClick={() => signup("google_user", "google@demo.com", "demopass123")}
-              className="social-btn flex items-center justify-center gap-3 h-12 rounded-lg font-label-md text-on-surface"
+              className="flex items-center justify-center gap-2.5 h-11 bg-white/5 border border-white/5 hover:bg-white/10 text-white rounded-full font-bold transition-all text-xs cursor-pointer"
               disabled={isLoading}
             >
               <div className="w-5 h-5 flex items-center justify-center bg-white rounded-full">
@@ -250,8 +250,8 @@ export default function SignUpPage() {
               Google
             </button>
             <button
-              onClick={() => signup("git_coder", "github@demo.com", "demopass123")}
-              className="social-btn flex items-center justify-center gap-3 h-12 rounded-lg font-label-md text-on-surface"
+              onClick={() => signup("github_user", "github@demo.com", "demopass123")}
+              className="flex items-center justify-center gap-2.5 h-11 bg-white/5 border border-white/5 hover:bg-white/10 text-white rounded-full font-bold transition-all text-xs cursor-pointer"
               disabled={isLoading}
             >
               <img
@@ -263,24 +263,24 @@ export default function SignUpPage() {
             </button>
           </div>
 
-          {/* Login Link */}
-          <p className="font-body-md text-on-surface-variant text-sm">
+          {/* Sign In Link */}
+          <p className="text-xs text-on-surface-variant">
             Already have an account?
-            <Link className="text-primary font-bold hover:text-surface-tint transition-colors ml-1" href="/login">
+            <Link className="text-primary font-extrabold hover:underline ml-1.5" href="/login">
               Login
             </Link>
           </p>
         </div>
 
         {/* Footer Links */}
-        <footer className="mt-8 flex justify-center gap-8 opacity-40 hover:opacity-100 transition-opacity duration-500 text-xs">
-          <a className="font-label-sm text-label-sm text-on-surface hover:text-primary transition-colors" href="#">
+        <footer className="mt-6 flex justify-center gap-6 opacity-40 hover:opacity-100 transition-opacity duration-300 text-[10px] font-semibold">
+          <a className="text-on-surface-variant hover:text-primary transition-colors" href="#">
             Privacy Policy
           </a>
-          <a className="font-label-sm text-label-sm text-on-surface hover:text-primary transition-colors" href="#">
+          <a className="text-on-surface-variant hover:text-primary transition-colors" href="#">
             Terms of Service
           </a>
-          <a className="font-label-sm text-label-sm text-on-surface hover:text-primary transition-colors" href="#">
+          <a className="text-on-surface-variant hover:text-primary transition-colors" href="#">
             Help Center
           </a>
         </footer>

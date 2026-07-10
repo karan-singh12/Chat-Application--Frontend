@@ -28,6 +28,7 @@ export function AuthProvider({ children }) {
       const res = await authService.login(email, password);
       if (res.success) {
         const userData = {
+          id: res.data.user.id,
           email: res.data.user.email,
           username: res.data.user.username,
           role: res.data.user.role,
@@ -58,6 +59,7 @@ export function AuthProvider({ children }) {
       const res = await authService.signup(username, email, password);
       if (res.success) {
         const userData = {
+          id: res.data.user.id,
           email: res.data.user.email,
           username: res.data.user.username,
           role: res.data.user.role,
@@ -99,6 +101,7 @@ export function AuthProvider({ children }) {
         setUser((prev) => {
           const updated = {
             ...prev,
+            id: res.data.id,
             email: res.data.email,
             username: res.data.username,
             role: res.data.role,
