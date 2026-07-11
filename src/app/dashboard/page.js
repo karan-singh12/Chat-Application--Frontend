@@ -180,10 +180,7 @@ export default function DashboardPage() {
           <div className="pt-6 px-4 pb-3 flex flex-col gap-4 select-none">
             <div className="flex items-center justify-between">
               <div>
-                <h1 className="text-xl md:text-2xl font-extrabold tracking-tight text-white">
-                  Messages
-                </h1>
-                <p className="text-[10px] text-on-surface-variant font-bold mt-0.5">
+                <p className="text-[11px] text-on-surface-variant font-bold mt-0.5">
                   {chats.length} conversations
                 </p>
               </div>
@@ -439,13 +436,13 @@ export default function DashboardPage() {
                           <p className="text-[10px] font-semibold text-primary ml-1 mb-0.5">{senderName}</p>
                         )}
                         <div
-                          className={`px-3.5 py-2.5 rounded-[16px] relative text-xs break-words leading-relaxed ${
+                          className={`px-3.5 py-2.5 rounded-[16px] relative text-xs break-all whitespace-pre-wrap leading-relaxed ${
                             isMe
                               ? "bg-primary text-white rounded-br-sm shadow-sm"
                               : "bg-surface-variant text-on-surface rounded-bl-sm border border-white/5"
                           }`}
                         >
-                          <p>{msg.content || msg.text}</p>
+                          <p className="break-all whitespace-pre-wrap">{msg.content || msg.text}</p>
                         </div>
                         <div className={`flex items-center gap-1 mt-0.5 ${isMe ? "justify-end mr-0.5" : "ml-0.5"}`}>
                           <span className="text-[8px] text-on-surface-variant/50 font-semibold">

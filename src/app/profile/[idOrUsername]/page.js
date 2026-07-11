@@ -189,9 +189,6 @@ export default function PublicProfilePage({ params: paramsPromise }) {
             >
               <span className="material-symbols-outlined">menu</span>
             </button>
-            <h1 className="text-xl md:text-2xl font-extrabold tracking-tight text-white">
-              {isMe ? "My Profile" : `${profileUser?.username || "User"}'s Profile`}
-            </h1>
           </div>
           <button
             onClick={() => router.back()}

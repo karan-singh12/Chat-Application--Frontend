@@ -231,14 +231,7 @@ export default function FriendsPage() {
           {/* Header */}
           <section className="pt-6 flex flex-col gap-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              <div>
-                <h1 className="text-xl md:text-2xl font-extrabold tracking-tight text-white">
-                  Connections
-                </h1>
-                <p className="text-[10px] text-on-surface-variant font-bold mt-0.5">
-                  Manage colleagues and chat contacts
-                </p>
-              </div>
+              <div />
               <button
                 onClick={() => setIsAddFriendOpen(true)}
                 className="btn-primary text-white px-4 py-2 rounded-full font-bold flex items-center justify-center gap-1.5 hover:scale-[1.01] active:scale-99 transition-all shadow-md shadow-primary/10 self-start sm:self-auto cursor-pointer text-xs"

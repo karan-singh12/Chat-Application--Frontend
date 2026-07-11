@@ -56,23 +56,7 @@ export default function SettingsPage() {
         {/* Ambient background glows */}
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_0%_0%,rgba(77,94,247,0.05),transparent_45%),radial-gradient(circle_at_100%_100%,rgba(168,85,247,0.03),transparent_45%)] pointer-events-none -z-10" />
 
-        {/* One UI Spacious Header */}
-        <header className="pt-6 px-4 pb-2 flex flex-col gap-1">
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => setIsSidebarOpen(true)}
-              className="md:hidden p-1.5 rounded-full hover:bg-white/5 text-on-surface transition-colors cursor-pointer"
-            >
-              <span className="material-symbols-outlined">menu</span>
-            </button>
-            <h1 className="text-xl md:text-2xl font-extrabold tracking-tight text-white">
-              Settings
-            </h1>
-          </div>
-          <p className="text-[10px] text-on-surface-variant font-bold ml-1">
-            Configure NexusChat interface and security preferences
-          </p>
-        </header>
+
 
         {/* Settings Scrollable Content */}
         <div className="flex-grow p-4 overflow-y-auto custom-scrollbar relative z-10">

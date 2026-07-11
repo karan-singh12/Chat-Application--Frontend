@@ -10,10 +10,18 @@ export default function Sidebar({ isOpen, onClose, hideMobileNav }) {
   const { logout, user } = useAuth();
 
   const menuItems = [
+    { name: "Feed", path: "/feed", icon: "feed" },
     { name: "Chats", path: "/dashboard", icon: "chat" },
     { name: "Friends", path: "/friends", icon: "group" },
     { name: "Notifications", path: "/notifications", icon: "notifications" },
     { name: "Settings", path: "/settings", icon: "settings" },
+  ];
+
+  const mobileMenuItems = [
+    { name: "Home", path: "/feed", icon: "home" },
+    { name: "Chat", path: "/dashboard", icon: "chat" },
+    { name: "Search", path: "/friends", icon: "search" },
+    { name: "Profile", path: "/profile", icon: "person" },
   ];
 
   return (
@@ -127,20 +135,19 @@ export default function Sidebar({ isOpen, onClose, hideMobileNav }) {
           <span className="text-white font-extrabold text-xs tracking-tight">NexusChat</span>
         </div>
 
-        {/* Right Side Icon: Profile */}
+        {/* Right Side Icon: Notifications */}
         <div className="flex items-center gap-3">
-          {/* Profile Avatar */}
           <Link
-            href="/profile"
-            className={`w-7 h-7 rounded-full border p-0.5 transition-colors ${
-              pathname === "/profile" ? "border-primary" : "border-white/10"
+            href="/notifications"
+            className={`relative p-1.5 rounded-full hover:bg-white/5 text-on-surface-variant hover:text-white transition-colors cursor-pointer ${
+              pathname === "/notifications" ? "text-primary" : ""
             }`}
           >
-            <img
-              className="w-full h-full rounded-full object-cover"
-              alt="Avatar"
-              src={user?.avatar || "https://lh3.googleusercontent.com/aida-public/AB6AXuCrQcF8dQPorLSDZ4Rd1sli_xw8cyVmzXJ-0WVavbWWmVasHbiE1InjgGpFJ2ulQgzGd4jUPk-9tobCI4JlXzfiN-Y1mws5XYx3NeywpFbIii-mOafHKwBhSzQE7UEYzlAwc_h1UKzjXQQK1baB1hvtRIZpcHusTy2ZplWy7GUZEBqiNzAbEmWItZlhbR0MYIa3W7-cCJl-CJKdX3GaDUAGcB2mZ-RK2nekLQ5VrFJfFR6IDejct2fsPA"}
-            />
+            <span className="material-symbols-outlined text-[20px]" style={{ fontVariationSettings: pathname === "/notifications" ? "'FILL' 1" : "'FILL' 0" }}>
+              notifications
+            </span>
+            {/* Dynamic Unread Badge */}
+            <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full ring-2 ring-background-app animate-pulse" />
           </Link>
         </div>
       </header>
@@ -150,7 +157,7 @@ export default function Sidebar({ isOpen, onClose, hideMobileNav }) {
 
       {/* Mobile Bottom Navigation Bar (visible only on mobile) */}
       <nav className={`fixed bottom-0 left-0 right-0 h-16 bg-surface-container-low/90 backdrop-blur-xl border-t border-white/5 flex items-center justify-around z-50 md:hidden pb-safe shadow-xl ${hideMobileNav ? "hidden" : ""}`}>
-        {menuItems.map((item) => {
+        {mobileMenuItems.map((item) => {
           const isActive = pathname === item.path;
           return (
             <Link

@@ -13,50 +13,7 @@ export default function FeedPage() {
   const [newCommentTexts, setNewCommentTexts] = useState({}); // postId -> text mapping
 
   // Mock initial social feed posts
-  const [posts, setPosts] = useState([
-    {
-      id: 1,
-      user: {
-        name: "Elena Vance",
-        avatar: "https://lh3.googleusercontent.com/aida-public/AB6AXuCrQcF8dQPorLSDZ4Rd1sli_xw8cyVmzXJ-0WVavbWWmVasHbiE1InjgGpFJ2ulQgzGd4jUPk-9tobCI4JlXzfiN-Y1mws5XYx3NeywpFbIii-mOafHKwBhSzQE7UEYzlAwc_h1UKzjXQQK1baB1hvtRIZpcHusTy2ZplWy7GUZEBqiNzAbEmWItZlhbR0MYIa3W7-cCJl-CJKdX3GaDUAGcB2mZ-RK2nekLQ5VrFJfFR6IDejct2fsPA",
-        role: "Lead Frontend Engineer",
-      },
-      content: "Just finalized the One UI theme compact layouts. The workspace now looks incredibly clean and information-dense on desktop screens! Check out the updated layout structures in your settings tab.",
-      time: "20m ago",
-      likes: 12,
-      hasLiked: false,
-      comments: [
-        {
-          id: 101,
-          userName: "Alyx Vance",
-          avatar: "https://lh3.googleusercontent.com/aida-public/AB6AXuCrQcF8dQPorLSDZ4Rd1sli_xw8cyVmzXJ-0WVavbWWmVasHbiE1InjgGpFJ2ulQgzGd4jUPk-9tobCI4JlXzfiN-Y1mws5XYx3NeywpFbIii-mOafHKwBhSzQE7UEYzlAwc_h1UKzjXQQK1baB1hvtRIZpcHusTy2ZplWy7GUZEBqiNzAbEmWItZlhbR0MYIa3W7-cCJl-CJKdX3GaDUAGcB2mZ-RK2nekLQ5VrFJfFR6IDejct2fsPA",
-          text: "Love how clean the spacing looks now! Massive upgrade.",
-          time: "15m ago"
-        }
-      ]
-    },
-    {
-      id: 2,
-      user: {
-        name: "Gordon Freeman",
-        avatar: "https://lh3.googleusercontent.com/aida-public/AB6AXuAo-GoCmY4YVJkgfyAVHi867mtHqonm5Lig1_KNiQUJ0u-hdcYX7lkpLDIaBJhSVnt1B1IKypQSXJcabVF4YG87w7fI3aKLmnheM92K-87ucHdpe00fN04M9zlhdBnSIj42G0MtzL761gkdZ8oxZpVmwbY8WQx_OXwGMGLLwzaQHpDEovdchJ5RODKILWgrYZQYqe37M03q4SKpAK4y2cVPyW8zZ6_uWC2Z2870Qqop3oioXZRecEzJGQ",
-        role: "Research Scientist",
-      },
-      content: "Successfully migrated the core database schemas. All Postgres connections are now resolved via pooled and direct URL adapter ports. Ready for high-volume chat delivery tests later today.",
-      time: "1h ago",
-      likes: 8,
-      hasLiked: true,
-      comments: [
-        {
-          id: 201,
-          userName: "Barney Calhoun",
-          avatar: "https://lh3.googleusercontent.com/aida-public/AB6AXuCrQcF8dQPorLSDZ4Rd1sli_xw8cyVmzXJ-0WVavbWWmVasHbiE1InjgGpFJ2ulQgzGd4jUPk-9tobCI4JlXzfiN-Y1mws5XYx3NeywpFbIii-mOafHKwBhSzQE7UEYzlAwc_h1UKzjXQQK1baB1hvtRIZpcHusTy2ZplWy7GUZEBqiNzAbEmWItZlhbR0MYIa3W7-cCJl-CJKdX3GaDUAGcB2mZ-RK2nekLQ5VrFJfFR6IDejct2fsPA",
-          text: "I owe you a beer for fixing that database authentication bug so fast!",
-          time: "45m ago"
-        }
-      ]
-    }
-  ]);
+  const [posts, setPosts] = useState([]);
 
   const handleCreatePost = (e) => {
     e.preventDefault();
@@ -135,29 +92,12 @@ export default function FeedPage() {
       <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
 
       {/* Main Content Area */}
-      <main className="flex-grow md:ml-sidebar-width h-screen overflow-y-auto flex flex-col relative z-10 custom-scrollbar pb-24 md:pb-8 select-none">
+      <main className="flex-grow md:ml-sidebar-width h-screen overflow-y-auto flex flex-col relative z-10 custom-scrollbar pt-14 md:pt-0 pb-24 md:pb-8 select-none">
         {/* Ambient background glows */}
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_0%_0%,rgba(77,94,247,0.05),transparent_45%),radial-gradient(circle_at_100%_100%,rgba(168,85,247,0.03),transparent_45%)] pointer-events-none -z-10" />
 
         <div className="p-4 flex flex-col gap-5 max-w-[700px] mx-auto w-full">
           
-          {/* One UI Spacious Header */}
-          <header className="pt-6 px-1 flex flex-col gap-1">
-            <div className="flex items-center gap-3">
-              <button
-                onClick={() => setIsSidebarOpen(true)}
-                className="md:hidden p-1.5 rounded-full hover:bg-white/5 text-on-surface transition-colors cursor-pointer"
-              >
-                <span className="material-symbols-outlined">menu</span>
-              </button>
-              <h1 className="text-xl md:text-2xl font-extrabold tracking-tight text-white animate-fade-in">
-                Feed
-              </h1>
-            </div>
-            <p className="text-[10px] text-on-surface-variant font-bold">
-              Stay updated with shared posts and status announcements from your network
-            </p>
-          </header>
 
           {/* Share Update Creator Card */}
           <div className="bg-surface-container/30 border border-white/5 rounded-xl p-4 shadow-md">

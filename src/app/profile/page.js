@@ -135,20 +135,7 @@ export default function ProfilePage() {
         {/* Ambient background glows */}
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_0%_0%,rgba(77,94,247,0.05),transparent_45%),radial-gradient(circle_at_100%_100%,rgba(168,85,247,0.03),transparent_45%)] pointer-events-none -z-10" />
 
-        {/* One UI Spacious Header */}
-        <header className="pt-6 px-4 pb-2 flex items-center justify-between z-40">
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => setIsSidebarOpen(true)}
-              className="md:hidden p-1.5 rounded-full hover:bg-white/5 text-on-surface transition-colors cursor-pointer"
-            >
-              <span className="material-symbols-outlined">menu</span>
-            </button>
-            <h1 className="text-xl md:text-2xl font-extrabold tracking-tight text-white">
-              Profile
-            </h1>
-          </div>
-        </header>
+
 
         {/* Profile Content */}
         <div className="max-w-[800px] mx-auto p-4 w-full space-y-6">

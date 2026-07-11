@@ -150,10 +150,7 @@ export default function NotificationsPage() {
           <section className="pt-6 flex flex-col gap-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
-                <h1 className="text-xl md:text-2xl font-extrabold tracking-tight text-white">
-                  Notifications
-                </h1>
-                <p className="text-[10px] text-on-surface-variant font-bold mt-0.5">
+                <p className="text-[11px] text-on-surface-variant font-bold mt-0.5">
                   {unreadCount > 0
                     ? `You have ${unreadCount} unread notification alerts`
                     : "No new notification alerts"}
