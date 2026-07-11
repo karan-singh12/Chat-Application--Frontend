@@ -230,6 +230,16 @@ export function ChatProvider({ children }) {
 
     socket.on("connect", () => {
       console.log("[WS] Connected:", socket.id);
+      const currentActive = activeChatRef.current;
+      if (currentActive) {
+        if (currentActive.type === "dm") {
+          socket.emit("joinConversation", {
+            conversationId: currentActive.conversationId,
+          });
+        } else {
+          socket.emit("joinGroup", { groupId: currentActive.groupId });
+        }
+      }
     });
 
     socket.on("userOnline", ({ userId }) => {
@@ -407,6 +417,19 @@ export function ChatProvider({ children }) {
       socketRef.current = null;
     };
   }, [token, user, endCallCleanup]);
+
+  // Automatically join WebSocket room when activeChat changes or when socket connects
+  useEffect(() => {
+    if (socketRef.current?.connected && activeChat) {
+      if (activeChat.type === "dm") {
+        socketRef.current.emit("joinConversation", {
+          conversationId: activeChat.conversationId,
+        });
+      } else {
+        socketRef.current.emit("joinGroup", { groupId: activeChat.groupId });
+      }
+    }
+  }, [activeChat, socketRef.current?.connected]);
 
   const selectChat = useCallback(
     async (chat) => {

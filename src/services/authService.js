@@ -33,6 +33,14 @@ export const authService = {
     return res;
   },
 
+  async uploadAvatar(file) {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("imagePath", "user");
+    const res = await apiClient.postMultipart("/uploads", formData);
+    return res;
+  },
+
   async sendFriendRequest(identifier) {
     const res = await apiClient.post("/users/friends/request", {
       identifier,

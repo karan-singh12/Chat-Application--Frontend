@@ -95,13 +95,22 @@ export default function SignUpPage() {
         >
           {/* Brand Identity */}
           <div className="mb-8 text-center">
-            <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-primary-fixed-dim mb-4 shadow-lg shadow-primary/20">
-              <span
-                className="material-symbols-outlined text-white text-[28px]"
-                style={{ fontVariationSettings: "'FILL' 1" }}
-              >
-                hub
-              </span>
+            <div className="inline-flex items-center justify-center w-14 h-14 mb-4 select-none animate-fade-in hover:scale-105 hover:rotate-2 transition-transform duration-300">
+              <svg className="w-full h-full filter drop-shadow-[0_4px_12px_rgba(99,102,241,0.5)]" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <linearGradient id="logo-grad-1-signup" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#818cf8" />
+                    <stop offset="100%" stopColor="#4f46e5" />
+                  </linearGradient>
+                  <linearGradient id="logo-grad-2-signup" x1="0%" y1="100%" x2="100%" y2="0%">
+                    <stop offset="0%" stopColor="#6366f1" />
+                    <stop offset="100%" stopColor="#a855f7" />
+                  </linearGradient>
+                </defs>
+                <rect x="20" y="18" width="15" height="64" rx="7.5" fill="url(#logo-grad-1-signup)" />
+                <rect x="65" y="18" width="15" height="64" rx="7.5" fill="url(#logo-grad-1-signup)" />
+                <path d="M27.5 18 L72.5 82" stroke="url(#logo-grad-2-signup)" strokeWidth="15" strokeLinecap="round" />
+              </svg>
             </div>
             <h1 className="text-2xl font-black text-white tracking-tight">
               NexusChat

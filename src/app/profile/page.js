@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import Sidebar from "@/components/Sidebar";
 import { useAuth } from "@/context/AuthContext";
 import { authService } from "@/services/authService";
+import { SOCKET_URL } from "@/config/api";
 
 export default function ProfilePage() {
   const { user, setUser, refreshProfile } = useAuth();
@@ -88,6 +89,30 @@ export default function ProfilePage() {
     }
   };
 
+  const handleAvatarChange = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsLoading(true);
+    try {
+      const res = await authService.uploadAvatar(file);
+      if (res.success && res.data) {
+        const absoluteUrl = res.data.url.startsWith("http")
+          ? res.data.url
+          : `${SOCKET_URL}${res.data.url}`;
+        setAvatar(absoluteUrl);
+        setIsEditing(true);
+      } else {
+        alert(res.message || "Failed to upload avatar");
+      }
+    } catch (err) {
+      console.error("Error uploading avatar:", err);
+      alert(err.message || "An error occurred while uploading avatar");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="bg-background flex min-h-screen overflow-hidden text-on-surface">
       {/* Sidebar Navigation */}
@@ -145,23 +170,34 @@ export default function ProfilePage() {
                     />
                   </div>
                 </div>
+                <input
+                  type="file"
+                  id="avatar-file-input"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleAvatarChange}
+                />
                 <button
-                  onClick={() => {
-                    const url = prompt("Enter avatar image URL:", avatar);
-                    if (url !== null) {
-                      setAvatar(url);
-                      setIsEditing(true);
-                    }
-                  }}
+                  onClick={() => document.getElementById("avatar-file-input")?.click()}
                   className="absolute bottom-0 right-0 w-6 h-6 rounded-full bg-surface-container-high border border-white/5 flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-all shadow-md cursor-pointer animate-fade-in"
+                  title="Upload profile photo"
                 >
-                  <span className="material-symbols-outlined text-[13px]">edit</span>
+                  <span className="material-symbols-outlined text-[13px]">photo_camera</span>
                 </button>
               </div>
               <div className="pb-2 select-text">
-                <h3 className="text-base sm:text-lg font-bold text-white leading-tight">
-                  {username}
-                </h3>
+                {isEditing ? (
+                  <input
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    className="bg-surface-container-low border border-white/10 text-white font-bold text-xs rounded-lg px-2.5 py-1 focus:outline-none focus:border-primary max-w-[150px] sm:max-w-[200px]"
+                    placeholder="Username"
+                  />
+                ) : (
+                  <h3 className="text-base sm:text-lg font-bold text-white leading-tight">
+                    {username}
+                  </h3>
+                )}
                 <p className="text-[10px] text-primary font-semibold mt-0.5">
                   @{user?.email ? user.email.split("@")[0] : "nexus_member"}
                 </p>

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { authService } from "@/services/authService";
 
@@ -94,10 +94,10 @@ export function AuthProvider({ children }) {
     router.push("/login");
   };
 
-  const refreshProfile = async () => {
+  const refreshProfile = useCallback(async () => {
     try {
       const res = await authService.getProfile();
-      if (res.success && res.data) {
+      if (res.data) {
         setUser((prev) => {
           const updated = {
             ...prev,
@@ -121,7 +121,7 @@ export function AuthProvider({ children }) {
       console.error("Auth refreshProfile error:", err);
     }
     return null;
-  };
+  }, []);
 
   const updateCredits = (amount) => {
     setUser(prev => {

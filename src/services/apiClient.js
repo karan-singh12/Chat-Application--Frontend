@@ -19,6 +19,10 @@ const apiClient = {
       ...options.headers,
     };
 
+    if (options.body instanceof FormData) {
+      delete headers["Content-Type"];
+    }
+
     const config = {
       ...options,
       headers,
@@ -43,6 +47,14 @@ const apiClient = {
       ...options,
       method: "POST",
       body: JSON.stringify(body),
+    });
+  },
+
+  postMultipart(endpoint, formData, options = {}) {
+    return this.request(endpoint, {
+      ...options,
+      method: "POST",
+      body: formData,
     });
   },
 
