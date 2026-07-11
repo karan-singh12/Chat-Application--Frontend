@@ -194,11 +194,6 @@ export function ChatProvider({ children }) {
             return;
           }
         }
-
-        if (all.length > 0) {
-          setActiveChatState(all[0]);
-          await loadMessages(all[0]);
-        }
       }
     }
 

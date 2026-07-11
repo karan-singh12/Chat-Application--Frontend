@@ -5,9 +5,12 @@ import Sidebar from "@/components/Sidebar";
 import { useAuth } from "@/context/AuthContext";
 import { authService } from "@/services/authService";
 import { SOCKET_URL } from "@/config/api";
+import { useChat } from "@/context/ChatContext";
 
 export default function ProfilePage() {
   const { user, setUser, refreshProfile } = useAuth();
+  const { chats } = useChat();
+  const [friendsCount, setFriendsCount] = useState(0);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -29,6 +32,15 @@ export default function ProfilePage() {
       setAvatar(user.avatar || "");
     }
   }, [user]);
+
+  // Load friends count dynamically
+  useEffect(() => {
+    authService.getFriendsList().then((res) => {
+      if (res.success && res.data) {
+        setFriendsCount(res.data.length);
+      }
+    }).catch(() => {});
+  }, []);
 
   // Fetch complete profile from backend on mount
   useEffect(() => {
@@ -119,7 +131,7 @@ export default function ProfilePage() {
       <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
 
       {/* Main Content Area */}
-      <main className="flex-grow md:ml-sidebar-width h-screen overflow-y-auto flex flex-col relative z-10 custom-scrollbar pb-24 md:pb-8 select-none">
+      <main className="flex-grow md:ml-sidebar-width h-screen overflow-y-auto flex flex-col relative z-10 custom-scrollbar pt-14 md:pt-0 pb-24 md:pb-8 select-none">
         {/* Ambient background glows */}
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_0%_0%,rgba(77,94,247,0.05),transparent_45%),radial-gradient(circle_at_100%_100%,rgba(168,85,247,0.03),transparent_45%)] pointer-events-none -z-10" />
 
@@ -249,7 +261,7 @@ export default function ProfilePage() {
                   <div className="min-w-0 flex-1">
                     <p className="text-[9px] font-bold text-on-surface-variant uppercase tracking-wider">Email Address</p>
                     <p className="font-semibold text-xs text-white truncate mt-0.5 select-text">
-                      {user?.email || "alex.v@nexuschat.io"}
+                      {user?.email || "member@nexuschat.io"}
                     </p>
                   </div>
                 </div>
@@ -302,7 +314,9 @@ export default function ProfilePage() {
                   </div>
                   <div className="min-w-0 flex-1">
                     <p className="text-[9px] font-bold text-on-surface-variant uppercase tracking-wider">Joined Date</p>
-                    <p className="font-semibold text-xs text-white truncate mt-0.5">March 14, 2023</p>
+                    <p className="font-semibold text-xs text-white truncate mt-0.5">
+                      {user?.createdAt ? new Date(user.createdAt).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" }) : "Joined recently"}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -314,13 +328,15 @@ export default function ProfilePage() {
               <div className="bg-surface-container/30 border border-white/5 p-4 rounded-xl text-center relative overflow-hidden shadow-md">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <p className="text-lg font-bold text-white">1,284</p>
+                    <p className="text-lg font-bold text-white">{friendsCount}</p>
                     <p className="text-[9px] font-bold tracking-wider text-on-surface-variant uppercase mt-0.5">
                       Friends
                     </p>
                   </div>
                   <div className="border-l border-white/5">
-                    <p className="text-lg font-bold text-white">42</p>
+                    <p className="text-lg font-bold text-white">
+                      {chats ? chats.filter((c) => c.type === "group").length : 0}
+                    </p>
                     <p className="text-[9px] font-bold tracking-wider text-on-surface-variant uppercase mt-0.5">
                       Groups
                     </p>

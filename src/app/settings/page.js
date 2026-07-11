@@ -52,7 +52,7 @@ export default function SettingsPage() {
       <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
 
       {/* Main Content Canvas */}
-      <main className="flex-grow md:ml-sidebar-width min-h-screen relative overflow-hidden flex flex-col pb-24 md:pb-8 select-none">
+      <main className="flex-grow md:ml-sidebar-width min-h-screen relative overflow-hidden flex flex-col pt-14 md:pt-0 pb-24 md:pb-8 select-none">
         {/* Ambient background glows */}
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_0%_0%,rgba(77,94,247,0.05),transparent_45%),radial-gradient(circle_at_100%_100%,rgba(168,85,247,0.03),transparent_45%)] pointer-events-none -z-10" />
 
@@ -97,10 +97,10 @@ export default function SettingsPage() {
                   </div>
                   <div>
                     <h4 className="text-xs font-bold text-white leading-tight">
-                      {user?.username || "Alex Rivera"}
+                      {user?.username || "Nexus Member"}
                     </h4>
                     <p className="text-[10px] text-on-surface-variant mt-0.5">
-                      {user?.email || "alex.rivera@nexuschat.io"}
+                      {user?.email || "member@nexuschat.io"}
                     </p>
                   </div>
                 </div>

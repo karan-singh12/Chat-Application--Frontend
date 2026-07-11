@@ -78,6 +78,13 @@ export default function DashboardPage() {
       }
     }).catch(() => {});
   }, []);
+ 
+  // Auto-select first chat on desktop layout
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.innerWidth >= 768 && !activeChat && chats.length > 0) {
+      selectChat(chats[0]);
+    }
+  }, [chats, activeChat, selectChat]);
 
   // Typing indicator â€“ debounced
   const handleInputChange = (e) => {
@@ -156,10 +163,10 @@ export default function DashboardPage() {
   return (
     <div className="h-screen flex overflow-hidden font-body-md text-body-md bg-background-app text-on-surface">
       {/* Sidebar Navigation */}
-      <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+      <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} hideMobileNav={mobileShowChat && !!activeChat} />
 
       {/* Main Content Area */}
-      <main className="flex-1 md:ml-sidebar-width flex h-screen overflow-hidden relative pb-16 md:pb-0">
+      <main className={`flex-1 md:ml-sidebar-width flex h-screen overflow-hidden relative pb-16 md:pb-0 ${mobileShowChat && activeChat ? "pt-0" : "pt-14 md:pt-0"}`}>
         {/* Ambient glows */}
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_0%_0%,rgba(77,94,247,0.05),transparent_40%),radial-gradient(circle_at_100%_100%,rgba(168,85,247,0.03),transparent_40%)] pointer-events-none -z-10" />
 

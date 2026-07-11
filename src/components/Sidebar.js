@@ -5,12 +5,11 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 
-export default function Sidebar({ isOpen, onClose }) {
+export default function Sidebar({ isOpen, onClose, hideMobileNav }) {
   const pathname = usePathname();
   const { logout, user } = useAuth();
 
   const menuItems = [
-    { name: "Feed", path: "/feed", icon: "feed" },
     { name: "Chats", path: "/dashboard", icon: "chat" },
     { name: "Friends", path: "/friends", icon: "group" },
     { name: "Notifications", path: "/notifications", icon: "notifications" },
@@ -105,7 +104,7 @@ export default function Sidebar({ isOpen, onClose }) {
       </aside>
 
       {/* Mobile Top Navigation Bar (visible only on mobile) */}
-      <header className="fixed top-0 left-0 right-0 h-14 bg-surface-container-low/90 backdrop-blur-xl border-b border-white/5 flex items-center justify-between px-4 z-40 md:hidden shadow-sm">
+      <header className={`fixed top-0 left-0 right-0 h-14 bg-surface-container-low/90 backdrop-blur-xl border-b border-white/5 flex items-center justify-between px-4 z-40 md:hidden shadow-sm ${hideMobileNav ? "hidden" : ""}`}>
         {/* App Logo & Brand Name */}
         <div className="flex items-center gap-2 select-none">
           <div className="w-7 h-7 flex items-center justify-center">
@@ -147,11 +146,11 @@ export default function Sidebar({ isOpen, onClose }) {
       </header>
       
       {/* Top spacer for mobile content layout flow */}
-      <div className="h-14 md:hidden flex-shrink-0" />
+      <div className={`h-14 md:hidden flex-shrink-0 ${hideMobileNav ? "hidden" : ""}`} />
 
       {/* Mobile Bottom Navigation Bar (visible only on mobile) */}
-      <nav className="fixed bottom-0 left-0 right-0 h-16 bg-surface-container-low/90 backdrop-blur-xl border-t border-white/5 flex items-center justify-around z-50 md:hidden pb-safe shadow-xl">
-        {menuItems.slice(0, 5).map((item) => {
+      <nav className={`fixed bottom-0 left-0 right-0 h-16 bg-surface-container-low/90 backdrop-blur-xl border-t border-white/5 flex items-center justify-around z-50 md:hidden pb-safe shadow-xl ${hideMobileNav ? "hidden" : ""}`}>
+        {menuItems.map((item) => {
           const isActive = pathname === item.path;
           return (
             <Link

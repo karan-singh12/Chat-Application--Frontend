@@ -38,6 +38,7 @@ export function AuthProvider({ children }) {
           location: res.data.user.location,
           credits: res.data.user.credits,
           isPro: res.data.user.isPro,
+          createdAt: res.data.user.createdAt,
         };
         setUser(userData);
         setToken(res.data.token);
@@ -69,6 +70,7 @@ export function AuthProvider({ children }) {
           location: res.data.user.location,
           credits: res.data.user.credits,
           isPro: res.data.user.isPro,
+          createdAt: res.data.user.createdAt,
         };
         setUser(userData);
         const signupToken = res.data.token || `jwt-mock-token-${userData.email.split("@")[0]}-${Date.now()}`;
@@ -111,6 +113,7 @@ export function AuthProvider({ children }) {
             avatar: res.data.avatar,
             credits: res.data.credits,
             isPro: res.data.isPro,
+            createdAt: res.data.createdAt,
           };
           localStorage.setItem("nexus_user", JSON.stringify(updated));
           return updated;
