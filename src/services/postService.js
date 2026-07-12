@@ -1,9 +1,9 @@
 import apiClient from "./apiClient";
 
 export const postService = {
-  async createPost(content) {
+  async createPost(content, imageUrl = null) {
     try {
-      const res = await apiClient.post("/posts", { content });
+      const res = await apiClient.post("/posts", { content, imageUrl });
       return { success: true, data: res.data };
     } catch (err) {
       return { success: false, error: err.message };
@@ -32,6 +32,18 @@ export const postService = {
     try {
       const res = await apiClient.post(`/posts/${postId}/comment`, { content });
       return { success: true, data: res.data };
+    } catch (err) {
+      return { success: false, error: err.message };
+    }
+  },
+
+  async uploadImage(file) {
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("imagePath", "general");
+      const res = await apiClient.postMultipart("/uploads", formData);
+      return res;
     } catch (err) {
       return { success: false, error: err.message };
     }

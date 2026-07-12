@@ -39,7 +39,7 @@ export default function FriendsPage() {
           userId: item.id,
           friendshipId: item.friendshipId,
           name: item.username || item.email.split("@")[0],
-          avatar: item.avatar || "https://lh3.googleusercontent.com/aida-public/AB6AXuCrQcF8dQPorLSDZ4Rd1sli_xw8cyVmzXJ-0WVavbWWmVasHbiE1InjgGpFJ2ulQgzGd4jUPk-9tobCI4JlXzfiN-Y1mws5XYx3NeywpFbIii-mOafHKwBhSzQE7UEYzlAwc_h1UKzjXQQK1baB1hvtRIZpcHusTy2ZplWy7GUZEBqiNzAbEmWItZlhbR0MYIa3W7-cCJl-CJKdX3GaDUAGcB2mZ-RK2nekLQ5VrFJfFR6IDejct2fsPA",
+          avatar: item.avatar || "/default-avatar.png",
           mutual: 0,
           status: "online",
           activity: item.bio || "Active member",
@@ -60,14 +60,14 @@ export default function FriendsPage() {
               id: req.id,
               senderId: req.senderId,
               name: req.sender.username || req.sender.email.split("@")[0],
-              avatar: req.sender.avatar || "https://lh3.googleusercontent.com/aida-public/AB6AXuCrQcF8dQPorLSDZ4Rd1sli_xw8cyVmzXJ-0WVavbWWmVasHbiE1InjgGpFJ2ulQgzGd4jUPk-9tobCI4JlXzfiN-Y1mws5XYx3NeywpFbIii-mOafHKwBhSzQE7UEYzlAwc_h1UKzjXQQK1baB1hvtRIZpcHusTy2ZplWy7GUZEBqiNzAbEmWItZlhbR0MYIa3W7-cCJl-CJKdX3GaDUAGcB2mZ-RK2nekLQ5VrFJfFR6IDejct2fsPA",
+              avatar: req.sender.avatar || "/default-avatar.png",
             });
           } else if (req.senderId === currentUserId) {
             sent.push({
               id: req.id,
               receiverId: req.receiverId,
               name: req.receiver.username || req.receiver.email.split("@")[0],
-              avatar: req.receiver.avatar || "https://lh3.googleusercontent.com/aida-public/AB6AXuCrQcF8dQPorLSDZ4Rd1sli_xw8cyVmzXJ-0WVavbWWmVasHbiE1InjgGpFJ2ulQgzGd4jUPk-9tobCI4JlXzfiN-Y1mws5XYx3NeywpFbIii-mOafHKwBhSzQE7UEYzlAwc_h1UKzjXQQK1baB1hvtRIZpcHusTy2ZplWy7GUZEBqiNzAbEmWItZlhbR0MYIa3W7-cCJl-CJKdX3GaDUAGcB2mZ-RK2nekLQ5VrFJfFR6IDejct2fsPA",
+              avatar: req.receiver.avatar || "/default-avatar.png",
             });
           }
         });
@@ -82,7 +82,7 @@ export default function FriendsPage() {
         setSuggestions(suggestionsRes.data.map(item => ({
           id: item.id,
           name: item.name,
-          avatar: item.avatar || "https://lh3.googleusercontent.com/aida-public/AB6AXuCrQcF8dQPorLSDZ4Rd1sli_xw8cyVmzXJ-0WVavbWWmVasHbiE1InjgGpFJ2ulQgzGd4jUPk-9tobCI4JlXzfiN-Y1mws5XYx3NeywpFbIii-mOafHKwBhSzQE7UEYzlAwc_h1UKzjXQQK1baB1hvtRIZpcHusTy2ZplWy7GUZEBqiNzAbEmWItZlhbR0MYIa3W7-cCJl-CJKdX3GaDUAGcB2mZ-RK2nekLQ5VrFJfFR6IDejct2fsPA",
+          avatar: item.avatar || "/default-avatar.png",
           detail: item.detail,
           added: false
         })));

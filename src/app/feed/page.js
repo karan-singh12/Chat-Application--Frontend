@@ -15,6 +15,8 @@ export default function FeedPage() {
 
   const [posts, setPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [imagePreviewUrl, setImagePreviewUrl] = useState(null);
 
   const getRelativeTime = (dateStr) => {
     if (!dateStr) return "Just now";
@@ -43,14 +45,49 @@ export default function FeedPage() {
     fetchFeed();
   }, []);
 
+  const handleImageChange = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setSelectedFile(file);
+    setImagePreviewUrl(URL.createObjectURL(file));
+  };
+
+  const handleRemoveImage = () => {
+    setSelectedFile(null);
+    if (imagePreviewUrl) {
+      URL.revokeObjectURL(imagePreviewUrl);
+      setImagePreviewUrl(null);
+    }
+  };
+
   const handleCreatePost = async (e) => {
     e.preventDefault();
-    if (!newPostText.trim()) return;
+    if (!newPostText.trim() && !selectedFile) return;
 
-    const res = await postService.createPost(newPostText);
-    if (res.success && res.data) {
-      setPosts([res.data, ...posts]);
-      setNewPostText("");
+    setIsLoading(true);
+    try {
+      let uploadedUrl = null;
+      if (selectedFile) {
+        const uploadRes = await postService.uploadImage(selectedFile);
+        if (uploadRes.success && uploadRes.data) {
+          uploadedUrl = uploadRes.data.url;
+        } else {
+          alert(uploadRes.message || "Failed to upload post image");
+        }
+      }
+
+      const res = await postService.createPost(newPostText, uploadedUrl);
+      if (res.success && res.data) {
+        setPosts([res.data, ...posts]);
+        setNewPostText("");
+        handleRemoveImage();
+      } else {
+        alert(res.message || "Failed to create post");
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -123,7 +160,11 @@ export default function FeedPage() {
                 <img
                   className="w-8.5 h-8.5 rounded-full object-cover border border-white/10 flex-shrink-0"
                   alt="My avatar"
-                  src={user?.avatar || "https://lh3.googleusercontent.com/aida-public/AB6AXuCrQcF8dQPorLSDZ4Rd1sli_xw8cyVmzXJ-0WVavbWWmVasHbiE1InjgGpFJ2ulQgzGd4jUPk-9tobCI4JlXzfiN-Y1mws5XYx3NeywpFbIii-mOafHKwBhSzQE7UEYzlAwc_h1UKzjXQQK1baB1hvtRIZpcHusTy2ZplWy7GUZEBqiNzAbEmWItZlhbR0MYIa3W7-cCJl-CJKdX3GaDUAGcB2mZ-RK2nekLQ5VrFJfFR6IDejct2fsPA"}
+                  src={user?.avatar || "/default-avatar.png"}
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = "/default-avatar.png";
+                  }}
                 />
                 <textarea
                   value={newPostText}
@@ -132,14 +173,38 @@ export default function FeedPage() {
                   placeholder="Share a status update or technical note..."
                 />
               </div>
+
+              {/* Image Preview Container */}
+              {imagePreviewUrl && (
+                <div className="relative w-full max-h-[250px] rounded-lg overflow-hidden border border-white/5 bg-white/5 flex items-center justify-center">
+                  <img src={imagePreviewUrl} className="max-h-[250px] object-contain rounded-lg" alt="Post preview" />
+                  <button
+                    type="button"
+                    onClick={handleRemoveImage}
+                    className="absolute top-2 right-2 w-7 h-7 rounded-full bg-black/60 hover:bg-black/85 text-white flex items-center justify-center transition-all cursor-pointer shadow-md"
+                  >
+                    <span className="material-symbols-outlined text-[16px]">close</span>
+                  </button>
+                </div>
+              )}
+
               <div className="flex justify-between items-center pt-2.5 border-t border-white/5">
                 <div className="flex gap-1">
                   <button
                     type="button"
+                    onClick={() => document.getElementById("post-image-input")?.click()}
                     className="w-7 h-7 rounded-full hover:bg-white/5 text-on-surface-variant flex items-center justify-center transition-colors cursor-pointer"
+                    title="Attach Image"
                   >
                     <span className="material-symbols-outlined text-[16px]">image</span>
                   </button>
+                  <input
+                    type="file"
+                    id="post-image-input"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleImageChange}
+                  />
                   <button
                     type="button"
                     className="w-7 h-7 rounded-full hover:bg-white/5 text-on-surface-variant flex items-center justify-center transition-colors cursor-pointer"
@@ -155,7 +220,7 @@ export default function FeedPage() {
                 </div>
                 <button
                   type="submit"
-                  disabled={!newPostText.trim()}
+                  disabled={!newPostText.trim() && !selectedFile}
                   className="px-5 py-1.5 bg-primary text-white font-bold rounded-full text-[10px] hover:brightness-110 active:scale-97 disabled:opacity-40 disabled:cursor-not-allowed transition-all cursor-pointer shadow-md shadow-primary/10"
                 >
                   Post Update
@@ -180,7 +245,7 @@ export default function FeedPage() {
               posts.map((post) => {
                 const postUser = post.user || {};
                 const postUserName = postUser.username || "Nexus Member";
-                const postUserAvatar = postUser.avatar || "https://lh3.googleusercontent.com/aida-public/AB6AXuCrQcF8dQPorLSDZ4Rd1sli_xw8cyVmzXJ-0WVavbWWmVasHbiE1InjgGpFJ2ulQgzGd4jUPk-9tobCI4JlXzfiN-Y1mws5XYx3NeywpFbIii-mOafHKwBhSzQE7UEYzlAwc_h1UKzjXQQK1baB1hvtRIZpcHusTy2ZplWy7GUZEBqiNzAbEmWItZlhbR0MYIa3W7-cCJl-CJKdX3GaDUAGcB2mZ-RK2nekLQ5VrFJfFR6IDejct2fsPA";
+                const postUserAvatar = postUser.avatar || "/default-avatar.png";
                 const postUserRole = postUser.role || "NexusChat Member";
                 const postLikesCount = post.likes ? post.likes.length : 0;
                 const postHasLiked = post.likes ? post.likes.some((l) => l.userId === user?.id) : false;
@@ -198,6 +263,10 @@ export default function FeedPage() {
                         className="w-9 h-9 rounded-full object-cover border border-white/10"
                         alt={postUserName}
                         src={postUserAvatar}
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.src = "/default-avatar.png";
+                        }}
                       />
                       <div>
                         <h4 className="font-bold text-xs text-white leading-none">
@@ -213,6 +282,24 @@ export default function FeedPage() {
                     <p className="text-xs text-on-surface leading-relaxed select-text px-1 py-0.5">
                       {post.content}
                     </p>
+
+                    {/* Post Image Attachment */}
+                    {post.imageUrl && (
+                      <div className="rounded-xl overflow-hidden border border-white/5 bg-white/[0.01] max-h-[350px] flex items-center justify-center my-1 select-none">
+                        <img
+                          src={
+                            post.imageUrl.startsWith("http")
+                              ? post.imageUrl
+                              : `https://chat-application-backend-8okw.onrender.com${post.imageUrl}`
+                          }
+                          className="max-h-[350px] w-full object-contain"
+                          alt="Post attachment"
+                          onError={(e) => {
+                            e.target.style.display = 'none'; // Hide if loading fails
+                          }}
+                        />
+                      </div>
+                    )}
 
                     {/* Post Interactions Action Row */}
                     <div className="flex items-center gap-4 pt-2 border-t border-white/5 px-1">
@@ -274,7 +361,7 @@ export default function FeedPage() {
                             {postCommentsList.map((comment) => {
                               const commentUser = comment.user || {};
                               const commentUserName = commentUser.username || "Nexus Member";
-                              const commentAvatar = commentUser.avatar || "https://lh3.googleusercontent.com/aida-public/AB6AXuCrQcF8dQPorLSDZ4Rd1sli_xw8cyVmzXJ-0WVavbWWmVasHbiE1InjgGpFJ2ulQgzGd4jUPk-9tobCI4JlXzfiN-Y1mws5XYx3NeywpFbIii-mOafHKwBhSzQE7UEYzlAwc_h1UKzjXQQK1baB1hvtRIZpcHusTy2ZplWy7GUZEBqiNzAbEmWItZlhbR0MYIa3W7-cCJl-CJKdX3GaDUAGcB2mZ-RK2nekLQ5VrFJfFR6IDejct2fsPA";
+                              const commentAvatar = commentUser.avatar || "/default-avatar.png";
                               const commentTime = getRelativeTime(comment.createdAt);
 
                               return (
@@ -284,6 +371,10 @@ export default function FeedPage() {
                                       className="w-6.5 h-6.5 rounded-full object-cover border border-white/10"
                                       alt={commentUserName}
                                       src={commentAvatar}
+                                      onError={(e) => {
+                                        e.target.onerror = null;
+                                        e.target.src = "/default-avatar.png";
+                                      }}
                                     />
                                   </Link>
                                   <div className="bg-white/[0.02] border border-white/5 rounded-xl px-3 py-2 flex-1">
