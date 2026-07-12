@@ -178,47 +178,8 @@ export default function LoginPage() {
             </button>
           </form>
 
-          {/* Divider */}
-          <div className="w-full flex items-center gap-3 my-6">
-            <div className="h-[1px] flex-grow bg-white/5"></div>
-            <span className="text-[9px] font-bold text-on-surface-variant/50 uppercase tracking-widest">
-              or continue with
-            </span>
-            <div className="h-[1px] flex-grow bg-white/5"></div>
-          </div>
-
-          {/* Social Logins */}
-          <div className="w-full grid grid-cols-2 gap-3 mb-6">
-            <button
-              onClick={() => login("google-demo@nexuschat.io", "demopass")}
-              className="flex items-center justify-center gap-2.5 h-11 bg-white/5 border border-white/5 hover:bg-white/10 text-white rounded-full font-bold transition-all text-xs cursor-pointer"
-              disabled={isLoading}
-            >
-              <div className="w-5 h-5 flex items-center justify-center bg-white rounded-full">
-                <img
-                  className="w-3 h-3"
-                  alt="Google logo"
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuCmhtvdkdWEzPLGc_2zDwFSikRxWkOqoYrgIfdDgw_800O884_VxlWpQLRFfbcAOSCYYqc771EHyAwI9i7zVqNRGZOtbsH5IepQYPd2IDUQawmzmiKf8Lfp3AWabuvMLNeF138TywMed42iDGVDSxT5mIO2a7eRRuKakdKRRWG1jZbvFveXREm0_Gpso-ABanGPxoazgPtkc6qCylLk_bsVF3dJl4W7zsaRMPYXRR7GhHPAlYOMZSvAhg"
-                />
-              </div>
-              Google
-            </button>
-            <button
-              onClick={() => login("github-demo@nexuschat.io", "demopass")}
-              className="flex items-center justify-center gap-2.5 h-11 bg-white/5 border border-white/5 hover:bg-white/10 text-white rounded-full font-bold transition-all text-xs cursor-pointer"
-              disabled={isLoading}
-            >
-              <img
-                className="w-5 h-5 invert"
-                alt="GitHub logo"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCLJtCHUAYN5Fxl2q_LPQCo_ywhgaVA_K0-oRf7c0jpfRwxAumYYqwhnjH81Tme1ppnmKMLnq7N0WFWY5CXitE05VL1pOhgpUp0ttpswYNTBKy5XLR63hgf2mzn41CLXbNkgNMbiTR4lCaYHFvvJfvaf2mxFhEtXSWlJyT50jg5RuF5cVMcxNSeXlldZE5Ab9BOu1BDGK7hn_1b1EMmsKYk6mzFZM7csC62hAZjl87JofLezdKWf3ZxdQ"
-              />
-              GitHub
-            </button>
-          </div>
-
           {/* Sign Up Link */}
-          <p className="text-xs text-on-surface-variant">
+          <p className="text-xs text-on-surface-variant mt-6">
             Don't have an account?
             <Link className="text-primary font-extrabold hover:underline ml-1.5" href="/signup">
               Sign Up

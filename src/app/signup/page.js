@@ -55,10 +55,7 @@ export default function SignUpPage() {
       setErrorMsg("Password must be at least 8 characters.");
       return;
     }
-    if (!agree) {
-      setErrorMsg("You must agree to the Terms of Service.");
-      return;
-    }
+
 
     setIsLoading(true);
     const result = await signup(username, email, password);
@@ -70,7 +67,6 @@ export default function SignUpPage() {
       setUsername("");
       setEmail("");
       setPassword("");
-      setAgree(false);
     } else {
       setErrorMsg(result.message || "Failed to create account.");
     }
@@ -194,34 +190,7 @@ export default function SignUpPage() {
               </div>
             </div>
 
-            <div className="flex items-start gap-2.5 px-2 py-1">
-              <div className="relative flex items-center mt-0.5">
-                <input
-                  className="peer appearance-none w-4.5 h-4.5 rounded border border-white/10 bg-white/5 checked:bg-primary checked:border-primary transition-all cursor-pointer"
-                  type="checkbox"
-                  id="agree"
-                  checked={agree}
-                  onChange={(e) => setAgree(e.target.checked)}
-                  disabled={isLoading}
-                />
-                <span className="material-symbols-outlined absolute inset-0 text-white text-[12px] hidden peer-checked:flex items-center justify-center pointer-events-none">
-                  check
-                </span>
-              </div>
-              <label
-                htmlFor="agree"
-                className="text-[11px] font-semibold text-on-surface-variant cursor-pointer select-none leading-tight"
-              >
-                I agree to the{" "}
-                <a href="#" className="text-primary hover:underline">
-                  Terms
-                </a>{" "}
-                and{" "}
-                <a href="#" className="text-primary hover:underline">
-                  Privacy Policy
-                </a>
-              </label>
-            </div>
+
 
             <button
               className="btn-primary w-full h-11 rounded-full text-white font-bold flex items-center justify-center gap-2 shadow-lg shadow-primary/20 hover:scale-[1.01] active:scale-[0.99] transition-all cursor-pointer text-xs mt-3"
@@ -233,47 +202,10 @@ export default function SignUpPage() {
             </button>
           </form>
 
-          {/* Divider */}
-          <div className="w-full flex items-center gap-3 my-6">
-            <div className="h-[1px] flex-grow bg-white/5"></div>
-            <span className="text-[9px] font-bold text-on-surface-variant/50 uppercase tracking-widest">
-              or signup with
-            </span>
-            <div className="h-[1px] flex-grow bg-white/5"></div>
-          </div>
 
-          {/* Social signup simulation */}
-          <div className="w-full grid grid-cols-2 gap-3 mb-6">
-            <button
-              onClick={() => signup("google_user", "google@demo.com", "demopass123")}
-              className="flex items-center justify-center gap-2.5 h-11 bg-white/5 border border-white/5 hover:bg-white/10 text-white rounded-full font-bold transition-all text-xs cursor-pointer"
-              disabled={isLoading}
-            >
-              <div className="w-5 h-5 flex items-center justify-center bg-white rounded-full">
-                <img
-                  className="w-3 h-3"
-                  alt="Google logo"
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuCmhtvdkdWEzPLGc_2zDwFSikRxWkOqoYrgIfdDgw_800O884_VxlWpQLRFfbcAOSCYYqc771EHyAwI9i7zVqNRGZOtbsH5IepQYPd2IDUQawmzmiKf8Lfp3AWabuvMLNeF138TywMed42iDGVDSxT5mIO2a7eRRuKakdKRRWG1jZbvFveXREm0_Gpso-ABanGPxoazgPtkc6qCylLk_bsVF3dJl4W7zsaRMPYXRR7GhHPAlYOMZSvAhg"
-                />
-              </div>
-              Google
-            </button>
-            <button
-              onClick={() => signup("github_user", "github@demo.com", "demopass123")}
-              className="flex items-center justify-center gap-2.5 h-11 bg-white/5 border border-white/5 hover:bg-white/10 text-white rounded-full font-bold transition-all text-xs cursor-pointer"
-              disabled={isLoading}
-            >
-              <img
-                className="w-5 h-5 invert"
-                alt="GitHub logo"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCLJtCHUAYN5Fxl2q_LPQCo_ywhgaVA_K0-oRf7c0jpfRwxAumYYqwhnjH81Tme1ppnmKMLnq7N0WFWY5CXitE05VL1pOhgpUp0ttpswYNTBKy5XLR63hgf2mzn41CLXbNkgNMbiTR4lCaYHFvvJfvaf2mxFhEtXSWlJyT50jg5RuF5cVMcxNSeXlldZE5Ab9BOu1BDGK7hn_1b1EMmsKYk6mzFZM7csC62hAZjl87JofLezdKWf3ZxdQ"
-              />
-              GitHub
-            </button>
-          </div>
 
           {/* Sign In Link */}
-          <p className="text-xs text-on-surface-variant">
+          <p className="text-xs text-on-surface-variant mt-6">
             Already have an account?
             <Link className="text-primary font-extrabold hover:underline ml-1.5" href="/login">
               Login

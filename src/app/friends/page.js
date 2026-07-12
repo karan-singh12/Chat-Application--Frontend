@@ -173,6 +173,20 @@ export default function FriendsPage() {
     try {
       const res = await authService.respondToFriendRequest(req.id, "ACCEPTED");
       if (res.success) {
+        if (socket?.connected) {
+          socket.emit("acceptFriendRequest", {
+            targetUserId: req.senderId,
+            request: {
+              id: req.id,
+              user: {
+                id: user.id,
+                username: user.username,
+                email: user.email,
+                avatar: user.avatar,
+              },
+            },
+          });
+        }
         await fetchConnectionsData();
       } else {
         alert(res.message || "Failed to accept request");
@@ -233,11 +247,10 @@ export default function FriendsPage() {
         }
 
         setTimeout(() => {
-          setIsAddFriendOpen(false);
           setNewFriendInput("");
           setAddFriendStatus(null);
           fetchConnectionsData();
-        }, 2000);
+        }, 3000);
       } else {
         setAddFriendStatus({ type: "error", message: res.message || "Failed to send request" });
       }
@@ -265,15 +278,39 @@ export default function FriendsPage() {
           
           {/* Header */}
           <section className="pt-6 flex flex-col gap-4">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              <div />
-              <button
-                onClick={() => setIsAddFriendOpen(true)}
-                className="btn-primary text-white px-4 py-2 rounded-full font-bold flex items-center justify-center gap-1.5 hover:scale-[1.01] active:scale-99 transition-all shadow-md shadow-primary/10 self-start sm:self-auto cursor-pointer text-xs"
-              >
-                <span className="material-symbols-outlined text-[16px]">person_add</span>
-                Add Friend
-              </button>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 w-full">
+              <div className="flex-grow max-w-md relative">
+                <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant text-[16px]">
+                  alternate_email
+                </span>
+                <input
+                  value={newFriendInput}
+                  onChange={(e) => setNewFriendInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") handleAddFriendSubmit();
+                  }}
+                  className="w-full h-10 bg-white/5 border border-white/5 rounded-full pl-11 pr-32 text-xs text-white placeholder:text-on-surface-variant/40 focus:outline-none focus:border-primary/50 focus:bg-white/10 transition-all animate-fade-in"
+                  placeholder="Enter username or email to add friend..."
+                />
+                <button
+                  onClick={handleAddFriendSubmit}
+                  className="absolute right-1 top-1/2 -translate-y-1/2 h-8 px-4 bg-primary hover:bg-primary/95 text-white font-bold rounded-full text-[11px] transition-all cursor-pointer shadow-md shadow-primary/10"
+                >
+                  Send Request
+                </button>
+              </div>
+              {addFriendStatus && (
+                <div className={`px-4 py-2 rounded-full text-[10px] font-semibold flex items-center gap-1.5 border animate-fade-in ${
+                  addFriendStatus.type === "success" 
+                    ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-400" 
+                    : "bg-red-500/10 border-red-500/20 text-red-400"
+                }`}>
+                  <span className="material-symbols-outlined text-sm">
+                    {addFriendStatus.type === "success" ? "check_circle" : "error"}
+                  </span>
+                  {addFriendStatus.message}
+                </div>
+              )}
             </div>
 
             {/* Custom Navigation Tabs & Search */}
@@ -577,79 +614,6 @@ export default function FriendsPage() {
             </div>
           </div>
         </div>
-
-        {/* Modal Dialog */}
-        {isAddFriendOpen && (
-          <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[100] flex items-center justify-center p-4 animate-fade-in">
-            <div className="bg-surface-container w-full max-w-sm rounded-xl border border-white/10 overflow-hidden shadow-2xl animate-scale-in p-5">
-              <div className="flex justify-between items-center mb-4">
-                <div className="flex items-center gap-1.5">
-                  <span className="material-symbols-outlined text-primary text-[18px]">person_add</span>
-                  <h3 className="text-xs font-bold text-white">Add New Friend</h3>
-                </div>
-                <button
-                  onClick={() => {
-                    setIsAddFriendOpen(false);
-                    setNewFriendInput("");
-                    setAddFriendStatus(null);
-                  }}
-                  className="p-1.5 rounded-full hover:bg-white/5 text-on-surface-variant transition-colors cursor-pointer"
-                >
-                  <span className="material-symbols-outlined text-[16px]">close</span>
-                </button>
-              </div>
-
-              <div className="space-y-3">
-                <p className="text-on-surface-variant text-[11px] leading-relaxed">
-                  Enter their unique username or email address below to send them a connection request.
-                </p>
-                
-                <div className="relative">
-                  <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-sm">
-                    alternate_email
-                  </span>
-                  <input
-                    value={newFriendInput}
-                    onChange={(e) => setNewFriendInput(e.target.value)}
-                    className="w-full bg-white/5 border border-white/5 rounded-full py-2.5 pl-9 pr-4 text-xs focus:outline-none focus:border-primary/50 focus:bg-white/10 transition-all placeholder:text-on-surface-variant/40 text-white"
-                    placeholder="Username or email address..."
-                    type="text"
-                    autoFocus
-                  />
-                </div>
-
-                {addFriendStatus && (
-                  <div className={`p-3 rounded-lg text-xs font-semibold ${
-                    addFriendStatus.type === "success" 
-                      ? "bg-emerald-500/10 border border-emerald-500/20 text-emerald-400" 
-                      : "bg-red-500/10 border border-red-500/20 text-red-400"
-                  }`}>
-                    {addFriendStatus.message}
-                  </div>
-                )}
-              </div>
-
-              <div className="flex justify-end gap-2 mt-5">
-                <button
-                  onClick={() => {
-                    setIsAddFriendOpen(false);
-                    setNewFriendInput("");
-                    setAddFriendStatus(null);
-                  }}
-                  className="px-4 py-2 border border-white/5 hover:bg-white/5 text-on-surface-variant rounded-full text-xs font-semibold transition-all active:scale-95 cursor-pointer"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleAddFriendSubmit}
-                  className="px-4 py-2 bg-primary text-white font-bold rounded-full text-xs transition-all active:scale-95 shadow-md shadow-primary/20 cursor-pointer"
-                >
-                  Send Request
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
 
         {/* Global Loading */}
         {isLoading && (

@@ -38,6 +38,7 @@ export default function DashboardPage() {
   const [friendSearchQuery, setFriendSearchQuery] = useState("");
   const [groupName, setGroupName] = useState("");
   const [selectedGroupMembers, setSelectedGroupMembers] = useState([]);
+  const [isCreatingGroup, setIsCreatingGroup] = useState(false);
   const [chatSearch, setChatSearch] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const messageStreamRef = useRef(null);
@@ -122,11 +123,19 @@ export default function DashboardPage() {
   };
 
   const handleCreateGroup = async () => {
-    if (!groupName.trim() || selectedGroupMembers.length === 0) return;
-    await createGroup(groupName.trim(), selectedGroupMembers.map((f) => f.id));
-    setIsNewGroupOpen(false);
-    setGroupName("");
-    setSelectedGroupMembers([]);
+    if (!groupName.trim() || selectedGroupMembers.length === 0 || isCreatingGroup) return;
+    setIsCreatingGroup(true);
+    try {
+      await createGroup(groupName.trim(), selectedGroupMembers.map((f) => f.id));
+      setIsNewGroupOpen(false);
+      setGroupName("");
+      setSelectedGroupMembers([]);
+    } catch (err) {
+      console.error("Error creating group:", err);
+      alert(err.message || "Failed to create group");
+    } finally {
+      setIsCreatingGroup(false);
+    }
   };
 
   const toggleGroupMember = (friend) => {
@@ -853,10 +862,17 @@ export default function DashboardPage() {
             <div className="p-4 pt-0">
               <button
                 onClick={handleCreateGroup}
-                disabled={!groupName.trim() || selectedGroupMembers.length === 0}
-                className="w-full py-2.5 rounded-full bg-primary text-white text-xs font-bold hover:bg-primary/90 transition-all active:scale-98 disabled:opacity-40 disabled:cursor-not-allowed"
+                disabled={!groupName.trim() || selectedGroupMembers.length === 0 || isCreatingGroup}
+                className="w-full py-2.5 rounded-full bg-primary text-white text-xs font-bold hover:bg-primary/90 transition-all active:scale-98 disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-1.5"
               >
-                Create Group ({selectedGroupMembers.length} members)
+                {isCreatingGroup ? (
+                  <>
+                    <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    Creating Group...
+                  </>
+                ) : (
+                  `Create Group (${selectedGroupMembers.length} members)`
+                )}
               </button>
             </div>
           </div>

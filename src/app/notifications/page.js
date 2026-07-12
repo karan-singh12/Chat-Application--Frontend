@@ -30,12 +30,20 @@ export default function NotificationsPage() {
   const loadNotifications = useCallback(async () => {
     try {
       setIsLoading(true);
-      const res = await authService.getFriendRequests("received");
-      if (res.success && res.data) {
+      const [resRequests, resFriends] = await Promise.all([
+        authService.getFriendRequests("received"),
+        authService.getFriendsList()
+      ]);
+
+      let reqs = [];
+      let acceptedNotifs = [];
+
+      if (resRequests.success && resRequests.data) {
         // Map pending friend requests
-        const reqs = res.data.map((item) => ({
+        reqs = resRequests.data.map((item) => ({
           id: item.id, // Friendship ID
           type: "friend_request",
+          senderId: item.senderId,
           user: {
             name: item.sender.username || item.sender.email.split("@")[0],
             avatar: item.sender.avatar || null,
@@ -49,41 +57,62 @@ export default function NotificationsPage() {
           icon: "person_add",
           iconColor: "text-primary bg-primary/10",
         }));
-
-        // Mock system alerts
-        const systemMocks = [
-          {
-            id: "system_1",
-            type: "system",
-            system: true,
-            text: "Server Maintenance Scheduled: Frontend nodes will undergo optimization on July 12, 02:00 UTC (Estimated downtime: 15 mins).",
-            time: "5h ago",
-            unread: true,
-            category: "system",
-            icon: "dns",
-            iconColor: "text-rose-400 bg-rose-500/10",
-          },
-          {
-            id: "system_2",
-            type: "security",
-            system: true,
-            text: "New device login detected: Chrome on MacBook Pro (San Francisco, USA) connected to your account.",
-            time: "2 days ago",
-            unread: false,
-            category: "system",
-            icon: "security",
-            iconColor: "text-cyan-400 bg-cyan-500/10",
-          }
-        ];
-
-        setNotifications([...reqs, ...systemMocks]);
       }
+
+      if (resFriends.success && resFriends.data) {
+        // Map accepted requests where we were the sender
+        acceptedNotifs = resFriends.data
+          .filter((item) => item.senderId === user?.id)
+          .map((item) => ({
+            id: `accept_${item.friendshipId}`,
+            type: "friend_accepted",
+            user: {
+              name: item.username || item.email.split("@")[0],
+              avatar: item.avatar || null,
+            },
+            text: "accepted your friend request",
+            time: formatTime(item.updatedAt),
+            unread: false,
+            category: "requests",
+            actionable: false,
+            icon: "person_check",
+            iconColor: "text-green-400 bg-green-500/10",
+          }));
+      }
+
+      // Mock system alerts
+      const systemMocks = [
+        {
+          id: "system_1",
+          type: "system",
+          system: true,
+          text: "Server Maintenance Scheduled: Frontend nodes will undergo optimization on July 12, 02:00 UTC (Estimated downtime: 15 mins).",
+          time: "5h ago",
+          unread: true,
+          category: "system",
+          icon: "dns",
+          iconColor: "text-rose-400 bg-rose-500/10",
+        },
+        {
+          id: "system_2",
+          type: "security",
+          system: true,
+          text: "New device login detected: Chrome on MacBook Pro (San Francisco, USA) connected to your account.",
+          time: "2 days ago",
+          unread: false,
+          category: "system",
+          icon: "security",
+          iconColor: "text-cyan-400 bg-cyan-500/10",
+        }
+      ];
+
+      setNotifications([...reqs, ...acceptedNotifs, ...systemMocks]);
     } catch (err) {
       console.error("Error loading notifications:", err);
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     loadNotifications();
@@ -101,6 +130,7 @@ export default function NotificationsPage() {
         const newNotif = {
           id: request.id,
           type: "friend_request",
+          senderId: request.sender.id,
           user: {
             name: request.sender.username || request.sender.email.split("@")[0],
             avatar: request.sender.avatar || null,
@@ -118,9 +148,35 @@ export default function NotificationsPage() {
       });
     };
 
+    const handleIncomingAcceptance = (acceptance) => {
+      // Avoid duplicate rendering
+      setNotifications((prev) => {
+        if (prev.some((n) => n.id === `accept_${acceptance.id}`)) return prev;
+
+        const newNotif = {
+          id: `accept_${acceptance.id}`,
+          type: "friend_accepted",
+          user: {
+            name: acceptance.user.username || acceptance.user.email.split("@")[0],
+            avatar: acceptance.user.avatar || null,
+          },
+          text: "accepted your friend request",
+          time: "Just now",
+          unread: true,
+          category: "requests",
+          actionable: false,
+          icon: "person_check",
+          iconColor: "text-green-400 bg-green-500/10",
+        };
+        return [newNotif, ...prev];
+      });
+    };
+
     socket.on("friendRequest", handleIncomingRequest);
+    socket.on("acceptFriendRequest", handleIncomingAcceptance);
     return () => {
       socket.off("friendRequest", handleIncomingRequest);
+      socket.off("acceptFriendRequest", handleIncomingAcceptance);
     };
   }, [socket]);
 
@@ -147,8 +203,23 @@ export default function NotificationsPage() {
         declined: "REJECTED"
       };
       
+      const notif = notifications.find((n) => n.id === id);
       const res = await authService.respondToFriendRequest(id, statusMap[action]);
       if (res.success) {
+        if (action === "accepted" && notif && socket?.connected) {
+          socket.emit("acceptFriendRequest", {
+            targetUserId: notif.senderId,
+            request: {
+              id: id,
+              user: {
+                id: user.id,
+                username: user.username,
+                email: user.email,
+                avatar: user.avatar,
+              },
+            },
+          });
+        }
         setNotifications((prev) =>
           prev.map((n) =>
             n.id === id
