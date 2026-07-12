@@ -12,7 +12,7 @@ export default function PublicProfilePage({ params: paramsPromise }) {
   const params = React.use ? React.use(paramsPromise) : paramsPromise;
   const idOrUsername = params?.idOrUsername;
 
-  const { user: currentUser, setUser } = useAuth();
+  const { user: currentUser, setUser, logout } = useAuth();
   const { chats, selectChat, getOrCreateChat, socket } = useChat();
   const router = useRouter();
 
@@ -450,6 +450,13 @@ export default function PublicProfilePage({ params: paramsPromise }) {
                         <button className="w-full py-2.5 rounded-full border border-white/10 text-on-surface-variant hover:bg-white/5 hover:text-white font-bold flex items-center justify-center gap-1.5 transition-all active:scale-[0.99] cursor-pointer text-xs">
                           <span className="material-symbols-outlined text-[16px]">lock_reset</span>
                           Change Password
+                        </button>
+                        <button
+                          onClick={logout}
+                          className="w-full py-2.5 rounded-full border border-red-500/20 bg-red-500/10 hover:bg-red-500 hover:text-white text-red-400 font-bold flex items-center justify-center gap-1.5 transition-all active:scale-[0.99] cursor-pointer text-xs"
+                        >
+                          <span className="material-symbols-outlined text-[16px]">logout</span>
+                          Log Out
                         </button>
                       </>
                     )

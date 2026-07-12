@@ -8,7 +8,7 @@ import { SOCKET_URL } from "@/config/api";
 import { useChat } from "@/context/ChatContext";
 
 export default function ProfilePage() {
-  const { user, setUser, refreshProfile } = useAuth();
+  const { user, setUser, refreshProfile, logout } = useAuth();
   const { chats } = useChat();
   const [friendsCount, setFriendsCount] = useState(0);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -368,6 +368,13 @@ export default function ProfilePage() {
                     <button className="w-full py-2.5 rounded-full border border-white/10 text-on-surface-variant hover:bg-white/5 hover:text-white font-bold flex items-center justify-center gap-1.5 transition-all active:scale-[0.99] cursor-pointer text-xs">
                       <span className="material-symbols-outlined text-[16px]">lock_reset</span>
                       Change Password
+                    </button>
+                    <button
+                      onClick={logout}
+                      className="w-full py-2.5 rounded-full border border-red-500/20 bg-red-500/10 hover:bg-red-500 hover:text-white text-red-400 font-bold flex items-center justify-center gap-1.5 transition-all active:scale-[0.99] cursor-pointer text-xs"
+                    >
+                      <span className="material-symbols-outlined text-[16px]">logout</span>
+                      Log Out
                     </button>
                   </>
                 )}
