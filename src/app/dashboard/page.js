@@ -248,6 +248,10 @@ export default function DashboardPage() {
                           className={`w-9 h-9 rounded-full object-cover border ${isActive ? "border-white/20" : "border-white/10"}`}
                           alt={chat.name}
                           src={chat.avatar}
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = "https://lh3.googleusercontent.com/aida-public/AB6AXuCrQcF8dQPorLSDZ4Rd1sli_xw8cyVmzXJ-0WVavbWWmVasHbiE1InjgGpFJ2ulQgzGd4jUPk-9tobCI4JlXzfiN-Y1mws5XYx3NeywpFbIii-mOafHKwBhSzQE7UEYzlAwc_h1UKzjXQQK1baB1hvtRIZpcHusTy2ZplWy7GUZEBqiNzAbEmWItZlhbR0MYIa3W7-cCJl-CJKdX3GaDUAGcB2mZ-RK2nekLQ5VrFJfFR6IDejct2fsPA";
+                          }}
                         />
                       ) : (
                         <div
@@ -327,6 +331,10 @@ export default function DashboardPage() {
                           className="w-9 h-9 rounded-full object-cover border border-white/10"
                           alt={activeChat.name}
                           src={activeChat.avatar}
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = "https://lh3.googleusercontent.com/aida-public/AB6AXuCrQcF8dQPorLSDZ4Rd1sli_xw8cyVmzXJ-0WVavbWWmVasHbiE1InjgGpFJ2ulQgzGd4jUPk-9tobCI4JlXzfiN-Y1mws5XYx3NeywpFbIii-mOafHKwBhSzQE7UEYzlAwc_h1UKzjXQQK1baB1hvtRIZpcHusTy2ZplWy7GUZEBqiNzAbEmWItZlhbR0MYIa3W7-cCJl-CJKdX3GaDUAGcB2mZ-RK2nekLQ5VrFJfFR6IDejct2fsPA";
+                          }}
                         />
                       ) : (
                         <div className={`w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold border border-white/10 ${
@@ -397,8 +405,6 @@ export default function DashboardPage() {
                   </span>
                 </div>
 
-                <div className="flex-grow" />
-
                 {messages.map((msg, index) => {
                   const isMe =
                     msg.isOwn ||
@@ -423,6 +429,10 @@ export default function DashboardPage() {
                           className="w-7 h-7 rounded-full object-cover border border-white/10 flex-shrink-0"
                           alt={senderName}
                           src={activeChat.type === "group" ? (senderAvatar || activeChat.avatar) : activeChat.avatar}
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = "https://lh3.googleusercontent.com/aida-public/AB6AXuCrQcF8dQPorLSDZ4Rd1sli_xw8cyVmzXJ-0WVavbWWmVasHbiE1InjgGpFJ2ulQgzGd4jUPk-9tobCI4JlXzfiN-Y1mws5XYx3NeywpFbIii-mOafHKwBhSzQE7UEYzlAwc_h1UKzjXQQK1baB1hvtRIZpcHusTy2ZplWy7GUZEBqiNzAbEmWItZlhbR0MYIa3W7-cCJl-CJKdX3GaDUAGcB2mZ-RK2nekLQ5VrFJfFR6IDejct2fsPA";
+                          }}
                         />
                       )}
                       {!isMe && !(senderAvatar || activeChat.avatar) && (
@@ -578,7 +588,15 @@ export default function DashboardPage() {
           <div className="bg-surface-container border border-white/10 rounded-3xl p-8 w-80 text-center shadow-2xl">
             <div className="w-20 h-20 rounded-full bg-primary/20 border-2 border-primary/40 flex items-center justify-center mx-auto mb-4 animate-pulse">
               {callState.fromAvatar ? (
-                <img src={callState.fromAvatar} className="w-full h-full rounded-full object-cover" alt="caller" />
+                <img
+                  src={callState.fromAvatar}
+                  className="w-full h-full rounded-full object-cover"
+                  alt="caller"
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = "https://lh3.googleusercontent.com/aida-public/AB6AXuCrQcF8dQPorLSDZ4Rd1sli_xw8cyVmzXJ-0WVavbWWmVasHbiE1InjgGpFJ2ulQgzGd4jUPk-9tobCI4JlXzfiN-Y1mws5XYx3NeywpFbIii-mOafHKwBhSzQE7UEYzlAwc_h1UKzjXQQK1baB1hvtRIZpcHusTy2ZplWy7GUZEBqiNzAbEmWItZlhbR0MYIa3W7-cCJl-CJKdX3GaDUAGcB2mZ-RK2nekLQ5VrFJfFR6IDejct2fsPA";
+                  }}
+                />
               ) : (
                 <span className="material-symbols-outlined text-[40px] text-primary">person</span>
               )}
@@ -726,7 +744,15 @@ export default function DashboardPage() {
                       className="flex items-center gap-3 p-2 rounded-xl hover:bg-white/5 border border-transparent hover:border-white/5 cursor-pointer transition-all"
                     >
                       {friend.avatar ? (
-                        <img className="w-8 h-8 rounded-full object-cover border border-white/10" alt={friend.name} src={friend.avatar} />
+                        <img
+                          className="w-8 h-8 rounded-full object-cover border border-white/10"
+                          alt={friend.name}
+                          src={friend.avatar}
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = "https://lh3.googleusercontent.com/aida-public/AB6AXuCrQcF8dQPorLSDZ4Rd1sli_xw8cyVmzXJ-0WVavbWWmVasHbiE1InjgGpFJ2ulQgzGd4jUPk-9tobCI4JlXzfiN-Y1mws5XYx3NeywpFbIii-mOafHKwBhSzQE7UEYzlAwc_h1UKzjXQQK1baB1hvtRIZpcHusTy2ZplWy7GUZEBqiNzAbEmWItZlhbR0MYIa3W7-cCJl-CJKdX3GaDUAGcB2mZ-RK2nekLQ5VrFJfFR6IDejct2fsPA";
+                          }}
+                        />
                       ) : (
                         <div className="w-8 h-8 rounded-full bg-primary-container/30 flex items-center justify-center text-primary text-xs font-bold border border-white/10">
                           {getInitials(friend.name)}
@@ -801,7 +827,15 @@ export default function DashboardPage() {
                         }`}
                       >
                         {friend.avatar ? (
-                          <img className="w-7 h-7 rounded-full object-cover border border-white/10" alt={friend.name} src={friend.avatar} />
+                          <img
+                            className="w-7 h-7 rounded-full object-cover border border-white/10"
+                            alt={friend.name}
+                            src={friend.avatar}
+                            onError={(e) => {
+                              e.target.onerror = null;
+                              e.target.src = "https://lh3.googleusercontent.com/aida-public/AB6AXuCrQcF8dQPorLSDZ4Rd1sli_xw8cyVmzXJ-0WVavbWWmVasHbiE1InjgGpFJ2ulQgzGd4jUPk-9tobCI4JlXzfiN-Y1mws5XYx3NeywpFbIii-mOafHKwBhSzQE7UEYzlAwc_h1UKzjXQQK1baB1hvtRIZpcHusTy2ZplWy7GUZEBqiNzAbEmWItZlhbR0MYIa3W7-cCJl-CJKdX3GaDUAGcB2mZ-RK2nekLQ5VrFJfFR6IDejct2fsPA";
+                            }}
+                          />
                         ) : (
                           <div className="w-7 h-7 rounded-full bg-primary-container/30 flex items-center justify-center text-primary text-[9px] font-bold border border-white/10">
                             {getInitials(friend.name)}
