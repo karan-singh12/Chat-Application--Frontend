@@ -436,11 +436,13 @@ export default function DashboardPage() {
                           <p className="text-[10px] font-semibold text-primary ml-1 mb-0.5">{senderName}</p>
                         )}
                         <div
-                          className={`px-3.5 py-2.5 rounded-[16px] relative text-xs break-all whitespace-pre-wrap leading-relaxed ${
+                          className={`px-3.5 py-2.5 rounded-[16px] relative text-xs break-all whitespace-pre-wrap leading-relaxed transition-all duration-200 ${
                             isMe
-                              ? "bg-primary text-white rounded-br-sm shadow-sm"
+                              ? msg.isFailed
+                                ? "bg-red-500/20 border border-red-500/30 text-red-200 rounded-br-sm"
+                                : "bg-primary text-white rounded-br-sm shadow-sm"
                               : "bg-surface-variant text-on-surface rounded-bl-sm border border-white/5"
-                          }`}
+                          } ${msg.isSending ? "opacity-60 scale-[0.98] select-none pointer-events-none" : ""}`}
                         >
                           <p className="break-all whitespace-pre-wrap">{msg.content || msg.text}</p>
                         </div>
@@ -451,6 +453,21 @@ export default function DashboardPage() {
                               : msg.time || ""}
                           </span>
                           {isMe && (() => {
+                            if (msg.isSending) {
+                              return (
+                                <span className="material-symbols-outlined text-[10px] text-on-surface-variant/40 animate-spin" title="Sending...">
+                                  progress_activity
+                                </span>
+                              );
+                            }
+                            if (msg.isFailed) {
+                              return (
+                                <span className="material-symbols-outlined text-[12px] text-red-400 font-bold" title="Failed to send">
+                                  error
+                                </span>
+                              );
+                            }
+
                             const isRead = msg.reads && msg.reads.some((r) => r.userId !== user?.id);
                             const isDelivered = msg.deliveries && msg.deliveries.some((d) => d.userId !== user?.id);
 

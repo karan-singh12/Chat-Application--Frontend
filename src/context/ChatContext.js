@@ -9,6 +9,7 @@ import React, {
   useCallback,
 } from "react";
 import { io } from "socket.io-client";
+import { usePathname } from "next/navigation";
 import { useAuth } from "./AuthContext";
 import { chatService } from "@/services/chatService";
 import { SOCKET_URL } from "@/config/api";
@@ -119,6 +120,11 @@ export function ChatProvider({ children }) {
     activeChatRef.current = activeChat;
   }, [activeChat]);
 
+  const chatsRef = useRef(chats);
+  useEffect(() => {
+    chatsRef.current = chats;
+  }, [chats]);
+
   const peerConnectionRef = useRef(null);
   const localStreamRef = useRef(null);
   const remoteStreamRef = useRef(null);
@@ -134,6 +140,20 @@ export function ChatProvider({ children }) {
         (a, b) => new Date(b.lastMessageAt) - new Date(a.lastMessageAt)
       );
       setChats(all);
+
+      // Join rooms for all chats to receive real-time updates for them
+      if (socketRef.current?.connected) {
+        all.forEach((chat) => {
+          if (chat.type === "dm") {
+            socketRef.current.emit("joinConversation", {
+              conversationId: chat.conversationId,
+            });
+          } else {
+            socketRef.current.emit("joinGroup", { groupId: chat.groupId });
+          }
+        });
+      }
+
       return all;
     } catch (err) {
       console.error("Failed to load chats:", err);
@@ -151,14 +171,10 @@ export function ChatProvider({ children }) {
       }
       setMessages((prev) => ({ ...prev, [chat.id]: msgs }));
 
-      // Send read and delivery receipts for incoming messages
+      // Send delivery receipts for incoming messages
       if (socketRef.current?.connected && msgs.length > 0) {
         msgs.forEach((msg) => {
           if (msg.senderId !== user?.id) {
-            const alreadyRead = msg.reads?.some((r) => r.userId === user?.id);
-            if (!alreadyRead) {
-              socketRef.current.emit("messageRead", { messageId: msg.id });
-            }
             const alreadyDelivered = msg.deliveries?.some((d) => d.userId === user?.id);
             if (!alreadyDelivered) {
               socketRef.current.emit("messageDelivered", { messageId: msg.id });
@@ -225,6 +241,19 @@ export function ChatProvider({ children }) {
 
     socket.on("connect", () => {
       console.log("[WS] Connected:", socket.id);
+
+      // Join all conversation rooms on reconnect
+      const currentChats = chatsRef.current || [];
+      currentChats.forEach((chat) => {
+        if (chat.type === "dm") {
+          socket.emit("joinConversation", {
+            conversationId: chat.conversationId,
+          });
+        } else {
+          socket.emit("joinGroup", { groupId: chat.groupId });
+        }
+      });
+
       const currentActive = activeChatRef.current;
       if (currentActive) {
         if (currentActive.type === "dm") {
@@ -253,28 +282,57 @@ export function ChatProvider({ children }) {
       const roomId = msg.conversationId
         ? `conv_${msg.conversationId}`
         : `group_${msg.groupId}`;
+
+      // Check if room exists in our chats list
+      const currentChats = chatsRef.current || [];
+      const chatExists = currentChats.some((c) => c.id === roomId);
+      if (!chatExists) {
+        // Conversation is not in our sidebar, reload all chats in real-time
+        loadChats();
+      }
+
+      let clientMsgId = null;
+      if (msg.metadata) {
+        if (typeof msg.metadata === "string") {
+          try {
+            const parsed = JSON.parse(msg.metadata);
+            clientMsgId = parsed?.clientMsgId;
+          } catch (e) {}
+        } else if (typeof msg.metadata === "object") {
+          clientMsgId = msg.metadata.clientMsgId;
+        }
+      }
+
       setMessages((prev) => {
         const existing = prev[roomId] || [];
         if (existing.find((m) => m.id === msg.id)) return prev;
+
+        if (clientMsgId) {
+          const optIdx = existing.findIndex(
+            (m) => m.id === clientMsgId || m.metadata?.clientMsgId === clientMsgId
+          );
+          if (optIdx !== -1) {
+            const nextList = [...existing];
+            nextList[optIdx] = msg;
+            return { ...prev, [roomId]: nextList };
+          }
+        }
+
         return { ...prev, [roomId]: [...existing, msg] };
       });
-      setChats((prev) =>
-        prev.map((c) =>
+
+      setChats((prev) => {
+        const nextChats = prev.map((c) =>
           c.id === roomId
             ? { ...c, lastMessage: msg.content, lastMessageAt: msg.sentAt }
             : c
-        )
-      );
+        );
+        return [...nextChats].sort((a, b) => new Date(b.lastMessageAt) - new Date(a.lastMessageAt));
+      });
 
-      // Send read and delivery receipts for incoming messages in real-time
+      // Send delivery receipts for incoming messages in real-time
       if (msg.senderId !== user?.id) {
-        const currentActive = activeChatRef.current;
-        if (currentActive && currentActive.id === roomId) {
-          socket.emit("messageDelivered", { messageId: msg.id });
-          socket.emit("messageRead", { messageId: msg.id });
-        } else {
-          socket.emit("messageDelivered", { messageId: msg.id });
-        }
+        socket.emit("messageDelivered", { messageId: msg.id });
       }
     });
 
@@ -426,21 +484,39 @@ export function ChatProvider({ children }) {
     }
   }, [activeChat, socketRef.current?.connected]);
 
+  // Track page path and send read receipts only when active on dashboard
+  const pathname = usePathname();
+  const pathnameRef = useRef(pathname);
+  useEffect(() => {
+    pathnameRef.current = pathname;
+  }, [pathname]);
+
+  useEffect(() => {
+    if (pathname === "/dashboard" && activeChat && socketRef.current?.connected && user?.id) {
+      const activeRoomId = activeChat.id;
+      const msgs = messages[activeRoomId] || [];
+      msgs.forEach((msg) => {
+        if (msg.senderId !== user?.id) {
+          const alreadyRead = msg.reads?.some((r) => r.userId === user?.id);
+          if (!alreadyRead) {
+            socketRef.current.emit("messageRead", { messageId: msg.id });
+          }
+        }
+      });
+    }
+  }, [pathname, activeChat, messages, user, socketRef.current?.connected]);
+
   const selectChat = useCallback(
     async (chat) => {
       setActiveChatState(chat);
       if (!messages[chat.id]) {
         await loadMessages(chat);
       } else {
-        // If messages are already in state, send read/delivery receipts if needed
+        // If messages are already in state, send delivery receipts if needed
         const msgs = messages[chat.id] || [];
         if (socketRef.current?.connected && msgs.length > 0) {
           msgs.forEach((msg) => {
             if (msg.senderId !== user?.id) {
-              const alreadyRead = msg.reads?.some((r) => r.userId === user?.id);
-              if (!alreadyRead) {
-                socketRef.current.emit("messageRead", { messageId: msg.id });
-              }
               const alreadyDelivered = msg.deliveries?.some((d) => d.userId === user?.id);
               if (!alreadyDelivered) {
                 socketRef.current.emit("messageDelivered", { messageId: msg.id });
@@ -533,19 +609,76 @@ export function ChatProvider({ children }) {
   const sendMessage = useCallback(
     async (content) => {
       if (!activeChat || !content.trim() || !socketRef.current?.connected) return;
+
+      const roomId = activeChat.id;
+      const tempId = `temp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      const sentTime = new Date().toISOString();
+
+      // Create optimistic message
+      const tempMsg = {
+        id: tempId,
+        senderId: user?.id,
+        content,
+        sentAt: sentTime,
+        sender: {
+          id: user?.id,
+          username: user?.username || user?.email?.split("@")[0] || "Me",
+          email: user?.email,
+          avatar: user?.avatar,
+        },
+        reads: [],
+        deliveries: [],
+        reactions: [],
+        isSending: true,
+        metadata: { clientMsgId: tempId },
+      };
+
+      // Immediately append message locally
+      setMessages((prev) => {
+        const existing = prev[roomId] || [];
+        if (existing.some((m) => m.id === tempId)) return prev;
+        return { ...prev, [roomId]: [...existing, tempMsg] };
+      });
+
+      // Update sidebar chat optimistically
+      setChats((prev) => {
+        const nextChats = prev.map((c) =>
+          c.id === roomId
+            ? { ...c, lastMessage: content, lastMessageAt: sentTime }
+            : c
+        );
+        return [...nextChats].sort((a, b) => new Date(b.lastMessageAt) - new Date(a.lastMessageAt));
+      });
+
+      // Timeout helper to mark as failed if not confirmed in 8s
+      setTimeout(() => {
+        setMessages((prev) => {
+          const existing = prev[roomId] || [];
+          const idx = existing.findIndex((m) => m.id === tempId);
+          if (idx !== -1 && existing[idx].isSending) {
+            const nextList = [...existing];
+            nextList[idx] = { ...nextList[idx], isSending: false, isFailed: true };
+            return { ...prev, [roomId]: nextList };
+          }
+          return prev;
+        });
+      }, 8000);
+
+      // Socket payload with metadata clientMsgId
+      const payload = {
+        content,
+        metadata: { clientMsgId: tempId },
+      };
+
       if (activeChat.type === "dm") {
-        socketRef.current.emit("sendMessage", {
-          conversationId: activeChat.conversationId,
-          content,
-        });
+        payload.conversationId = activeChat.conversationId;
       } else {
-        socketRef.current.emit("sendMessage", {
-          groupId: activeChat.groupId,
-          content,
-        });
+        payload.groupId = activeChat.groupId;
       }
+
+      socketRef.current.emit("sendMessage", payload);
     },
-    [activeChat]
+    [activeChat, user]
   );
 
   const sendTyping = useCallback(
@@ -746,6 +879,24 @@ export function ChatProvider({ children }) {
     endCallCleanup();
   }, [callState, endCallCleanup]);
 
+  // Handle calling ringtones
+  useEffect(() => {
+    const ringtone = getRingtone();
+    if (!ringtone) return;
+
+    if (callState?.type === "outgoing") {
+      ringtone.startOutgoing();
+    } else if (callState?.type === "incoming") {
+      ringtone.startIncoming();
+    } else {
+      ringtone.stop();
+    }
+
+    return () => {
+      ringtone.stop();
+    };
+  }, [callState?.type]);
+
   return (
     <ChatContext.Provider
       value={{
@@ -768,6 +919,7 @@ export function ChatProvider({ children }) {
         acceptCall,
         rejectCall,
         endCall,
+        socket: socketRef.current,
       }}
     >
       {children}
@@ -778,3 +930,137 @@ export function ChatProvider({ children }) {
 export function useChat() {
   return useContext(ChatContext);
 }
+
+class Ringtone {
+  constructor() {
+    this.audioCtx = null;
+    this.intervalId = null;
+    this.activeOscillators = [];
+  }
+
+  startOutgoing() {
+    this.stop();
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtx) return;
+    try {
+      this.audioCtx = new AudioCtx();
+      const gainNode = this.audioCtx.createGain();
+      gainNode.gain.setValueAtTime(0, this.audioCtx.currentTime);
+      gainNode.connect(this.audioCtx.destination);
+
+      const playCycle = () => {
+        if (!this.audioCtx) return;
+        const now = this.audioCtx.currentTime;
+        const osc1 = this.audioCtx.createOscillator();
+        const osc2 = this.audioCtx.createOscillator();
+        osc1.frequency.value = 440;
+        osc2.frequency.value = 480;
+
+        osc1.connect(gainNode);
+        osc2.connect(gainNode);
+
+        osc1.start(now);
+        osc2.start(now);
+
+        // Fade-in/out the ring
+        gainNode.gain.setValueAtTime(0, now);
+        gainNode.gain.linearRampToValueAtTime(0.15, now + 0.1);
+        gainNode.gain.setValueAtTime(0.15, now + 1.4);
+        gainNode.gain.linearRampToValueAtTime(0, now + 1.5);
+
+        this.activeOscillators.push(osc1, osc2);
+
+        setTimeout(() => {
+          try {
+            osc1.stop();
+            osc2.stop();
+          } catch (e) {}
+          this.activeOscillators = this.activeOscillators.filter(o => o !== osc1 && o !== osc2);
+        }, 2000);
+      };
+
+      playCycle();
+      this.intervalId = setInterval(playCycle, 4000);
+    } catch (err) {
+      console.warn("Failed to play outgoing ringtone:", err);
+    }
+  }
+
+  startIncoming() {
+    this.stop();
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtx) return;
+    try {
+      this.audioCtx = new AudioCtx();
+      const gainNode = this.audioCtx.createGain();
+      gainNode.gain.setValueAtTime(0.1, this.audioCtx.currentTime);
+      gainNode.connect(this.audioCtx.destination);
+
+      const playCycle = () => {
+        if (!this.audioCtx) return;
+        const now = this.audioCtx.currentTime;
+        // Melodious sequence: C5 (523Hz), E5 (659Hz), G5 (784Hz), C6 (1047Hz)
+        const melody = [523.25, 659.25, 783.99, 1046.50];
+        
+        melody.forEach((freq, idx) => {
+          if (!this.audioCtx) return;
+          const osc = this.audioCtx.createOscillator();
+          osc.type = "sine";
+          osc.frequency.value = freq;
+
+          const noteGain = this.audioCtx.createGain();
+          noteGain.gain.setValueAtTime(0, now + idx * 0.15);
+          noteGain.gain.linearRampToValueAtTime(0.1, now + idx * 0.15 + 0.02);
+          noteGain.gain.setValueAtTime(0.1, now + idx * 0.15 + 0.12);
+          noteGain.gain.linearRampToValueAtTime(0, now + idx * 0.15 + 0.14);
+
+          osc.connect(noteGain);
+          noteGain.connect(gainNode);
+
+          osc.start(now + idx * 0.15);
+          osc.stop(now + idx * 0.15 + 0.2);
+          this.activeOscillators.push(osc);
+
+          setTimeout(() => {
+            this.activeOscillators = this.activeOscillators.filter(o => o !== osc);
+          }, 500);
+        });
+      };
+
+      playCycle();
+      this.intervalId = setInterval(playCycle, 1500);
+    } catch (err) {
+      console.warn("Failed to play incoming ringtone:", err);
+    }
+  }
+
+  stop() {
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+      this.intervalId = null;
+    }
+    this.activeOscillators.forEach((osc) => {
+      try {
+        osc.stop();
+      } catch (e) {}
+    });
+    this.activeOscillators = [];
+    if (this.audioCtx) {
+      try {
+        if (this.audioCtx.state !== "closed") {
+          this.audioCtx.close();
+        }
+      } catch (e) {}
+      this.audioCtx = null;
+    }
+  }
+}
+
+let ringtoneInstance = null;
+const getRingtone = () => {
+  if (typeof window === "undefined") return null;
+  if (!ringtoneInstance) {
+    ringtoneInstance = new Ringtone();
+  }
+  return ringtoneInstance;
+};

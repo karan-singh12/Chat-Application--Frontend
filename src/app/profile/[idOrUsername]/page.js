@@ -13,7 +13,7 @@ export default function PublicProfilePage({ params: paramsPromise }) {
   const idOrUsername = params?.idOrUsername;
 
   const { user: currentUser, setUser } = useAuth();
-  const { chats, selectChat, getOrCreateChat } = useChat();
+  const { chats, selectChat, getOrCreateChat, socket } = useChat();
   const router = useRouter();
 
   const [profileUser, setProfileUser] = useState(null);
@@ -139,6 +139,23 @@ export default function PublicProfilePage({ params: paramsPromise }) {
       const res = await authService.sendFriendRequest(profileUser.username);
       if (res.success) {
         alert(res.message || "Friend request sent!");
+
+        // Emit real-time friend request socket event
+        if (socket?.connected && res.data?.friendship) {
+          socket.emit("friendRequest", {
+            targetUserId: profileUser.id,
+            request: {
+              id: res.data.friendship.id,
+              createdAt: res.data.friendship.createdAt,
+              sender: {
+                id: currentUser.id,
+                username: currentUser.username,
+                email: currentUser.email,
+                avatar: currentUser.avatar,
+              },
+            },
+          });
+        }
       } else {
         alert(res.message || "Failed to send request");
       }

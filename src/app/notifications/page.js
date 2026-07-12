@@ -1,96 +1,128 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import Sidebar from "@/components/Sidebar";
+import { useChat } from "@/context/ChatContext";
+import { useAuth } from "@/context/AuthContext";
+import { authService } from "@/services/authService";
 
 export default function NotificationsPage() {
+  const { socket } = useChat();
+  const { user } = useAuth();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("all"); // "all", "unread", "mentions", "system"
-  
-  // Mock notifications feed data
-  const [notifications, setNotifications] = useState([
-    {
-      id: 1,
-      type: "mention",
-      user: {
-        name: "Elena Vance",
-        avatar: "https://lh3.googleusercontent.com/aida-public/AB6AXuCrQcF8dQPorLSDZ4Rd1sli_xw8cyVmzXJ-0WVavbWWmVasHbiE1InjgGpFJ2ulQgzGd4jUPk-9tobCI4JlXzfiN-Y1mws5XYx3NeywpFbIii-mOafHKwBhSzQE7UEYzlAwc_h1UKzjXQQK1baB1hvtRIZpcHusTy2ZplWy7GUZEBqiNzAbEmWItZlhbR0MYIa3W7-cCJl-CJKdX3GaDUAGcB2mZ-RK2nekLQ5VrFJfFR6IDejct2fsPA",
-      },
-      text: "mentioned you in #general: \"Let's review the new latency metrics with @Alex.\"",
-      time: "5m ago",
-      unread: true,
-      category: "mentions",
-      icon: "alternate_email",
-      iconColor: "text-primary bg-primary/10",
-    },
-    {
-      id: 2,
-      type: "friend_request",
-      user: {
-        name: "Gordon Freeman",
-        avatar: "https://lh3.googleusercontent.com/aida-public/AB6AXuAo-GoCmY4YVJkgfyAVHi867mtHqonm5Lig1_KNiQUJ0u-hdcYX7lkpLDIaBJhSVnt1B1IKypQSXJcabVF4YG87w7fI3aKLmnheM92K-87ucHdpe00fN04M9zlhdBnSIj42G0MtzL761gkdZ8oxZpVmwbY8WQx_OXwGMGLLwzaQHpDEovdchJ5RODKILWgrYZQYqe37M03q4SKpAK4y2cVPyW8zZ6_uWC2Z2870Qqop3oioXZRecEzJGQ",
-      },
-      text: "sent you a friend request",
-      time: "24m ago",
-      unread: true,
-      category: "requests",
-      actionable: true,
-      status: "pending", // "pending", "accepted", "declined"
-      icon: "person_add",
-      iconColor: "text-primary bg-primary/10",
-    },
-    {
-      id: 3,
-      type: "reaction",
-      user: {
-        name: "Barney Calhoun",
-        avatar: "https://lh3.googleusercontent.com/aida-public/AB6AXuCrQcF8dQPorLSDZ4Rd1sli_xw8cyVmzXJ-0WVavbWWmVasHbiE1InjgGpFJ2ulQgzGd4jUPk-9tobCI4JlXzfiN-Y1mws5XYx3NeywpFbIii-mOafHKwBhSzQE7UEYzlAwc_h1UKzjXQQK1baB1hvtRIZpcHusTy2ZplWy7GUZEBqiNzAbEmWItZlhbR0MYIa3W7-cCJl-CJKdX3GaDUAGcB2mZ-RK2nekLQ5VrFJfFR6IDejct2fsPA",
-      },
-      text: "reacted 🔥 to your message: \"Latency down to 2.4ms!\"",
-      time: "2h ago",
-      unread: false,
-      category: "activity",
-      icon: "local_fire_department",
-      iconColor: "text-amber-400 bg-amber-500/10",
-    },
-    {
-      id: 4,
-      type: "system",
-      system: true,
-      text: "Server Maintenance Scheduled: Frontend nodes will undergo optimization on July 12, 02:00 UTC (Estimated downtime: 15 mins).",
-      time: "5h ago",
-      unread: true,
-      category: "system",
-      icon: "dns",
-      iconColor: "text-rose-400 bg-rose-500/10",
-    },
-    {
-      id: 5,
-      type: "friend_accept",
-      user: {
-        name: "Alyx Vance",
-        avatar: "https://lh3.googleusercontent.com/aida-public/AB6AXuCrQcF8dQPorLSDZ4Rd1sli_xw8cyVmzXJ-0WVavbWWmVasHbiE1InjgGpFJ2ulQgzGd4jUPk-9tobCI4JlXzfiN-Y1mws5XYx3NeywpFbIii-mOafHKwBhSzQE7UEYzlAwc_h1UKzjXQQK1baB1hvtRIZpcHusTy2ZplWy7GUZEBqiNzAbEmWItZlhbR0MYIa3W7-cCJl-CJKdX3GaDUAGcB2mZ-RK2nekLQ5VrFJfFR6IDejct2fsPA",
-      },
-      text: "accepted your connection request. Say hello!",
-      time: "Yesterday",
-      unread: false,
-      category: "activity",
-      icon: "handshake",
-      iconColor: "text-emerald-400 bg-emerald-500/10",
-    },
-    {
-      id: 6,
-      type: "security",
-      system: true,
-      text: "New device login detected: Chrome on MacBook Pro (San Francisco, USA) connected to your account.",
-      time: "2 days ago",
-      unread: false,
-      category: "system",
-      icon: "security",
-      iconColor: "text-cyan-400 bg-cyan-500/10",
+  const [notifications, setNotifications] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const formatTime = (dateStr) => {
+    if (!dateStr) return "";
+    const d = new Date(dateStr);
+    const now = new Date();
+    const diff = now - d;
+    if (diff < 60000) return "Just now";
+    if (diff < 3600000) return `${Math.floor(diff / 60000)}m ago`;
+    if (diff < 86400000) return `${Math.floor(diff / 3600000)}h ago`;
+    if (diff < 604800000) return `${Math.floor(diff / 86400000)}d ago`;
+    return d.toLocaleDateString();
+  };
+
+  const loadNotifications = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const res = await authService.getFriendRequests("received");
+      if (res.success && res.data) {
+        // Map pending friend requests
+        const reqs = res.data.map((item) => ({
+          id: item.id, // Friendship ID
+          type: "friend_request",
+          user: {
+            name: item.sender.username || item.sender.email.split("@")[0],
+            avatar: item.sender.avatar || null,
+          },
+          text: "sent you a friend request",
+          time: formatTime(item.createdAt),
+          unread: true,
+          category: "requests",
+          actionable: true,
+          status: "pending",
+          icon: "person_add",
+          iconColor: "text-primary bg-primary/10",
+        }));
+
+        // Mock system alerts
+        const systemMocks = [
+          {
+            id: "system_1",
+            type: "system",
+            system: true,
+            text: "Server Maintenance Scheduled: Frontend nodes will undergo optimization on July 12, 02:00 UTC (Estimated downtime: 15 mins).",
+            time: "5h ago",
+            unread: true,
+            category: "system",
+            icon: "dns",
+            iconColor: "text-rose-400 bg-rose-500/10",
+          },
+          {
+            id: "system_2",
+            type: "security",
+            system: true,
+            text: "New device login detected: Chrome on MacBook Pro (San Francisco, USA) connected to your account.",
+            time: "2 days ago",
+            unread: false,
+            category: "system",
+            icon: "security",
+            iconColor: "text-cyan-400 bg-cyan-500/10",
+          }
+        ];
+
+        setNotifications([...reqs, ...systemMocks]);
+      }
+    } catch (err) {
+      console.error("Error loading notifications:", err);
+    } finally {
+      setIsLoading(false);
     }
-  ]);
+  }, []);
+
+  useEffect(() => {
+    loadNotifications();
+  }, [loadNotifications]);
+
+  // Socket listener for real-time incoming requests
+  useEffect(() => {
+    if (!socket) return;
+
+    const handleIncomingRequest = (request) => {
+      // Avoid duplicate rendering
+      setNotifications((prev) => {
+        if (prev.some((n) => n.id === request.id)) return prev;
+
+        const newNotif = {
+          id: request.id,
+          type: "friend_request",
+          user: {
+            name: request.sender.username || request.sender.email.split("@")[0],
+            avatar: request.sender.avatar || null,
+          },
+          text: "sent you a friend request",
+          time: "Just now",
+          unread: true,
+          category: "requests",
+          actionable: true,
+          status: "pending",
+          icon: "person_add",
+          iconColor: "text-primary bg-primary/10",
+        };
+        return [newNotif, ...prev];
+      });
+    };
+
+    socket.on("friendRequest", handleIncomingRequest);
+    return () => {
+      socket.off("friendRequest", handleIncomingRequest);
+    };
+  }, [socket]);
 
   const handleMarkAllRead = () => {
     setNotifications(
@@ -108,20 +140,32 @@ export default function NotificationsPage() {
     );
   };
 
-  const handleRequestAction = (id, action) => {
-    setNotifications(
-      notifications.map((n) =>
-        n.id === id
-          ? {
-              ...n,
-              status: action,
-              actionable: false,
-              text: action === "accepted" ? "accepted friend request" : "declined friend request",
-              unread: false,
-            }
-          : n
-      )
-    );
+  const handleRequestAction = async (id, action) => {
+    try {
+      const statusMap = {
+        accepted: "ACCEPTED",
+        declined: "REJECTED"
+      };
+      
+      const res = await authService.respondToFriendRequest(id, statusMap[action]);
+      if (res.success) {
+        setNotifications((prev) =>
+          prev.map((n) =>
+            n.id === id
+              ? {
+                  ...n,
+                  status: action,
+                  actionable: false,
+                  text: action === "accepted" ? "accepted friend request" : "declined friend request",
+                  unread: false,
+                }
+              : n
+          )
+        );
+      }
+    } catch (e) {
+      console.error("Failed to respond to request:", e);
+    }
   };
 
   // Filter logic
@@ -206,7 +250,11 @@ export default function NotificationsPage() {
 
           {/* Notifications Feed Cards */}
           <div className="space-y-2">
-            {filteredNotifications.length > 0 ? (
+            {isLoading ? (
+              <div className="flex justify-center items-center py-20">
+                <div className="w-8 h-8 rounded-full border-2 border-primary/20 border-t-primary animate-spin" />
+              </div>
+            ) : filteredNotifications.length > 0 ? (
               filteredNotifications.map((notif) => (
                 <div
                   key={notif.id}

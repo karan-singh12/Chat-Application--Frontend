@@ -10,7 +10,7 @@ import { authService } from "@/services/authService";
 
 export default function FriendsPage() {
   const router = useRouter();
-  const { chats, selectChat, getOrCreateChat } = useChat();
+  const { chats, selectChat, getOrCreateChat, socket } = useChat();
   const { user } = useAuth();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("list"); // "list", "requests", "sent"
@@ -142,6 +142,23 @@ export default function FriendsPage() {
           prev.map(s => s.id === suggestionId ? { ...s, added: true } : s)
         );
         fetchConnectionsData();
+
+        // Emit real-time friend request socket event
+        if (socket?.connected && res.data?.friendship) {
+          socket.emit("friendRequest", {
+            targetUserId: suggestionId,
+            request: {
+              id: res.data.friendship.id,
+              createdAt: res.data.friendship.createdAt,
+              sender: {
+                id: user.id,
+                username: user.username,
+                email: user.email,
+                avatar: user.avatar,
+              },
+            },
+          });
+        }
       } else {
         alert(res.message || "Failed to send friend request");
       }
@@ -197,6 +214,24 @@ export default function FriendsPage() {
           type: "success",
           message: res.message || `Connection request sent to "${newFriendInput}"!`,
         });
+
+        // Emit real-time friend request socket event
+        if (socket?.connected && res.data?.friendship && res.data?.friend) {
+          socket.emit("friendRequest", {
+            targetUserId: res.data.friend.id,
+            request: {
+              id: res.data.friendship.id,
+              createdAt: res.data.friendship.createdAt,
+              sender: {
+                id: user.id,
+                username: user.username,
+                email: user.email,
+                avatar: user.avatar,
+              },
+            },
+          });
+        }
+
         setTimeout(() => {
           setIsAddFriendOpen(false);
           setNewFriendInput("");
@@ -208,7 +243,7 @@ export default function FriendsPage() {
       }
     } catch (err) {
       console.error("Error sending request:", err);
-      setAddFriendStatus({ type: "error", message: err.message || "An error occurred." });
+      setAddFriendStatus({ type: "error", message: err.message || "Error sending request" });
     }
   };
 
