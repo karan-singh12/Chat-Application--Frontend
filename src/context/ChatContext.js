@@ -141,6 +141,17 @@ export function ChatProvider({ children }) {
       );
       setChats(all);
 
+      // Initialize onlineUsers Set with users who are already online in the loaded conversations
+      setOnlineUsers((prev) => {
+        const next = new Set(prev);
+        dms.forEach((chat) => {
+          if (chat.online) {
+            next.add(chat.otherId);
+          }
+        });
+        return next;
+      });
+
       // Join rooms for all chats to receive real-time updates for them
       if (socketRef.current?.connected) {
         all.forEach((chat) => {
@@ -264,6 +275,14 @@ export function ChatProvider({ children }) {
           socket.emit("joinGroup", { groupId: currentActive.groupId });
         }
       }
+    });
+
+    socket.on("initialOnlineUsers", (userIds) => {
+      setOnlineUsers((prev) => {
+        const next = new Set(prev);
+        userIds.forEach((id) => next.add(id));
+        return next;
+      });
     });
 
     socket.on("userOnline", ({ userId }) => {

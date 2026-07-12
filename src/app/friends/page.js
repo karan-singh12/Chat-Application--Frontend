@@ -10,7 +10,7 @@ import { authService } from "@/services/authService";
 
 export default function FriendsPage() {
   const router = useRouter();
-  const { chats, selectChat, getOrCreateChat, socket } = useChat();
+  const { chats, selectChat, getOrCreateChat, socket, onlineUsers } = useChat();
   const { user } = useAuth();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("list"); // "list", "requests", "sent"
@@ -385,7 +385,7 @@ export default function FriendsPage() {
                                 alt={friend.name}
                                 src={friend.avatar}
                               />
-                              <div className={`status-dot absolute bottom-0.5 right-0.5 status-${friend.status}`}></div>
+                              <div className={`status-dot absolute bottom-0.5 right-0.5 status-${onlineUsers.has(friend.userId) ? "online" : "offline"}`}></div>
                             </div>
                             <div>
                               <h4 className="font-bold text-xs text-white group-hover:text-primary transition-colors">
