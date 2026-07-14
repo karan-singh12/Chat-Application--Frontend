@@ -262,7 +262,7 @@ export default function LandingPage() {
                   N
                 </div>
                 <span className="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary transition-colors text-[18px]">
-                  feed
+                  home
                 </span>
                 <span className="material-symbols-outlined text-primary text-[18px]" style={{ fontVariationSettings: "'FILL' 1" }}>
                   chat

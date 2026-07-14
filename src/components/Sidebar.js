@@ -10,10 +10,10 @@ export default function Sidebar({ isOpen, onClose, hideMobileNav }) {
   const { logout, user } = useAuth();
 
   const menuItems = [
-    { name: "Feed", path: "/feed", icon: "feed" },
+    { name: "Feed", path: "/feed", icon: "home" },
     { name: "Chats", path: "/dashboard", icon: "chat" },
-    { name: "Search", path: "/friends", icon: "search" },
     { name: "Calls", path: "/calls", icon: "call" },
+    { name: "Search", path: "/friends", icon: "search" },
     { name: "Notifications", path: "/notifications", icon: "notifications" },
   ];
 
