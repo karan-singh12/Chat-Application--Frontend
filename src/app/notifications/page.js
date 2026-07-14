@@ -80,33 +80,7 @@ export default function NotificationsPage() {
           }));
       }
 
-      // Mock system alerts
-      const systemMocks = [
-        {
-          id: "system_1",
-          type: "system",
-          system: true,
-          text: "Server Maintenance Scheduled: Frontend nodes will undergo optimization on July 12, 02:00 UTC (Estimated downtime: 15 mins).",
-          time: "5h ago",
-          unread: true,
-          category: "system",
-          icon: "dns",
-          iconColor: "text-rose-400 bg-rose-500/10",
-        },
-        {
-          id: "system_2",
-          type: "security",
-          system: true,
-          text: "New device login detected: Chrome on MacBook Pro (San Francisco, USA) connected to your account.",
-          time: "2 days ago",
-          unread: false,
-          category: "system",
-          icon: "security",
-          iconColor: "text-cyan-400 bg-cyan-500/10",
-        }
-      ];
-
-      setNotifications([...reqs, ...acceptedNotifs, ...systemMocks]);
+      setNotifications([...reqs, ...acceptedNotifs]);
     } catch (err) {
       console.error("Error loading notifications:", err);
     } finally {
