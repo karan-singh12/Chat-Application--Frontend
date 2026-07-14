@@ -34,5 +34,22 @@ export const chatService = {
     const res = await apiClient.get(`/groups/${groupId}/messages`);
     return res.data?.messages || [];
   },
+
+  // ─── Call History ───────────────────────────────────────────────────────────
+
+  async getCallHistory() {
+    const res = await apiClient.get("/calls");
+    return res.data?.data || [];
+  },
+
+  async createCallLog(receiverId, status, video, duration) {
+    const res = await apiClient.post("/calls", { receiverId, status, video, duration });
+    return res.data?.data || null;
+  },
+
+  async clearCallHistory() {
+    const res = await apiClient.delete("/calls");
+    return res.data || null;
+  },
 };
 

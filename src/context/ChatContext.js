@@ -117,80 +117,25 @@ export function ChatProvider({ children }) {
   const [callHistory, setCallHistory] = useState([]);
   const activeCallLogRef = useRef(null);
 
-  const addCallLog = useCallback((log) => {
-    setCallHistory((prev) => {
-      const updated = [log, ...prev];
-      if (user?.id) {
-        localStorage.setItem(`nexus_call_history_${user.id}`, JSON.stringify(updated));
-      }
-      return updated;
-    });
-  }, [user]);
-
-  const updateCallLog = useCallback((updatedLog) => {
-    setCallHistory((prev) => {
-      const updated = prev.map((l) => (l.id === updatedLog.id ? updatedLog : l));
-      if (user?.id) {
-        localStorage.setItem(`nexus_call_history_${user.id}`, JSON.stringify(updated));
-      }
-      return updated;
-    });
-  }, [user]);
-
-  const clearCallHistory = useCallback(() => {
-    setCallHistory([]);
-    if (user?.id) {
-      localStorage.removeItem(`nexus_call_history_${user.id}`);
+  const clearCallHistory = useCallback(async () => {
+    try {
+      await chatService.clearCallHistory();
+      setCallHistory([]);
+    } catch (err) {
+      console.error("Failed to clear call history:", err);
     }
-  }, [user]);
+  }, []);
 
   useEffect(() => {
     if (user?.id) {
-      const saved = localStorage.getItem(`nexus_call_history_${user.id}`);
-      if (saved) {
-        try {
-          setCallHistory(JSON.parse(saved));
-        } catch (e) {
-          console.error(e);
+      chatService.getCallHistory()
+        .then((logs) => {
+          setCallHistory(logs);
+        })
+        .catch((err) => {
+          console.error("Failed to load call history:", err);
           setCallHistory([]);
-        }
-      } else {
-        // Pre-populate with realistic mock calls on first load so it's not just a blank screen
-        const defaultLogs = [
-          {
-            id: `mock-call-1-${user.id}`,
-            name: "Lauren Lambert",
-            avatar: "https://lh3.googleusercontent.com/aida-public/AB6AXuAo-GoCmY4YVJkgfyAVHi867mtHqonm5Lig1_KNiQUJ0u-hdcYX7lkpLDIaBJhSVnt1B1IKypQSXJcabVF4YG87w7fI3aKLmnheM92K-87ucHdpe00fN04M9zlhdBnSIj42G0MtzL761gkdZ8oxZpVmwbY8WQx_OXwGMGLLwzaQHpDEovdchJ5RODKILWgrYZQYqe37M03q4SKpAK4y2cVPyW8zZ6_uWC2Z2870Qqop3oioXZRecEzJGQ",
-            type: "incoming",
-            status: "completed",
-            timestamp: new Date(Date.now() - 3600000 * 2.5).toISOString(), // 2.5 hours ago
-            duration: 872, // 14m 32s
-            video: true,
-          },
-          {
-            id: `mock-call-2-${user.id}`,
-            name: "Alexander Wright",
-            avatar: "",
-            type: "outgoing",
-            status: "missed",
-            timestamp: new Date(Date.now() - 3600000 * 24).toISOString(), // 24 hours ago
-            duration: 0,
-            video: false,
-          },
-          {
-            id: `mock-call-3-${user.id}`,
-            name: "Sarah Jenkins",
-            avatar: "",
-            type: "incoming",
-            status: "completed",
-            timestamp: new Date(Date.now() - 3600000 * 48).toISOString(), // 2 days ago
-            duration: 1510, // 25m 10s
-            video: true,
-          }
-        ];
-        setCallHistory(defaultLogs);
-        localStorage.setItem(`nexus_call_history_${user.id}`, JSON.stringify(defaultLogs));
-      }
+        });
     } else {
       setCallHistory([]);
     }
@@ -308,7 +253,7 @@ export function ChatProvider({ children }) {
     init();
   }, [token, loadChats, loadMessages]);
 
-  const endCallCleanup = useCallback(() => {
+  const endCallCleanup = useCallback(async () => {
     if (peerConnectionRef.current) {
       peerConnectionRef.current.close();
       peerConnectionRef.current = null;
@@ -322,18 +267,27 @@ export function ChatProvider({ children }) {
 
     if (activeCallLogRef.current) {
       const log = activeCallLogRef.current;
+      let finalStatus = "missed";
+      let duration = 0;
       if (log.status === "connected" && log.startTime) {
-        log.status = "completed";
-        log.duration = Math.floor((Date.now() - log.startTime) / 1000);
-      } else {
-        log.status = "missed";
+        finalStatus = "completed";
+        duration = Math.floor((Date.now() - log.startTime) / 1000);
       }
-      updateCallLog(log);
+
+      try {
+        const isVideo = log.callType === "video" || !!log.video;
+        const savedLog = await chatService.createCallLog(log.userId, finalStatus, isVideo, duration);
+        if (savedLog) {
+          setCallHistory((prev) => [savedLog, ...prev]);
+        }
+      } catch (err) {
+        console.error("Failed to save call log to database:", err);
+      }
       activeCallLogRef.current = null;
     }
 
     setCallState(null);
-  }, [updateCallLog]);
+  }, []);
 
   useEffect(() => {
     if (!token || !user) return;
@@ -526,8 +480,7 @@ export function ChatProvider({ children }) {
           startTime: null
         };
         activeCallLogRef.current = newLog;
-        addCallLog(newLog);
-
+ 
         setCallState({
           type: "incoming",
           callType,
@@ -568,7 +521,6 @@ export function ChatProvider({ children }) {
       if (activeCallLogRef.current) {
         activeCallLogRef.current.status = "connected";
         activeCallLogRef.current.startTime = Date.now();
-        updateCallLog(activeCallLogRef.current);
       }
 
       setCallState((prev) => (prev ? { ...prev, type: "active" } : null));
@@ -920,8 +872,7 @@ export function ChatProvider({ children }) {
           startTime: null
         };
         activeCallLogRef.current = newLog;
-        addCallLog(newLog);
-
+ 
         socketRef.current?.emit("call_offer", { targetUserId, offer, callType: actualCallType });
         setCallState({
           type: "outgoing",
@@ -935,7 +886,7 @@ export function ChatProvider({ children }) {
         console.error("Failed to initiate WebRTC call:", err);
       }
     },
-    [chats, addCallLog]
+    [chats]
   );
 
   const acceptCall = useCallback(async () => {
@@ -987,7 +938,6 @@ export function ChatProvider({ children }) {
       if (activeCallLogRef.current) {
         activeCallLogRef.current.status = "connected";
         activeCallLogRef.current.startTime = Date.now();
-        updateCallLog(activeCallLogRef.current);
       }
 
       // Process any ICE candidates that arrived before the remote description was set
@@ -1017,7 +967,7 @@ export function ChatProvider({ children }) {
     } catch (err) {
       console.error("Failed to accept call WebRTC handshake:", err);
     }
-  }, [callState, updateCallLog]);
+  }, [callState]);
 
   const rejectCall = useCallback(() => {
     if (callState?.fromUserId) {
