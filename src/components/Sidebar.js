@@ -13,8 +13,8 @@ export default function Sidebar({ isOpen, onClose, hideMobileNav }) {
     { name: "Feed", path: "/feed", icon: "feed" },
     { name: "Chats", path: "/dashboard", icon: "chat" },
     { name: "Search", path: "/friends", icon: "search" },
+    { name: "Calls", path: "/calls", icon: "call" },
     { name: "Notifications", path: "/notifications", icon: "notifications" },
-    { name: "Settings", path: "/settings", icon: "settings" },
   ];
 
   const mobileMenuItems = [

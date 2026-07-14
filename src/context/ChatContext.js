@@ -114,6 +114,40 @@ export function ChatProvider({ children }) {
   const [typingMap, setTypingMap] = useState({});
   const [onlineUsers, setOnlineUsers] = useState(new Set());
   const [callState, setCallState] = useState(null);
+  const [callHistory, setCallHistory] = useState([]);
+  const activeCallLogRef = useRef(null);
+
+  const addCallLog = useCallback((log) => {
+    setCallHistory((prev) => {
+      const updated = [log, ...prev];
+      localStorage.setItem("nexus_call_history", JSON.stringify(updated));
+      return updated;
+    });
+  }, []);
+
+  const updateCallLog = useCallback((updatedLog) => {
+    setCallHistory((prev) => {
+      const updated = prev.map((l) => (l.id === updatedLog.id ? updatedLog : l));
+      localStorage.setItem("nexus_call_history", JSON.stringify(updated));
+      return updated;
+    });
+  }, []);
+
+  const clearCallHistory = useCallback(() => {
+    setCallHistory([]);
+    localStorage.removeItem("nexus_call_history");
+  }, []);
+
+  useEffect(() => {
+    const saved = localStorage.getItem("nexus_call_history");
+    if (saved) {
+      try {
+        setCallHistory(JSON.parse(saved));
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  }, []);
 
   const activeChatRef = useRef(activeChat);
   useEffect(() => {
@@ -238,8 +272,21 @@ export function ChatProvider({ children }) {
     }
     remoteStreamRef.current = null;
     remoteCandidatesQueueRef.current = [];
+
+    if (activeCallLogRef.current) {
+      const log = activeCallLogRef.current;
+      if (log.status === "connected" && log.startTime) {
+        log.status = "completed";
+        log.duration = Math.floor((Date.now() - log.startTime) / 1000);
+      } else {
+        log.status = "missed";
+      }
+      updateCallLog(log);
+      activeCallLogRef.current = null;
+    }
+
     setCallState(null);
-  }, []);
+  }, [updateCallLog]);
 
   useEffect(() => {
     if (!token || !user) return;
@@ -418,6 +465,22 @@ export function ChatProvider({ children }) {
     socket.on("incoming_call", async ({ fromUserId, offer, callType }) => {
       setChats((prevChats) => {
         const caller = prevChats.find((c) => c.otherId === fromUserId);
+        
+        const newLog = {
+          id: `call_${Date.now()}`,
+          userId: fromUserId,
+          name: caller?.name || `User ${fromUserId}`,
+          avatar: caller?.avatar || null,
+          type: "incoming",
+          callType,
+          status: "missed",
+          timestamp: new Date().toISOString(),
+          duration: 0,
+          startTime: null
+        };
+        activeCallLogRef.current = newLog;
+        addCallLog(newLog);
+
         setCallState({
           type: "incoming",
           callType,
@@ -454,6 +517,13 @@ export function ChatProvider({ children }) {
           }
         }
       }
+
+      if (activeCallLogRef.current) {
+        activeCallLogRef.current.status = "connected";
+        activeCallLogRef.current.startTime = Date.now();
+        updateCallLog(activeCallLogRef.current);
+      }
+
       setCallState((prev) => (prev ? { ...prev, type: "active" } : null));
     });
 
@@ -789,6 +859,21 @@ export function ChatProvider({ children }) {
         stream.getTracks().forEach((track) => pc.addTrack(track, stream));
         const offer = await pc.createOffer();
         await pc.setLocalDescription(offer);
+        const newLog = {
+          id: `call_${Date.now()}`,
+          userId: targetUserId,
+          name: targetChat?.name || `User ${targetUserId}`,
+          avatar: targetChat?.avatar || null,
+          type: "outgoing",
+          callType: actualCallType,
+          status: "missed",
+          timestamp: new Date().toISOString(),
+          duration: 0,
+          startTime: null
+        };
+        activeCallLogRef.current = newLog;
+        addCallLog(newLog);
+
         socketRef.current?.emit("call_offer", { targetUserId, offer, callType: actualCallType });
         setCallState({
           type: "outgoing",
@@ -802,7 +887,7 @@ export function ChatProvider({ children }) {
         console.error("Failed to initiate WebRTC call:", err);
       }
     },
-    [chats]
+    [chats, addCallLog]
   );
 
   const acceptCall = useCallback(async () => {
@@ -851,6 +936,12 @@ export function ChatProvider({ children }) {
       stream.getTracks().forEach((track) => pc.addTrack(track, stream));
       await pc.setRemoteDescription(callState.offer);
 
+      if (activeCallLogRef.current) {
+        activeCallLogRef.current.status = "connected";
+        activeCallLogRef.current.startTime = Date.now();
+        updateCallLog(activeCallLogRef.current);
+      }
+
       // Process any ICE candidates that arrived before the remote description was set
       if (remoteCandidatesQueueRef.current.length > 0) {
         for (const candidate of remoteCandidatesQueueRef.current) {
@@ -878,7 +969,7 @@ export function ChatProvider({ children }) {
     } catch (err) {
       console.error("Failed to accept call WebRTC handshake:", err);
     }
-  }, [callState]);
+  }, [callState, updateCallLog]);
 
   const rejectCall = useCallback(() => {
     if (callState?.fromUserId) {
@@ -938,6 +1029,8 @@ export function ChatProvider({ children }) {
         acceptCall,
         rejectCall,
         endCall,
+        callHistory,
+        clearCallHistory,
         socket: socketRef.current,
       }}
     >
