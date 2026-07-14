@@ -141,14 +141,29 @@ export default function FeedPage() {
   };
 
   return (
-    <div className="bg-background flex min-h-screen overflow-hidden text-on-surface">
+    <div 
+      className="bg-background-app cyber-grid flex min-h-screen overflow-hidden text-on-surface"
+      style={{
+        background: "radial-gradient(circle at center, #141739 0%, #090a10 100%)"
+      }}
+    >
       {/* Sidebar Navigation */}
       <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
 
       {/* Main Content Area */}
       <main className="flex-grow md:ml-sidebar-width h-screen overflow-y-auto flex flex-col relative z-10 custom-scrollbar pt-14 md:pt-0 pb-24 md:pb-8 select-none">
         {/* Ambient background glows */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_0%_0%,rgba(77,94,247,0.05),transparent_45%),radial-gradient(circle_at_100%_100%,rgba(168,85,247,0.03),transparent_45%)] pointer-events-none -z-10" />
+        <div className="ambient-blob top-[-10%] left-[-10%] opacity-50 pointer-events-none" style={{ width: '600px', height: '600px', filter: 'blur(120px)' }}></div>
+        <div
+          className="ambient-blob bottom-[-10%] right-[-10%] opacity-55 pointer-events-none"
+          style={{
+            width: '600px',
+            height: '600px',
+            filter: 'blur(120px)',
+            animationDelay: "-5s",
+            background: "radial-gradient(circle, rgba(168, 85, 247, 0.2) 0%, transparent 70%)",
+          }}
+        ></div>
 
         <div className="p-4 flex flex-col gap-5 max-w-[700px] mx-auto w-full">
           
