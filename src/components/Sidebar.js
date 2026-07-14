@@ -12,8 +12,8 @@ export default function Sidebar({ isOpen, onClose, hideMobileNav }) {
   const menuItems = [
     { name: "Feed", path: "/feed", icon: "home" },
     { name: "Chats", path: "/dashboard", icon: "chat" },
-    { name: "Calls", path: "/calls", icon: "call" },
     { name: "Search", path: "/friends", icon: "search" },
+    { name: "Calls", path: "/calls", icon: "call" },
     { name: "Notifications", path: "/notifications", icon: "notifications" },
   ];
 
@@ -21,6 +21,7 @@ export default function Sidebar({ isOpen, onClose, hideMobileNav }) {
     { name: "Home", path: "/feed", icon: "home" },
     { name: "Chat", path: "/dashboard", icon: "chat" },
     { name: "Search", path: "/friends", icon: "search" },
+    { name: "Calls", path: "/calls", icon: "call" },
     { name: "Profile", path: "/profile", icon: "person" },
   ];
 

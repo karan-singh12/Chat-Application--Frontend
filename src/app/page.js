@@ -268,10 +268,10 @@ export default function LandingPage() {
                   chat
                 </span>
                 <span className="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary transition-colors text-[18px]">
-                  call
+                  search
                 </span>
                 <span className="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary transition-colors text-[18px]">
-                  search
+                  call
                 </span>
                 <span className="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary transition-colors text-[18px]">
                   notifications
