@@ -149,13 +149,13 @@ export default function LoginPage() {
 
             <div className="flex items-center justify-between px-2 pt-1">
               <label className="flex items-center gap-2 cursor-pointer group">
-                <div className="relative flex items-center">
+                <div className="relative w-4 h-4 flex-shrink-0">
                   <input
-                    className="peer appearance-none w-4 h-4 rounded border border-white/10 bg-white/5 checked:bg-primary checked:border-primary transition-all cursor-pointer"
+                    className="peer appearance-none w-full h-full rounded border border-white/10 bg-white/5 checked:bg-primary checked:border-primary transition-all cursor-pointer"
                     type="checkbox"
                     disabled={isLoading}
                   />
-                  <span className="material-symbols-outlined absolute inset-0 text-white text-[12px] hidden peer-checked:flex items-center justify-center pointer-events-none">
+                  <span className="material-symbols-outlined absolute inset-0 text-white text-[11px] leading-none hidden peer-checked:flex items-center justify-center pointer-events-none select-none">
                     check
                   </span>
                 </div>
