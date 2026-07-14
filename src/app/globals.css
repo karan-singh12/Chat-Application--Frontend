@@ -312,6 +312,13 @@ body {
 .status-idle { background-color: #f59e0b; }
 .status-offline { background-color: #6b7280; }
 
+.cyber-grid {
+  background-image: linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 40px 40px;
+  background-position: center;
+}
+
 /* Background animations */
 .ambient-blob {
   position: absolute;
@@ -319,7 +326,7 @@ body {
   height: 600px;
   background: radial-gradient(circle, rgba(99, 102, 241, 0.12) 0%, transparent 70%);
   border-radius: 50%;
-  z-index: -1;
+  z-index: 1;
   filter: blur(80px);
   animation: float 20s infinite alternate;
 }

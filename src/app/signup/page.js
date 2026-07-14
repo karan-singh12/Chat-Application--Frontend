@@ -148,14 +148,19 @@ export default function SignUpPage() {
   };
 
   return (
-    <div className="font-body-md text-on-surface p-gutter min-h-screen flex items-center justify-center relative overflow-hidden bg-background-app">
+    <div 
+      className="font-body-md text-on-surface p-gutter min-h-screen flex items-center justify-center relative overflow-hidden bg-background-app cyber-grid"
+      style={{
+        background: "radial-gradient(circle at center, #111324 0%, #090a10 100%)"
+      }}
+    >
       {/* Ambient Blobs */}
-      <div className="ambient-blob top-[-10%] left-[-10%] opacity-40"></div>
+      <div className="ambient-blob top-[-10%] left-[-10%] opacity-45"></div>
       <div
-        className="ambient-blob bottom-[-10%] right-[-10%] opacity-40"
+        className="ambient-blob bottom-[-10%] right-[-10%] opacity-45"
         style={{
           animationDelay: "-5s",
-          background: "radial-gradient(circle, rgba(77, 94, 247, 0.08) 0%, transparent 70%)",
+          background: "radial-gradient(circle, rgba(77, 94, 247, 0.12) 0%, transparent 70%)",
         }}
       ></div>
 
