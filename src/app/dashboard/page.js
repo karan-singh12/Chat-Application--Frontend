@@ -87,6 +87,15 @@ export default function DashboardPage() {
     }
   }, [chats, activeChat, selectChat]);
 
+  // Clear active chat on mobile when not actively viewing the chat window
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.innerWidth < 768) {
+      if (!mobileShowChat && activeChat) {
+        selectChat(null);
+      }
+    }
+  }, [mobileShowChat, activeChat, selectChat]);
+
   // Typing indicator â€“ debounced
   const handleInputChange = (e) => {
     setMessageText(e.target.value);
@@ -175,11 +184,11 @@ export default function DashboardPage() {
       <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} hideMobileNav={mobileShowChat && !!activeChat} />
 
       {/* Main Content Area */}
-      <main className={`flex-1 md:ml-sidebar-width flex h-screen overflow-hidden relative pb-16 md:pb-0 ${mobileShowChat && activeChat ? "pt-0" : "pt-14 md:pt-0"}`}>
+      <main className={`flex-grow md:ml-sidebar-width flex h-screen overflow-hidden relative ${mobileShowChat && activeChat ? "pb-0 pt-0" : "pb-16 md:pb-0 pt-14 md:pt-0"}`}>
         {/* Ambient glows */}
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_0%_0%,rgba(77,94,247,0.05),transparent_40%),radial-gradient(circle_at_100%_100%,rgba(168,85,247,0.03),transparent_40%)] pointer-events-none -z-10" />
 
-        {/* â”€â”€â”€ Chat List Panel â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+        {/* —————————————— Chat List Panel —————————————— */}
         <section
           className={`w-full md:w-[310px] h-full flex flex-col bg-surface-container-low/20 transition-all duration-300 ${
             mobileShowChat ? "hidden md:flex" : "flex"
@@ -325,7 +334,10 @@ export default function DashboardPage() {
               <header className="h-14 flex items-center justify-between px-4 border-b border-white/5 bg-surface-container-low/40 backdrop-blur-md z-10 select-none">
                 <div className="flex items-center gap-3">
                   <button
-                    onClick={() => setMobileShowChat(false)}
+                    onClick={() => {
+                      setMobileShowChat(false);
+                      selectChat(null);
+                    }}
                     className="md:hidden p-1.5 rounded-full hover:bg-white/5 text-on-surface transition-colors cursor-pointer"
                   >
                     <span className="material-symbols-outlined text-[18px]">arrow_back</span>
@@ -549,6 +561,9 @@ export default function DashboardPage() {
                     value={messageText}
                     onChange={handleInputChange}
                     onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) handleSend(e); }}
+                    autoComplete="off"
+                    autoCorrect="off"
+                    autoCapitalize="sentences"
                   />
                   <div className="flex items-center gap-1">
                     <button type="button" className="w-7.5 h-7.5 rounded-full hover:bg-white/5 text-on-surface-variant flex items-center justify-center transition-colors cursor-pointer">

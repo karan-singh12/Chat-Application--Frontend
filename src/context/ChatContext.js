@@ -634,6 +634,7 @@ export function ChatProvider({ children }) {
   const selectChat = useCallback(
     async (chat) => {
       setActiveChatState(chat);
+      if (!chat) return;
       if (!messages[chat.id]) {
         await loadMessages(chat);
       } else {
