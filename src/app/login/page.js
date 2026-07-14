@@ -155,9 +155,17 @@ export default function LoginPage() {
                     type="checkbox"
                     disabled={isLoading}
                   />
-                  <span className="material-symbols-outlined absolute inset-0 text-white text-[11px] leading-none hidden peer-checked:flex items-center justify-center pointer-events-none select-none">
-                    check
-                  </span>
+                  <svg
+                    className="absolute inset-0 w-2.5 h-2.5 m-auto text-white hidden peer-checked:block pointer-events-none select-none"
+                    viewBox="0 0 12 10"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <polyline points="2 5 5 8 10 2" />
+                  </svg>
                 </div>
                 <span className="text-[11px] font-semibold text-on-surface-variant group-hover:text-on-surface transition-colors">
                   Remember me
