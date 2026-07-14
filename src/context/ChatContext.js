@@ -120,70 +120,81 @@ export function ChatProvider({ children }) {
   const addCallLog = useCallback((log) => {
     setCallHistory((prev) => {
       const updated = [log, ...prev];
-      localStorage.setItem("nexus_call_history", JSON.stringify(updated));
+      if (user?.id) {
+        localStorage.setItem(`nexus_call_history_${user.id}`, JSON.stringify(updated));
+      }
       return updated;
     });
-  }, []);
+  }, [user]);
 
   const updateCallLog = useCallback((updatedLog) => {
     setCallHistory((prev) => {
       const updated = prev.map((l) => (l.id === updatedLog.id ? updatedLog : l));
-      localStorage.setItem("nexus_call_history", JSON.stringify(updated));
+      if (user?.id) {
+        localStorage.setItem(`nexus_call_history_${user.id}`, JSON.stringify(updated));
+      }
       return updated;
     });
-  }, []);
+  }, [user]);
 
   const clearCallHistory = useCallback(() => {
     setCallHistory([]);
-    localStorage.removeItem("nexus_call_history");
-  }, []);
+    if (user?.id) {
+      localStorage.removeItem(`nexus_call_history_${user.id}`);
+    }
+  }, [user]);
 
   useEffect(() => {
-    const saved = localStorage.getItem("nexus_call_history");
-    if (saved) {
-      try {
-        setCallHistory(JSON.parse(saved));
-      } catch (e) {
-        console.error(e);
+    if (user?.id) {
+      const saved = localStorage.getItem(`nexus_call_history_${user.id}`);
+      if (saved) {
+        try {
+          setCallHistory(JSON.parse(saved));
+        } catch (e) {
+          console.error(e);
+          setCallHistory([]);
+        }
+      } else {
+        // Pre-populate with realistic mock calls on first load so it's not just a blank screen
+        const defaultLogs = [
+          {
+            id: `mock-call-1-${user.id}`,
+            name: "Lauren Lambert",
+            avatar: "https://lh3.googleusercontent.com/aida-public/AB6AXuAo-GoCmY4YVJkgfyAVHi867mtHqonm5Lig1_KNiQUJ0u-hdcYX7lkpLDIaBJhSVnt1B1IKypQSXJcabVF4YG87w7fI3aKLmnheM92K-87ucHdpe00fN04M9zlhdBnSIj42G0MtzL761gkdZ8oxZpVmwbY8WQx_OXwGMGLLwzaQHpDEovdchJ5RODKILWgrYZQYqe37M03q4SKpAK4y2cVPyW8zZ6_uWC2Z2870Qqop3oioXZRecEzJGQ",
+            type: "incoming",
+            status: "completed",
+            timestamp: new Date(Date.now() - 3600000 * 2.5).toISOString(), // 2.5 hours ago
+            duration: 872, // 14m 32s
+            video: true,
+          },
+          {
+            id: `mock-call-2-${user.id}`,
+            name: "Alexander Wright",
+            avatar: "",
+            type: "outgoing",
+            status: "missed",
+            timestamp: new Date(Date.now() - 3600000 * 24).toISOString(), // 24 hours ago
+            duration: 0,
+            video: false,
+          },
+          {
+            id: `mock-call-3-${user.id}`,
+            name: "Sarah Jenkins",
+            avatar: "",
+            type: "incoming",
+            status: "completed",
+            timestamp: new Date(Date.now() - 3600000 * 48).toISOString(), // 2 days ago
+            duration: 1510, // 25m 10s
+            video: true,
+          }
+        ];
+        setCallHistory(defaultLogs);
+        localStorage.setItem(`nexus_call_history_${user.id}`, JSON.stringify(defaultLogs));
       }
     } else {
-      // Pre-populate with realistic mock calls on first load so it's not just a blank screen
-      const defaultLogs = [
-        {
-          id: "mock-call-1",
-          name: "Lauren Lambert",
-          avatar: "https://lh3.googleusercontent.com/aida-public/AB6AXuAo-GoCmY4YVJkgfyAVHi867mtHqonm5Lig1_KNiQUJ0u-hdcYX7lkpLDIaBJhSVnt1B1IKypQSXJcabVF4YG87w7fI3aKLmnheM92K-87ucHdpe00fN04M9zlhdBnSIj42G0MtzL761gkdZ8oxZpVmwbY8WQx_OXwGMGLLwzaQHpDEovdchJ5RODKILWgrYZQYqe37M03q4SKpAK4y2cVPyW8zZ6_uWC2Z2870Qqop3oioXZRecEzJGQ",
-          type: "incoming",
-          status: "completed",
-          timestamp: new Date(Date.now() - 3600000 * 2.5).toISOString(), // 2.5 hours ago
-          duration: 872, // 14m 32s
-          video: true,
-        },
-        {
-          id: "mock-call-2",
-          name: "Alexander Wright",
-          avatar: "",
-          type: "outgoing",
-          status: "missed",
-          timestamp: new Date(Date.now() - 3600000 * 24).toISOString(), // 24 hours ago
-          duration: 0,
-          video: false,
-        },
-        {
-          id: "mock-call-3",
-          name: "Sarah Jenkins",
-          avatar: "",
-          type: "incoming",
-          status: "completed",
-          timestamp: new Date(Date.now() - 3600000 * 48).toISOString(), // 2 days ago
-          duration: 1510, // 25m 10s
-          video: true,
-        }
-      ];
-      setCallHistory(defaultLogs);
-      localStorage.setItem("nexus_call_history", JSON.stringify(defaultLogs));
+      setCallHistory([]);
     }
-  }, []);
+  }, [user]);
 
   const activeChatRef = useRef(activeChat);
   useEffect(() => {
