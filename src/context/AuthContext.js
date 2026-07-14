@@ -55,9 +55,9 @@ export function AuthProvider({ children }) {
     }
   };
 
-  const signup = async (username, email, password) => {
+  const signup = async (username, email, password, avatar = null) => {
     try {
-      const res = await authService.signup(username, email, password);
+      const res = await authService.signup(username, email, password, avatar);
       if (res.success) {
         const userData = {
           id: res.data.user.id,

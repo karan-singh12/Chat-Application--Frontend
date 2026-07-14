@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
+import { authService } from "@/services/authService";
 
 export default function SignUpPage() {
   const { signup } = useAuth();
@@ -13,7 +14,58 @@ export default function SignUpPage() {
   const [errorMsg, setErrorMsg] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [avatarFile, setAvatarFile] = useState(null);
+  const [avatarPreview, setAvatarPreview] = useState(null);
   const cardRef = useRef(null);
+  const fileInputRef = useRef(null);
+
+  const handleFileChange = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate size (5MB limit)
+    if (file.size > 5 * 1024 * 1024) {
+      setErrorMsg("Image size must be less than 5MB.");
+      return;
+    }
+
+    // Validate type
+    const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
+    if (!allowedTypes.includes(file.type)) {
+      setErrorMsg("Only JPG, JPEG, and PNG files are allowed.");
+      return;
+    }
+
+    setAvatarFile(file);
+    const localUrl = URL.createObjectURL(file);
+    
+    // Revoke old URL if exists to prevent leaks
+    if (avatarPreview && avatarPreview.startsWith("blob:")) {
+      URL.revokeObjectURL(avatarPreview);
+    }
+    
+    setAvatarPreview(localUrl);
+    setErrorMsg("");
+  };
+
+  const handleRemoveAvatar = () => {
+    setAvatarFile(null);
+    if (avatarPreview && avatarPreview.startsWith("blob:")) {
+      URL.revokeObjectURL(avatarPreview);
+    }
+    setAvatarPreview(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      if (avatarPreview && avatarPreview.startsWith("blob:")) {
+        URL.revokeObjectURL(avatarPreview);
+      }
+    };
+  }, [avatarPreview]);
 
   useEffect(() => {
     const card = cardRef.current;
@@ -56,19 +108,42 @@ export default function SignUpPage() {
       return;
     }
 
-
     setIsLoading(true);
-    const result = await signup(username, email, password);
-    setIsLoading(false);
+    let uploadedAvatarUrl = null;
 
-    if (result.success) {
-      setSuccessMsg(result.message || "Account created successfully!");
-      // Reset form
-      setUsername("");
-      setEmail("");
-      setPassword("");
-    } else {
-      setErrorMsg(result.message || "Failed to create account.");
+    try {
+      if (avatarFile) {
+        const uploadRes = await authService.uploadPublicAvatar(avatarFile);
+        if (uploadRes.success && uploadRes.data) {
+          uploadedAvatarUrl = uploadRes.data.url;
+        } else {
+          setErrorMsg(uploadRes.message || "Failed to upload profile photo.");
+          setIsLoading(false);
+          return;
+        }
+      }
+
+      const result = await signup(username, email, password, uploadedAvatarUrl);
+      setIsLoading(false);
+
+      if (result.success) {
+        setSuccessMsg(result.message || "Account created successfully!");
+        // Reset form
+        setUsername("");
+        setEmail("");
+        setPassword("");
+        setAvatarFile(null);
+        setAvatarPreview(null);
+        if (fileInputRef.current) {
+          fileInputRef.current.value = "";
+        }
+      } else {
+        setErrorMsg(result.message || "Failed to create account.");
+      }
+    } catch (err) {
+      console.error("Signup error:", err);
+      setErrorMsg(err.message || "An unexpected error occurred.");
+      setIsLoading(false);
     }
   };
 
@@ -130,6 +205,64 @@ export default function SignUpPage() {
 
           {/* Signup Form */}
           <form className="w-full space-y-4" onSubmit={handleSubmit}>
+            {/* Profile Photo Selector */}
+            <div className="flex flex-col items-center mb-6">
+              <div
+                onClick={() => !isLoading && fileInputRef.current?.click()}
+                className="w-24 h-24 rounded-full relative overflow-hidden group border-2 border-dashed border-white/20 hover:border-primary/50 transition-all duration-300 flex items-center justify-center cursor-pointer bg-white/5 shadow-inner"
+              >
+                {avatarPreview ? (
+                  <img
+                    src={avatarPreview}
+                    alt="Profile preview"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="flex flex-col items-center justify-center text-on-surface-variant/60 group-hover:text-primary transition-colors">
+                    <span className="material-symbols-outlined text-[36px]">
+                      add_a_photo
+                    </span>
+                  </div>
+                )}
+                
+                {/* Hover overlay */}
+                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center text-white text-[10px] font-bold">
+                  <span className="material-symbols-outlined text-[20px] mb-1">
+                    photo_camera
+                  </span>
+                  <span>
+                    {avatarPreview ? "Change" : "Upload"}
+                  </span>
+                </div>
+              </div>
+              
+              {avatarPreview && (
+                <button
+                  type="button"
+                  onClick={handleRemoveAvatar}
+                  disabled={isLoading}
+                  className="mt-2 text-[10px] font-bold text-error hover:underline tracking-wide uppercase transition-colors bg-transparent border-none cursor-pointer"
+                >
+                  Remove Photo
+                </button>
+              )}
+              
+              {!avatarPreview && (
+                <span className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider mt-2">
+                  Profile Photo (Optional)
+                </span>
+              )}
+              
+              <input
+                type="file"
+                ref={fileInputRef}
+                className="hidden"
+                accept="image/png, image/jpeg, image/jpg"
+                onChange={handleFileChange}
+                disabled={isLoading}
+              />
+            </div>
+
             <div className="space-y-1">
               <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider ml-4" htmlFor="username">
                 Username

@@ -9,11 +9,12 @@ export const authService = {
     return res;
   },
 
-  async signup(username, email, password) {
+  async signup(username, email, password, avatar = null) {
     const res = await apiClient.post("/user/auth/signup", {
       username,
       email,
       password,
+      avatar,
     });
     return res;
   },
@@ -38,6 +39,14 @@ export const authService = {
     formData.append("file", file);
     formData.append("imagePath", "user");
     const res = await apiClient.postMultipart("/uploads", formData);
+    return res;
+  },
+
+  async uploadPublicAvatar(file) {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("imagePath", "user");
+    const res = await apiClient.postMultipart("/uploads/public", formData);
     return res;
   },
 
