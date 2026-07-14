@@ -114,16 +114,16 @@ export default function LandingPage() {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
                 href="/signup"
-                className="w-full sm:w-auto px-10 py-5 rounded-full btn-primary text-white font-bold text-lg flex items-center justify-center gap-2 group"
+                className="w-full sm:w-auto px-7 py-3.5 rounded-full btn-primary text-white font-bold text-sm flex items-center justify-center gap-2 group transition-all duration-300 hover:scale-[1.01]"
               >
                 Start Chatting Now
-                <span className="material-symbols-outlined group-hover:translate-x-1 transition-transform">
+                <span className="material-symbols-outlined group-hover:translate-x-1 transition-transform text-[18px]">
                   arrow_forward
                 </span>
               </Link>
               <a
                 href="#features"
-                className="w-full sm:w-auto px-10 py-5 rounded-full glass-panel text-white font-semibold hover:bg-white/10 transition-all border-white/20"
+                className="w-full sm:w-auto px-7 py-3.5 rounded-full glass-panel text-white font-semibold hover:bg-white/10 transition-all border border-white/20 text-sm flex items-center justify-center"
               >
                 View Features
               </a>
@@ -257,16 +257,25 @@ export default function LandingPage() {
             {/* Dashboard Interactive Component */}
             <div className="lg:col-span-7 glass-panel rounded-3xl overflow-hidden shadow-2xl border-white/10 flex h-[480px]">
               {/* Sidebar Rail */}
-              <div className="w-[80px] h-full border-r border-white/5 flex flex-col items-center py-8 gap-8">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-tertiary flex items-center justify-center text-white font-bold mb-4">
+              <div className="w-[80px] h-full border-r border-white/5 flex flex-col items-center py-8 gap-6">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-tertiary flex items-center justify-center text-white font-bold mb-4 select-none">
                   N
                 </div>
-                <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>
+                <span className="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary transition-colors text-[18px]">
+                  feed
+                </span>
+                <span className="material-symbols-outlined text-primary text-[18px]" style={{ fontVariationSettings: "'FILL' 1" }}>
                   chat
                 </span>
-                <span className="material-symbols-outlined text-on-surface-variant cursor-pointer">group</span>
-                <span className="material-symbols-outlined text-on-surface-variant cursor-pointer">call</span>
-                <span className="material-symbols-outlined text-on-surface-variant cursor-pointer">settings</span>
+                <span className="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary transition-colors text-[18px]">
+                  call
+                </span>
+                <span className="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary transition-colors text-[18px]">
+                  search
+                </span>
+                <span className="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary transition-colors text-[18px]">
+                  notifications
+                </span>
                 <div className="mt-auto">
                   <div
                     className="w-10 h-10 rounded-full bg-cover bg-center border border-white/20"
@@ -282,23 +291,25 @@ export default function LandingPage() {
                 <header className="h-16 border-b border-white/5 flex items-center justify-between px-6">
                   <h3 className="font-headline-md text-headline-md text-white">Nexus General</h3>
                   <div className="flex gap-4">
-                    <span className="material-symbols-outlined text-on-surface-variant">videocam</span>
-                    <span className="material-symbols-outlined text-on-surface-variant">call</span>
+                    <span className="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-white transition-colors">videocam</span>
+                    <span className="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-white transition-colors">call</span>
                   </div>
                 </header>
                 <div className="flex-1 p-6 space-y-6 overflow-y-auto custom-scrollbar">
                   {/* Received */}
                   <div className="flex items-end gap-3 max-w-[80%]">
-                    <div className="w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center text-[10px] font-bold text-on-secondary-container">U</div>
+                    <div className="w-8 h-8 rounded-full overflow-hidden border border-white/10 flex-shrink-0">
+                      <img className="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAo-GoCmY4YVJkgfyAVHi867mtHqonm5Lig1_KNiQUJ0u-hdcYX7lkpLDIaBJhSVnt1B1IKypQSXJcabVF4YG87w7fI3aKLmnheM92K-87ucHdpe00fN04M9zlhdBnSIj42G0MtzL761gkdZ8oxZpVmwbY8WQx_OXwGMGLLwzaQHpDEovdchJ5RODKILWgrYZQYqe37M03q4SKpAK4y2cVPyW8zZ6_uWC2Z2870Qqop3oioXZRecEzJGQ" alt="User Avatar" />
+                    </div>
                     <div className="glass-card px-4 py-3 rounded-2xl rounded-bl-none text-on-surface text-sm">
-                      Hey team! Did everyone see the new performance metrics? We've hit 2ms latency globally!
+                      Did you upload your profile photo on the new signup page? It works flawlessly now!
                     </div>
                   </div>
                   {/* Sent */}
                   <div className="flex items-end gap-3 max-w-[80%] ml-auto flex-row-reverse">
-                    <div className="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center text-[10px] font-bold text-on-primary-container">ME</div>
+                    <div className="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center text-[10px] font-bold text-on-primary-container flex-shrink-0">ME</div>
                     <div className="btn-primary px-4 py-3 rounded-2xl rounded-br-none text-white text-sm shadow-lg shadow-primary/20">
-                      That's incredible! The new edge network nodes are definitely doing their job. 🚀
+                      Yes! I also tested the new Call History log and callback buttons. The latency is practically zero! 🚀
                     </div>
                   </div>
                 </div>
@@ -330,19 +341,19 @@ export default function LandingPage() {
               Join thousands of teams who trust NexusChat for their mission-critical communication needs.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 relative z-10">
-              <Link
-                href="/signup"
-                className="px-10 py-5 rounded-full btn-primary text-white font-bold text-lg w-full sm:w-auto"
-              >
-                Get Started for Free
-              </Link>
-              <Link
-                href="/login"
-                className="px-10 py-5 rounded-full bg-white/5 text-white font-semibold hover:bg-white/10 transition-all border border-white/10 w-full sm:w-auto"
-              >
-                Login
-              </Link>
-            </div>
+                  <Link
+                    href="/signup"
+                    className="px-7 py-3.5 rounded-full btn-primary text-white font-bold text-sm w-full sm:w-auto flex items-center justify-center hover:scale-[1.01] transition-transform"
+                  >
+                    Get Started for Free
+                  </Link>
+                  <Link
+                    href="/login"
+                    className="px-7 py-3.5 rounded-full bg-white/5 text-white font-semibold hover:bg-white/10 transition-all border border-white/10 w-full sm:w-auto flex items-center justify-center text-sm"
+                  >
+                    Login
+                  </Link>
+                </div>
           </div>
         </section>
       </main>
