@@ -7,6 +7,7 @@ import Sidebar from "@/components/Sidebar";
 import { useChat } from "@/context/ChatContext";
 import { useAuth } from "@/context/AuthContext";
 import { authService } from "@/services/authService";
+import { getAvatarUrl } from "@/utils/avatar";
 
 export default function FriendsPage() {
   const router = useRouter();
@@ -39,7 +40,7 @@ export default function FriendsPage() {
           userId: item.id,
           friendshipId: item.friendshipId,
           name: item.username || item.email.split("@")[0],
-          avatar: item.avatar || "/default-avatar.png",
+          avatar: getAvatarUrl(item.avatar),
           mutual: 0,
           status: "online",
           activity: item.bio || "Active member",
@@ -60,14 +61,14 @@ export default function FriendsPage() {
               id: req.id,
               senderId: req.senderId,
               name: req.sender.username || req.sender.email.split("@")[0],
-              avatar: req.sender.avatar || "/default-avatar.png",
+              avatar: getAvatarUrl(req.sender.avatar),
             });
           } else if (req.senderId === currentUserId) {
             sent.push({
               id: req.id,
               receiverId: req.receiverId,
               name: req.receiver.username || req.receiver.email.split("@")[0],
-              avatar: req.receiver.avatar || "/default-avatar.png",
+              avatar: getAvatarUrl(req.receiver.avatar),
             });
           }
         });
@@ -82,7 +83,7 @@ export default function FriendsPage() {
         setSuggestions(suggestionsRes.data.map(item => ({
           id: item.id,
           name: item.name,
-          avatar: item.avatar || "/default-avatar.png",
+          avatar: getAvatarUrl(item.avatar),
           detail: item.detail,
           added: false
         })));

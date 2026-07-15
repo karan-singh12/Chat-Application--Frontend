@@ -5,6 +5,7 @@ import Link from "next/link";
 import Sidebar from "@/components/Sidebar";
 import { useAuth } from "@/context/AuthContext";
 import { postService } from "@/services/postService";
+import { getAvatarUrl } from "@/utils/avatar";
 
 export default function FeedPage() {
   const { user } = useAuth();
@@ -175,7 +176,7 @@ export default function FeedPage() {
                 <img
                   className="w-8.5 h-8.5 rounded-full object-cover border border-white/10 flex-shrink-0"
                   alt="My avatar"
-                  src={user?.avatar || "/default-avatar.png"}
+                  src={getAvatarUrl(user?.avatar)}
                   onError={(e) => {
                     e.target.onerror = null;
                     e.target.src = "/default-avatar.png";
@@ -260,7 +261,7 @@ export default function FeedPage() {
               posts.map((post) => {
                 const postUser = post.user || {};
                 const postUserName = postUser.username || "Nexus Member";
-                const postUserAvatar = postUser.avatar || "/default-avatar.png";
+                const postUserAvatar = getAvatarUrl(postUser.avatar);
                 const postUserRole = postUser.role || "NexusChat Member";
                 const postLikesCount = post.likes ? post.likes.length : 0;
                 const postHasLiked = post.likes ? post.likes.some((l) => l.userId === user?.id) : false;
@@ -376,7 +377,7 @@ export default function FeedPage() {
                             {postCommentsList.map((comment) => {
                               const commentUser = comment.user || {};
                               const commentUserName = commentUser.username || "Nexus Member";
-                              const commentAvatar = commentUser.avatar || "/default-avatar.png";
+                              const commentAvatar = getAvatarUrl(commentUser.avatar);
                               const commentTime = getRelativeTime(comment.createdAt);
 
                               return (

@@ -6,6 +6,7 @@ import Sidebar from "@/components/Sidebar";
 import { useAuth } from "@/context/AuthContext";
 import { useChat } from "@/context/ChatContext";
 import { authService } from "@/services/authService";
+import { getAvatarUrl } from "@/utils/avatar";
 
 export default function ChatPage() {
   const { user } = useAuth();
@@ -265,7 +266,7 @@ export default function ChatPage() {
                         <img
                           className={`w-9 h-9 rounded-full object-cover border ${isActive ? "border-white/20" : "border-white/10"}`}
                           alt={chat.name}
-                          src={chat.avatar}
+                          src={getAvatarUrl(chat.avatar)}
                           onError={(e) => {
                             e.target.onerror = null;
                             e.target.src = "/default-avatar.png";
@@ -351,7 +352,7 @@ export default function ChatPage() {
                         <img
                           className="w-9 h-9 rounded-full object-cover border border-white/10"
                           alt={activeChat.name}
-                          src={activeChat.avatar}
+                          src={getAvatarUrl(activeChat.avatar)}
                           onError={(e) => {
                             e.target.onerror = null;
                             e.target.src = "/default-avatar.png";
@@ -449,7 +450,7 @@ export default function ChatPage() {
                         <img
                           className="w-7 h-7 rounded-full object-cover border border-white/10 flex-shrink-0"
                           alt={senderName}
-                          src={activeChat.type === "group" ? (senderAvatar || activeChat.avatar) : activeChat.avatar}
+                          src={getAvatarUrl(activeChat.type === "group" ? (senderAvatar || activeChat.avatar) : activeChat.avatar)}
                           onError={(e) => {
                             e.target.onerror = null;
                             e.target.src = "/default-avatar.png";
@@ -475,7 +476,42 @@ export default function ChatPage() {
                               : "bg-surface-variant text-on-surface rounded-bl-sm border border-white/5"
                           } ${msg.isSending ? "opacity-60 scale-[0.98] select-none pointer-events-none" : ""}`}
                         >
-                          <p className="break-all whitespace-pre-wrap">{msg.content || msg.text}</p>
+                          {(() => {
+                            let metadataObj = msg.metadata;
+                            if (metadataObj && typeof metadataObj === "string") {
+                              try {
+                                metadataObj = JSON.parse(metadataObj);
+                              } catch (e) {}
+                            }
+
+                            if (metadataObj && (metadataObj.type === "call" || metadataObj.type?.type === "call")) {
+                              const isVideo = !!metadataObj.video;
+                              const callStatus = metadataObj.callStatus;
+                              return (
+                                <div className="flex items-center gap-2.5 py-0.5 select-none">
+                                  <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                                    callStatus === "missed"
+                                      ? "bg-red-500/20 text-red-400"
+                                      : callStatus === "rejected"
+                                      ? "bg-amber-500/20 text-amber-400"
+                                      : "bg-emerald-500/20 text-emerald-400"
+                                  }`}>
+                                    <span className="material-symbols-outlined text-[16px] font-bold">
+                                      {isVideo ? "videocam" : callStatus === "missed" ? "phone_missed" : "call"}
+                                    </span>
+                                  </div>
+                                  <div className="flex flex-col min-w-[100px]">
+                                    <span className="font-bold text-white text-[11px] leading-snug">{msg.content}</span>
+                                    <span className="text-[9px] text-on-surface-variant/70 mt-0.5 font-semibold">
+                                      {callStatus === "completed" ? "Voice/Video Call" : "No Answer"}
+                                    </span>
+                                  </div>
+                                </div>
+                              );
+                            }
+
+                            return <p className="break-all whitespace-pre-wrap">{msg.content || msg.text}</p>;
+                          })()}
                         </div>
                         <div className={`flex items-center gap-1 mt-0.5 ${isMe ? "justify-end mr-0.5" : "ml-0.5"}`}>
                           <span className="text-[8px] text-on-surface-variant/50 font-semibold">

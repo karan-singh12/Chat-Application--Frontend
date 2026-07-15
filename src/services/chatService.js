@@ -39,12 +39,12 @@ export const chatService = {
 
   async getCallHistory() {
     const res = await apiClient.get("/calls");
-    return res.data?.data || [];
+    return res.data || [];
   },
 
   async createCallLog(receiverId, status, video, duration) {
     const res = await apiClient.post("/calls", { receiverId, status, video, duration });
-    return res.data?.data || null;
+    return res.data || null;
   },
 
   async clearCallHistory() {

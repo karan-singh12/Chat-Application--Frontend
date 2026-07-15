@@ -6,6 +6,7 @@ import { useAuth } from "@/context/AuthContext";
 import { authService } from "@/services/authService";
 import { SOCKET_URL } from "@/config/api";
 import { useChat } from "@/context/ChatContext";
+import { getAvatarUrl } from "@/utils/avatar";
 
 export default function ProfilePage() {
   const { user, setUser, refreshProfile, logout } = useAuth();
@@ -162,10 +163,7 @@ export default function ProfilePage() {
                     <img
                       className="w-full h-full object-cover rounded-full"
                       alt="User Avatar"
-                      src={
-                        avatar ||
-                        "/default-avatar.png"
-                      }
+                      src={getAvatarUrl(avatar)}
                       onError={(e) => {
                         e.target.onerror = null;
                         e.target.src = "/default-avatar.png";

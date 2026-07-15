@@ -267,21 +267,37 @@ export function ChatProvider({ children }) {
 
     if (activeCallLogRef.current) {
       const log = activeCallLogRef.current;
-      let finalStatus = "missed";
+      let finalStatus = log.status || "missed";
       let duration = 0;
       if (log.status === "connected" && log.startTime) {
         finalStatus = "completed";
         duration = Math.floor((Date.now() - log.startTime) / 1000);
       }
 
-      try {
-        const isVideo = log.callType === "video" || !!log.video;
-        const savedLog = await chatService.createCallLog(log.userId, finalStatus, isVideo, duration);
-        if (savedLog) {
-          setCallHistory((prev) => [savedLog, ...prev]);
+      if (log.type === "outgoing") {
+        try {
+          const isVideo = log.callType === "video" || !!log.video;
+          const savedLog = await chatService.createCallLog(log.userId, finalStatus, isVideo, duration);
+          if (savedLog) {
+            setCallHistory((prev) => [savedLog, ...prev]);
+          }
+        } catch (err) {
+          console.error("Failed to save call log to database:", err);
         }
-      } catch (err) {
-        console.error("Failed to save call log to database:", err);
+      } else {
+        // Incoming side: append locally generated call log to state to prevent duplicate database writes
+        const localLog = {
+          id: log.id,
+          userId: log.userId,
+          name: log.name,
+          avatar: log.avatar,
+          type: "incoming",
+          status: finalStatus,
+          timestamp: log.timestamp,
+          duration,
+          video: log.callType === "video" || !!log.video,
+        };
+        setCallHistory((prev) => [localLog, ...prev]);
       }
       activeCallLogRef.current = null;
     }
@@ -546,6 +562,9 @@ export function ChatProvider({ children }) {
     });
 
     socket.on("call_rejected", () => {
+      if (activeCallLogRef.current) {
+        activeCallLogRef.current.status = "rejected";
+      }
       endCallCleanup();
     });
 

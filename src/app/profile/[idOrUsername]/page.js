@@ -6,6 +6,7 @@ import Sidebar from "@/components/Sidebar";
 import { useAuth } from "@/context/AuthContext";
 import { useChat } from "@/context/ChatContext";
 import { authService } from "@/services/authService";
+import { getAvatarUrl } from "@/utils/avatar";
 
 export default function PublicProfilePage({ params: paramsPromise }) {
   // Resolve params dynamically supporting both promise and plain object across Next.js versions
@@ -258,10 +259,7 @@ export default function PublicProfilePage({ params: paramsPromise }) {
                       <img
                         className="w-full h-full object-cover rounded-full"
                         alt="User Avatar"
-                        src={
-                          avatar ||
-                          "/default-avatar.png"
-                        }
+                        src={getAvatarUrl(avatar)}
                         onError={(e) => {
                           e.target.onerror = null;
                           e.target.src = "/default-avatar.png";

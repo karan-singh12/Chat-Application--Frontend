@@ -6,6 +6,7 @@ import Sidebar from "@/components/Sidebar";
 import { useChat } from "@/context/ChatContext";
 import { useAuth } from "@/context/AuthContext";
 import { authService } from "@/services/authService";
+import { getAvatarUrl } from "@/utils/avatar";
 
 export default function NotificationsPage() {
   const { socket } = useChat();
@@ -46,7 +47,7 @@ export default function NotificationsPage() {
           senderId: item.senderId,
           user: {
             name: item.sender.username || item.sender.email.split("@")[0],
-            avatar: item.sender.avatar || null,
+            avatar: getAvatarUrl(item.sender.avatar),
           },
           text: "sent you a friend request",
           time: formatTime(item.createdAt),
@@ -68,7 +69,7 @@ export default function NotificationsPage() {
             type: "friend_accepted",
             user: {
               name: item.username || item.email.split("@")[0],
-              avatar: item.avatar || null,
+              avatar: getAvatarUrl(item.avatar),
             },
             text: "accepted your friend request",
             time: formatTime(item.updatedAt),
@@ -107,7 +108,7 @@ export default function NotificationsPage() {
           senderId: request.sender.id,
           user: {
             name: request.sender.username || request.sender.email.split("@")[0],
-            avatar: request.sender.avatar || null,
+            avatar: getAvatarUrl(request.sender.avatar),
           },
           text: "sent you a friend request",
           time: "Just now",
@@ -132,7 +133,7 @@ export default function NotificationsPage() {
           type: "friend_accepted",
           user: {
             name: acceptance.user.username || acceptance.user.email.split("@")[0],
-            avatar: acceptance.user.avatar || null,
+            avatar: getAvatarUrl(acceptance.user.avatar),
           },
           text: "accepted your friend request",
           time: "Just now",

@@ -4,6 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import { getAvatarUrl } from "@/utils/avatar";
 
 export default function Sidebar({ isOpen, onClose, hideMobileNav }) {
   const pathname = usePathname();
@@ -91,7 +92,7 @@ export default function Sidebar({ isOpen, onClose, hideMobileNav }) {
             <img
               className="w-full h-full rounded-full object-cover"
               alt="Avatar"
-              src={user?.avatar || "/default-avatar.png"}
+              src={getAvatarUrl(user?.avatar)}
               onError={(e) => {
                 e.target.onerror = null;
                 e.target.src = "/default-avatar.png";

@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import Sidebar from "@/components/Sidebar";
 import { useAuth } from "@/context/AuthContext";
+import { getAvatarUrl } from "@/utils/avatar";
 
 export default function SettingsPage() {
   const { user } = useAuth();
@@ -73,10 +74,11 @@ export default function SettingsPage() {
                     <img
                       className="w-full h-full object-cover rounded-full"
                       alt="Profile Avatar"
-                      src={
-                        user?.avatar ||
-                        "/default-avatar.png"
-                      }
+                      src={getAvatarUrl(user?.avatar)}
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = "/default-avatar.png";
+                      }}
                     />
                   </div>
                   <div>

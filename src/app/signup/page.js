@@ -16,6 +16,18 @@ export default function SignUpPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [avatarFile, setAvatarFile] = useState(null);
   const [avatarPreview, setAvatarPreview] = useState(null);
+  const [selectedDefaultAvatar, setSelectedDefaultAvatar] = useState(null);
+  
+  const defaultAvatars = [
+    { name: "Male 1", path: "/public/avatars/male_1.png", localPath: "/avatars/male_1.png" },
+    { name: "Male 2", path: "/public/avatars/male_2.png", localPath: "/avatars/male_2.png" },
+    { name: "Male 3", path: "/public/avatars/male_3.png", localPath: "/avatars/male_3.png" },
+    { name: "Male 4", path: "/public/avatars/male_4.png", localPath: "/avatars/male_4.png" },
+    { name: "Female 1", path: "/public/avatars/female_1.png", localPath: "/avatars/female_1.png" },
+    { name: "Female 2", path: "/public/avatars/female_2.png", localPath: "/avatars/female_2.png" },
+    { name: "Female 3", path: "/public/avatars/female_3.png", localPath: "/avatars/female_3.png" },
+    { name: "Female 4", path: "/public/avatars/female_4.png", localPath: "/avatars/female_4.png" },
+  ];
   const cardRef = useRef(null);
   const fileInputRef = useRef(null);
 
@@ -37,6 +49,7 @@ export default function SignUpPage() {
     }
 
     setAvatarFile(file);
+    setSelectedDefaultAvatar(null); // Clear selected default avatar
     const localUrl = URL.createObjectURL(file);
     
     // Revoke old URL if exists to prevent leaks
@@ -50,6 +63,7 @@ export default function SignUpPage() {
 
   const handleRemoveAvatar = () => {
     setAvatarFile(null);
+    setSelectedDefaultAvatar(null);
     if (avatarPreview && avatarPreview.startsWith("blob:")) {
       URL.revokeObjectURL(avatarPreview);
     }
@@ -57,6 +71,20 @@ export default function SignUpPage() {
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
+  };
+
+  const handleSelectDefaultAvatar = (avatar) => {
+    if (isLoading) return;
+    setAvatarFile(null); // Clear custom upload file
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+    if (avatarPreview && avatarPreview.startsWith("blob:")) {
+      URL.revokeObjectURL(avatarPreview);
+    }
+    setSelectedDefaultAvatar(avatar.path);
+    setAvatarPreview(avatar.localPath); // Use local frontend path for preview
+    setErrorMsg("");
   };
 
   useEffect(() => {
@@ -109,7 +137,7 @@ export default function SignUpPage() {
     }
 
     setIsLoading(true);
-    let uploadedAvatarUrl = null;
+    let uploadedAvatarUrl = selectedDefaultAvatar; // Use default avatar path if selected
 
     try {
       if (avatarFile) {
@@ -123,6 +151,15 @@ export default function SignUpPage() {
         }
       }
 
+      // Convert relative avatar paths (default and uploaded) to absolute URLs
+      if (uploadedAvatarUrl) {
+        const baseUrl = process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:3003";
+        if (!uploadedAvatarUrl.startsWith("http")) {
+          const cleanPath = uploadedAvatarUrl.startsWith("/") ? uploadedAvatarUrl : `/${uploadedAvatarUrl}`;
+          uploadedAvatarUrl = `${baseUrl}${cleanPath}`;
+        }
+      }
+
       const result = await signup(username, email, password, uploadedAvatarUrl);
       setIsLoading(false);
 
@@ -133,6 +170,7 @@ export default function SignUpPage() {
         setEmail("");
         setPassword("");
         setAvatarFile(null);
+        setSelectedDefaultAvatar(null);
         setAvatarPreview(null);
         if (fileInputRef.current) {
           fileInputRef.current.value = "";
@@ -266,6 +304,37 @@ export default function SignUpPage() {
                 onChange={handleFileChange}
                 disabled={isLoading}
               />
+            </div>
+
+            {/* Choose Default Avatar Grid */}
+            <div className="w-full mb-4 text-center">
+              <span className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider block mb-2.5">
+                Or Choose a Default Avatar
+              </span>
+              <div className="grid grid-cols-4 gap-2 max-w-[260px] mx-auto">
+                {defaultAvatars.map((avatar, idx) => {
+                  const isSelected = selectedDefaultAvatar === avatar.path;
+                  return (
+                    <button
+                      key={idx}
+                      type="button"
+                      disabled={isLoading}
+                      onClick={() => handleSelectDefaultAvatar(avatar)}
+                      className={`w-11 h-11 rounded-full p-0.5 border-2 transition-all duration-300 overflow-hidden cursor-pointer hover:scale-105 active:scale-95 ${
+                        isSelected
+                          ? "border-primary shadow-md shadow-primary/20 scale-103 bg-primary/10"
+                          : "border-white/10 hover:border-white/35 bg-white/5"
+                      }`}
+                    >
+                      <img
+                        src={avatar.localPath}
+                        alt={avatar.name}
+                        className="w-full h-full object-cover rounded-full"
+                      />
+                    </button>
+                  );
+                })}
+              </div>
             </div>
 
             <div className="space-y-1">

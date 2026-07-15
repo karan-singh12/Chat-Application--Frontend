@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Sidebar from "@/components/Sidebar";
 import { useChat } from "@/context/ChatContext";
+import { getAvatarUrl } from "@/utils/avatar";
 
 export default function CallsPage() {
   const { callHistory, clearCallHistory, startCall } = useChat();
@@ -125,7 +126,7 @@ export default function CallsPage() {
                       <div className="relative flex-shrink-0">
                         <img
                           className="w-10 h-10 rounded-full object-cover border border-white/10"
-                          src={log.avatar || "/default-avatar.png"}
+                          src={getAvatarUrl(log.avatar)}
                           alt={log.name}
                           onError={(e) => {
                             e.target.onerror = null;
