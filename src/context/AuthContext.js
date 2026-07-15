@@ -44,7 +44,7 @@ export function AuthProvider({ children }) {
         setToken(res.data.token);
         localStorage.setItem("nexus_user", JSON.stringify(userData));
         localStorage.setItem("nexus_token", res.data.token);
-        router.push("/dashboard");
+        router.push("/chat");
         return { success: true };
       } else {
         throw new Error(res.message || "Invalid credentials");
@@ -77,7 +77,7 @@ export function AuthProvider({ children }) {
         setToken(signupToken);
         localStorage.setItem("nexus_user", JSON.stringify(userData));
         localStorage.setItem("nexus_token", signupToken);
-        router.push("/dashboard");
+        router.push("/chat");
         return { success: true };
       } else {
         throw new Error(res.message || "Registration failed");

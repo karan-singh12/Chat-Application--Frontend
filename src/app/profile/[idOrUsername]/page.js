@@ -124,7 +124,7 @@ export default function PublicProfilePage({ params: paramsPromise }) {
         profileUser.username,
         profileUser.avatar
       );
-      router.push(`/dashboard?chat=${profileUser.username}`);
+      router.push(`/chat?chat=${profileUser.username}`);
     } catch (err) {
       console.error("Failed to message user:", err);
     } finally {

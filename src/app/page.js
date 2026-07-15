@@ -4,10 +4,19 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import GlassmorphicShowcase from "@/components/GlassmorphicShowcase";
+import { API_BASE_URL } from "@/config/api";
 
 export default function LandingPage() {
   const router = useRouter();
   const [particles, setParticles] = useState([]);
+
+  useEffect(() => {
+    // Ping backend health check in background to wake/keep the server active
+    fetch(`${API_BASE_URL}/health`)
+      .then((res) => res.json())
+      .then((data) => console.log("Backend server health status:", data))
+      .catch((err) => console.error("Error pinging backend server health status:", err));
+  }, []);
 
   useEffect(() => {
     // Generate static metadata for hero background floating particles

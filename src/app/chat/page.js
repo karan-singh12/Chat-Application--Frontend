@@ -7,7 +7,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useChat } from "@/context/ChatContext";
 import { authService } from "@/services/authService";
 
-export default function DashboardPage() {
+export default function ChatPage() {
   const { user } = useAuth();
   const {
     chats,
@@ -96,7 +96,7 @@ export default function DashboardPage() {
     }
   }, [mobileShowChat, activeChat, selectChat]);
 
-  // Typing indicator â€“ debounced
+  // Typing indicator – debounced
   const handleInputChange = (e) => {
     setMessageText(e.target.value);
     if (!isTyping) {
@@ -321,7 +321,7 @@ export default function DashboardPage() {
           </div>
         </section>
 
-        {/* â”€â”€â”€ Chat Window â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+        {/* —————— Chat Window —Status Bar ————————————————— */}
         <section
           className={`flex-grow h-full flex flex-col relative border-l border-white/5 transition-all duration-300 ${
             !mobileShowChat ? "hidden md:flex" : "flex"
@@ -485,41 +485,41 @@ export default function DashboardPage() {
                           </span>
                           {isMe && (() => {
                             if (msg.isSending) {
-                              return (
-                                <span className="material-symbols-outlined text-[10px] text-on-surface-variant/40 animate-spin" title="Sending...">
-                                  progress_activity
-                                </span>
-                              );
+                               return (
+                                 <span className="material-symbols-outlined text-[10px] text-on-surface-variant/40 animate-spin" title="Sending...">
+                                   progress_activity
+                                 </span>
+                               );
                             }
                             if (msg.isFailed) {
-                              return (
-                                <span className="material-symbols-outlined text-[12px] text-red-400 font-bold" title="Failed to send">
-                                  error
-                                </span>
-                              );
+                               return (
+                                 <span className="material-symbols-outlined text-[12px] text-red-400 font-bold" title="Failed to send">
+                                   error
+                                 </span>
+                               );
                             }
 
                             const isRead = msg.reads && msg.reads.some((r) => r.userId !== user?.id);
                             const isDelivered = msg.deliveries && msg.deliveries.some((d) => d.userId !== user?.id);
 
                             if (isRead) {
-                              return (
-                                <span className="material-symbols-outlined text-[11px] text-blue-400 font-bold" title="Read">
-                                  done_all
-                                </span>
-                              );
+                               return (
+                                 <span className="material-symbols-outlined text-[11px] text-blue-400 font-bold" title="Read">
+                                   done_all
+                                 </span>
+                               );
                             } else if (isDelivered) {
-                              return (
-                                <span className="material-symbols-outlined text-[11px] text-on-surface-variant/40" title="Delivered">
-                                  done_all
-                                </span>
-                              );
+                               return (
+                                 <span className="material-symbols-outlined text-[11px] text-on-surface-variant/40" title="Delivered">
+                                   done_all
+                                 </span>
+                               );
                             } else {
-                              return (
-                                <span className="material-symbols-outlined text-[11px] text-on-surface-variant/40" title="Sent">
-                                  done
-                                </span>
-                              );
+                               return (
+                                 <span className="material-symbols-outlined text-[11px] text-on-surface-variant/40" title="Sent">
+                                   done
+                                 </span>
+                               );
                             }
                           })()}
                         </div>
@@ -606,7 +606,7 @@ export default function DashboardPage() {
         </section>
       </main>
 
-      {/* â”€â”€â”€ Incoming Call Overlay â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* —————— Incoming Call Overlay —————————————————— */}
       {callState?.type === "incoming" && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm">
           <div className="bg-surface-container border border-white/10 rounded-3xl p-8 w-80 text-center shadow-2xl">
@@ -645,7 +645,7 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {/* â”€â”€â”€ Outgoing Call Overlay â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* —————— Outgoing Call Overlay —————————————————— */}
       {callState?.type === "outgoing" && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm">
           <div className="bg-surface-container border border-white/10 rounded-3xl p-8 w-80 text-center shadow-2xl">
@@ -666,7 +666,7 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {/* â”€â”€â”€ Active Call Overlay â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* —————— Active Call Overlay ———————————————————— */}
       {callState?.type === "active" && (
         <div className="fixed inset-0 z-[100] bg-black flex flex-col">
           {/* Remote video */}
@@ -732,7 +732,7 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {/* â”€â”€â”€ New Chat Modal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* —————— New Chat Modal —Status Bar —————————————— */}
       {isNewChatOpen && (
         <div className="fixed inset-0 bg-background-app/85 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-surface-container border border-white/10 rounded-[24px] w-full max-w-[400px] overflow-hidden flex flex-col max-h-[85vh] shadow-2xl">
@@ -796,7 +796,7 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {/* â”€â”€â”€ New Group Modal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* —————— New Group Modal ———————————————————————— */}
       {isNewGroupOpen && (
         <div className="fixed inset-0 bg-background-app/85 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-surface-container border border-white/10 rounded-[24px] w-full max-w-[420px] overflow-hidden flex flex-col max-h-[90vh] shadow-2xl">
@@ -896,4 +896,3 @@ export default function DashboardPage() {
     </div>
   );
 }
-

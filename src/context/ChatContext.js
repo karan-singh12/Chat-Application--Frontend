@@ -243,7 +243,7 @@ export function ChatProvider({ children }) {
           if (match) {
             setActiveChatState(match);
             await loadMessages(match);
-            window.history.replaceState(null, "", "/dashboard");
+            window.history.replaceState(null, "", "/chat");
             return;
           }
         }
@@ -572,7 +572,7 @@ export function ChatProvider({ children }) {
     }
   }, [activeChat, socketRef.current?.connected]);
 
-  // Track page path and send read receipts only when active on dashboard
+  // Track page path and send read receipts only when active on chat
   const pathname = usePathname();
   const pathnameRef = useRef(pathname);
   useEffect(() => {
@@ -580,7 +580,7 @@ export function ChatProvider({ children }) {
   }, [pathname]);
 
   useEffect(() => {
-    if (pathname === "/dashboard" && activeChat && socketRef.current?.connected && user?.id) {
+    if (pathname === "/chat" && activeChat && socketRef.current?.connected && user?.id) {
       const activeRoomId = activeChat.id;
       const msgs = messages[activeRoomId] || [];
       msgs.forEach((msg) => {
