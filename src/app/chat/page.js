@@ -118,6 +118,17 @@ export default function ChatPage() {
     }
   }, [chats, activeChat, selectChat]);
 
+  // If we arrive on the chat page with an activeChat already set (e.g. navigated from
+  // the friends page after getOrCreateChat), show the chat panel on mobile immediately.
+  const didInitMobileRef = useRef(false);
+  useEffect(() => {
+    if (didInitMobileRef.current) return;
+    if (activeChat && typeof window !== "undefined" && window.innerWidth < 768) {
+      didInitMobileRef.current = true;
+      setMobileShowChat(true);
+    }
+  }, [activeChat]);
+
   // Clear active chat on mobile when not actively viewing the chat window
   useEffect(() => {
     if (typeof window !== "undefined" && window.innerWidth < 768) {

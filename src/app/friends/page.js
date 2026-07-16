@@ -107,9 +107,8 @@ export default function FriendsPage() {
 
     setIsLoading(true);
     try {
-      await getOrCreateChat(friend.id, friend.name, friend.avatar);
-      // Pass numeric userId so the chat page can match it against c.otherId
-      router.push(`/chat?chat=${friend.userId}`);
+      await getOrCreateChat(friend.userId, friend.name, friend.avatar);
+      router.push(`/chat`);
     } catch (err) {
       console.error("Failed to message friend:", err);
     } finally {
@@ -277,7 +276,7 @@ export default function FriendsPage() {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_0%_0%,rgba(77,94,247,0.05),transparent_45%),radial-gradient(circle_at_100%_100%,rgba(168,85,247,0.03),transparent_45%)] pointer-events-none -z-10" />
 
         <div className="p-4 flex flex-col gap-6 max-w-[960px] mx-auto w-full">
-          
+
           {/* Header */}
           <section className="pt-6 flex flex-col gap-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 w-full">
@@ -302,11 +301,10 @@ export default function FriendsPage() {
                 </button>
               </div>
               {addFriendStatus && (
-                <div className={`px-4 py-2 rounded-full text-[10px] font-semibold flex items-center gap-1.5 border animate-fade-in ${
-                  addFriendStatus.type === "success" 
-                    ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-400" 
+                <div className={`px-4 py-2 rounded-full text-[10px] font-semibold flex items-center gap-1.5 border animate-fade-in ${addFriendStatus.type === "success"
+                    ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-400"
                     : "bg-red-500/10 border-red-500/20 text-red-400"
-                }`}>
+                  }`}>
                   <span className="material-symbols-outlined text-sm">
                     {addFriendStatus.type === "success" ? "check_circle" : "error"}
                   </span>
@@ -326,17 +324,15 @@ export default function FriendsPage() {
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`px-3 py-2 font-semibold relative transition-colors text-xs whitespace-nowrap cursor-pointer ${
-                      activeTab === tab.id
+                    className={`px-3 py-2 font-semibold relative transition-colors text-xs whitespace-nowrap cursor-pointer ${activeTab === tab.id
                         ? "text-primary border-b-2 border-primary"
                         : "text-on-surface-variant hover:text-on-surface"
-                    }`}
+                      }`}
                   >
                     {tab.label}
                     {tab.count > 0 && (
-                      <span className={`ml-1.5 text-[9px] px-1.5 py-0.5 rounded-full font-extrabold ${
-                        tab.isAlert ? "bg-red-500/10 text-red-400" : "bg-white/10 text-on-surface-variant"
-                      }`}>
+                      <span className={`ml-1.5 text-[9px] px-1.5 py-0.5 rounded-full font-extrabold ${tab.isAlert ? "bg-red-500/10 text-red-400" : "bg-white/10 text-on-surface-variant"
+                        }`}>
                         {tab.count}
                       </span>
                     )}
@@ -362,7 +358,7 @@ export default function FriendsPage() {
 
           {/* Grid Layout: Main list vs suggestions */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-            
+
             {/* Friends Cards Stack (Left Column) */}
             <div className="lg:col-span-8 flex flex-col gap-3">
               {activeTab === "list" && (
@@ -526,7 +522,7 @@ export default function FriendsPage() {
 
             {/* Suggestions Sidebar (Right Column) */}
             <div className="lg:col-span-4 flex flex-col gap-4 w-full">
-              
+
               {/* Suggestion Card */}
               <div className="bg-surface-container/30 border border-white/5 rounded-xl p-5 shadow-md">
                 <h3 className="text-xs text-white font-bold mb-3 flex items-center gap-1.5">
@@ -535,7 +531,7 @@ export default function FriendsPage() {
                   </span>
                   Suggestions
                 </h3>
-                
+
                 <div className="space-y-3">
                   {suggestions.map((sug) => (
                     <div key={sug.id} className="flex items-center justify-between gap-2.5">
@@ -553,11 +549,10 @@ export default function FriendsPage() {
                       <button
                         onClick={() => handleAddFriend(sug.id)}
                         disabled={sug.added}
-                        className={`w-7 h-7 rounded-full flex items-center justify-center transition-all active:scale-90 cursor-pointer ${
-                          sug.added
+                        className={`w-7 h-7 rounded-full flex items-center justify-center transition-all active:scale-90 cursor-pointer ${sug.added
                             ? "bg-green-500/10 text-green-400 cursor-default"
                             : "bg-primary/10 text-primary hover:bg-primary hover:text-white"
-                        }`}
+                          }`}
                       >
                         <span className="material-symbols-outlined text-[14px]">
                           {sug.added ? "done" : "person_add"}
@@ -566,7 +561,7 @@ export default function FriendsPage() {
                     </div>
                   ))}
                 </div>
-                
+
                 <button className="w-full mt-4 py-1.5 border border-white/5 text-on-surface-variant hover:text-white hover:bg-white/5 font-semibold text-[10px] rounded-full transition-all cursor-pointer">
                   Find More People
                 </button>
