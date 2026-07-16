@@ -133,17 +133,6 @@ export default function ChatPage() {
     }
   }, [activeChat]);
 
-  // Clear active chat on mobile ONLY when user explicitly closes the chat window (mobileShowChat goes true -> false)
-  const prevMobileShowChat = useRef(mobileShowChat);
-  useEffect(() => {
-    if (typeof window !== "undefined" && window.innerWidth < 768) {
-      if (prevMobileShowChat.current === true && mobileShowChat === false && activeChat) {
-        selectChat(null);
-      }
-    }
-    prevMobileShowChat.current = mobileShowChat;
-  }, [mobileShowChat, activeChat, selectChat]);
-
   // Typing indicator – debounced
   const handleInputChange = (e) => {
     setMessageText(e.target.value);
