@@ -9,6 +9,7 @@ export default function CallsPage() {
   const { callHistory, clearCallHistory, startCall } = useChat();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [activeTab, setActiveTab] = useState("all"); // "all", "incoming", "outgoing", "missed"
 
   const formatTime = (dateStr) => {
     if (!dateStr) return "";
@@ -39,9 +40,15 @@ export default function CallsPage() {
     return `${m}m ${s}s`;
   };
 
-  const filteredHistory = callHistory.filter((log) =>
-    log.name?.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredHistory = callHistory.filter((log) => {
+    const matchesSearch = log.name?.toLowerCase().includes(searchQuery.toLowerCase());
+    if (!matchesSearch) return false;
+    
+    if (activeTab === "incoming") return log.type === "incoming";
+    if (activeTab === "outgoing") return log.type === "outgoing";
+    if (activeTab === "missed") return log.status === "missed";
+    return true;
+  });
 
   const getCallIcon = (log) => {
     if (log.status === "missed") {
@@ -96,18 +103,49 @@ export default function CallsPage() {
               )}
             </div>
 
-            {/* Contact search */}
-            <div className="relative">
-              <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">
-                search
-              </span>
-              <input
-                className="w-full h-11 pl-11 pr-4 bg-white/5 border border-white/5 rounded-full text-xs text-white placeholder:text-on-surface-variant/40 focus:outline-none focus:border-primary/50 focus:bg-white/10 transition-all"
-                type="text"
-                placeholder="Search calls by contact name..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
+            {/* Navigation Tabs & Search */}
+            <div className="flex flex-col md:flex-row md:items-center justify-between border-b border-white/5 gap-3 mt-2">
+              <div className="flex overflow-x-auto scrollbar-none gap-2">
+                {[
+                  { id: "all", label: "All", count: callHistory.length },
+                  { id: "incoming", label: "Incoming", count: callHistory.filter(c => c.type === "incoming").length },
+                  { id: "outgoing", label: "Outgoing", count: callHistory.filter(c => c.type === "outgoing").length },
+                  { id: "missed", label: "Missed", count: callHistory.filter(c => c.status === "missed").length, isAlert: true }
+                ].map(tab => (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`px-3 py-2 font-semibold relative transition-colors text-xs whitespace-nowrap cursor-pointer ${
+                      activeTab === tab.id
+                        ? "text-primary border-b-2 border-primary"
+                        : "text-on-surface-variant hover:text-on-surface"
+                    }`}
+                  >
+                    {tab.label}
+                    {tab.count > 0 && (
+                      <span className={`ml-1.5 text-[9px] px-1.5 py-0.5 rounded-full font-extrabold ${
+                        tab.isAlert ? "bg-red-500/10 text-red-400" : "bg-white/10 text-on-surface-variant"
+                      }`}>
+                        {tab.count}
+                      </span>
+                    )}
+                  </button>
+                ))}
+              </div>
+
+              {/* Search bar */}
+              <div className="w-full md:w-64 relative group pb-1.5 md:pb-0">
+                <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant opacity-60 text-[16px]">
+                  search
+                </span>
+                <input
+                  className="w-full bg-surface-container-high/50 border border-white/5 rounded-full py-1.5 pl-9 pr-4 text-xs focus:outline-none focus:border-primary/50 focus:bg-surface-container-high transition-all text-white placeholder:text-on-surface-variant/40"
+                  placeholder="Search calls by contact name..."
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </div>
             </div>
           </section>
 

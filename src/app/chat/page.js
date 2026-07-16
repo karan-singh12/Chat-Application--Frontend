@@ -62,7 +62,12 @@ export default function ChatPage() {
 
   const [messageText, setMessageText] = useState("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [mobileShowChat, setMobileShowChat] = useState(false);
+  const [mobileShowChat, setMobileShowChat] = useState(() => {
+    if (typeof window !== "undefined" && window.innerWidth < 768) {
+      return !!activeChat;
+    }
+    return false;
+  });
   const [friends, setFriends] = useState([]);
   const [isNewChatOpen, setIsNewChatOpen] = useState(false);
   const [isNewGroupOpen, setIsNewGroupOpen] = useState(false);
@@ -118,16 +123,7 @@ export default function ChatPage() {
     }
   }, [chats, activeChat, selectChat]);
 
-  // If we arrive on the chat page with an activeChat already set (e.g. navigated from
-  // the friends page after getOrCreateChat), show the chat panel on mobile immediately.
-  const didInitMobileRef = useRef(false);
-  useEffect(() => {
-    if (didInitMobileRef.current) return;
-    if (activeChat && typeof window !== "undefined" && window.innerWidth < 768) {
-      didInitMobileRef.current = true;
-      setMobileShowChat(true);
-    }
-  }, [activeChat]);
+  // The mobileShowChat state is already initialized based on the initial activeChat value.
 
   // Clear active chat on mobile when not actively viewing the chat window
   useEffect(() => {

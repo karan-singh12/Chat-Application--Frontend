@@ -279,7 +279,18 @@ export function ChatProvider({ children }) {
           const isVideo = log.callType === "video" || !!log.video;
           const savedLog = await chatService.createCallLog(log.userId, finalStatus, isVideo, duration);
           if (savedLog) {
-            setCallHistory((prev) => [savedLog, ...prev]);
+            const formattedLog = {
+              id: savedLog.id,
+              userId: log.userId,
+              name: log.name,
+              avatar: log.avatar,
+              type: "outgoing",
+              status: finalStatus,
+              timestamp: savedLog.createdAt || new Date().toISOString(),
+              duration,
+              video: isVideo,
+            };
+            setCallHistory((prev) => [formattedLog, ...prev]);
           }
         } catch (err) {
           console.error("Failed to save call log to database:", err);
