@@ -238,7 +238,8 @@ export function ChatProvider({ children }) {
           const match = all.find(
             (c) =>
               c.id.toLowerCase().includes(chatParam.toLowerCase()) ||
-              String(c.otherId) === chatParam
+              String(c.otherId) === chatParam ||
+              c.name?.toLowerCase() === chatParam.toLowerCase()
           );
           if (match) {
             setActiveChatState(match);

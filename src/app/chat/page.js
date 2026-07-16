@@ -24,7 +24,8 @@ function ChatSearchParamHandler({ chats, selectChat, setMobileShowChat }) {
     const match = chats.find(
       (c) =>
         c.id?.toLowerCase().includes(chatParam.toLowerCase()) ||
-        String(c.otherId) === chatParam
+        String(c.otherId) === chatParam ||
+        c.name?.toLowerCase() === chatParam.toLowerCase()
     );
     if (match) {
       selectChat(match);
@@ -123,15 +124,24 @@ export default function ChatPage() {
     }
   }, [chats, activeChat, selectChat]);
 
-  // The mobileShowChat state is already initialized based on the initial activeChat value.
-
-  // Clear active chat on mobile when not actively viewing the chat window
+  // Sync mobileShowChat dynamically on mount/change if activeChat is present on mobile
   useEffect(() => {
     if (typeof window !== "undefined" && window.innerWidth < 768) {
-      if (!mobileShowChat && activeChat) {
+      if (activeChat) {
+        setMobileShowChat(true);
+      }
+    }
+  }, [activeChat]);
+
+  // Clear active chat on mobile ONLY when user explicitly closes the chat window (mobileShowChat goes true -> false)
+  const prevMobileShowChat = useRef(mobileShowChat);
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.innerWidth < 768) {
+      if (prevMobileShowChat.current === true && mobileShowChat === false && activeChat) {
         selectChat(null);
       }
     }
+    prevMobileShowChat.current = mobileShowChat;
   }, [mobileShowChat, activeChat, selectChat]);
 
   // Typing indicator – debounced
