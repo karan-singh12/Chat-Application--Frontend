@@ -108,7 +108,8 @@ export default function FriendsPage() {
     setIsLoading(true);
     try {
       await getOrCreateChat(friend.id, friend.name, friend.avatar);
-      router.push(`/chat?chat=${friend.id}`);
+      // Pass numeric userId so the chat page can match it against c.otherId
+      router.push(`/chat?chat=${friend.userId}`);
     } catch (err) {
       console.error("Failed to message friend:", err);
     } finally {

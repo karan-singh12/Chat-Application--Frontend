@@ -1,12 +1,42 @@
 "use client";
 
-import React, { useState, useRef, useEffect, useCallback } from "react";
+import React, { useState, useRef, useEffect, useCallback, Suspense } from "react";
 import Link from "next/link";
+import { useSearchParams, useRouter } from "next/navigation";
 import Sidebar from "@/components/Sidebar";
 import { useAuth } from "@/context/AuthContext";
 import { useChat } from "@/context/ChatContext";
 import { authService } from "@/services/authService";
 import { getAvatarUrl } from "@/utils/avatar";
+
+/**
+ * Small isolated component that reads ?chat= from the URL and
+ * triggers chat selection. Must live inside a <Suspense> boundary
+ * because useSearchParams() needs one in Next.js App Router.
+ */
+function ChatSearchParamHandler({ chats, selectChat, setMobileShowChat }) {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const chatParam = searchParams.get("chat");
+
+  useEffect(() => {
+    if (!chatParam || chats.length === 0) return;
+    const match = chats.find(
+      (c) =>
+        c.id?.toLowerCase().includes(chatParam.toLowerCase()) ||
+        String(c.otherId) === chatParam
+    );
+    if (match) {
+      selectChat(match);
+      setMobileShowChat(true);
+      // Remove the query param from the URL without a full reload
+      router.replace("/chat");
+    }
+  }, [chatParam, chats, selectChat, setMobileShowChat, router]);
+
+  return null;
+}
+
 
 export default function ChatPage() {
   const { user } = useAuth();
@@ -181,6 +211,15 @@ export default function ChatPage() {
 
   return (
     <div className="h-screen flex overflow-hidden font-body-md text-body-md bg-background-app text-on-surface">
+      {/* Auto-select chat from ?chat= query param (e.g. navigated from friends page) */}
+      <Suspense fallback={null}>
+        <ChatSearchParamHandler
+          chats={chats}
+          selectChat={selectChat}
+          setMobileShowChat={setMobileShowChat}
+        />
+      </Suspense>
+
       {/* Sidebar Navigation */}
       <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} hideMobileNav={mobileShowChat && !!activeChat} />
 
