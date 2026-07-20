@@ -38,11 +38,11 @@ export default function LandingPage() {
     <div className="antialiased min-h-screen relative overflow-x-hidden">
       {/* Top Navigation */}
       <header className="sticky top-0 w-full z-50 bg-surface/30 backdrop-blur-md border-b border-white/10 flex justify-between items-center px-gutter h-16">
-        <div className="flex items-center gap-2">
+        <Link href="/" className="flex items-center gap-2 cursor-pointer">
           <span className="font-headline-md text-headline-md font-extrabold bg-gradient-to-br from-primary to-tertiary bg-clip-text text-transparent">
             NexusChat
           </span>
-        </div>
+        </Link>
         <nav className="hidden md:flex gap-8 items-center">
           <a
             className="font-label-md text-label-md text-primary font-bold hover:text-primary transition-colors"
@@ -78,7 +78,7 @@ export default function LandingPage() {
           </Link>
           <Link
             href="/signup"
-            className="font-label-md text-label-md px-6 py-2 btn-primary rounded-full text-white font-bold"
+            className="font-label-md text-label-md px-6 py-2 btn-primary rounded-full text-white font-bold hidden md:inline-flex"
           >
             Get Started
           </Link>

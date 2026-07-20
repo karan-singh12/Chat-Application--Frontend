@@ -31,7 +31,7 @@ export default function Sidebar({ isOpen, onClose, hideMobileNav }) {
       {/* Desktop Sidebar (hidden on mobile, visible on md+) */}
       <aside className="fixed top-0 bottom-0 left-0 h-screen w-sidebar-width bg-surface-container-low border-r border-white/5 flex flex-col py-5 z-50 hidden md:flex items-center justify-between">
         {/* Top Logo */}
-        <div className="flex flex-col items-center">
+        <Link href="/" className="flex flex-col items-center cursor-pointer">
           <div className="w-8 h-8 flex items-center justify-center select-none hover:scale-105 hover:rotate-2 transition-all duration-300">
             <svg className="w-full h-full filter drop-shadow-[0_2px_8px_rgba(99,102,241,0.4)]" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
               <defs>
@@ -49,7 +49,7 @@ export default function Sidebar({ isOpen, onClose, hideMobileNav }) {
               <path d="M27.5 18 L72.5 82" stroke="url(#logo-grad-2)" strokeWidth="15" strokeLinecap="round" />
             </svg>
           </div>
-        </div>
+        </Link>
 
         {/* Nav Items */}
         <nav className="w-full flex flex-col gap-4 px-2">
@@ -120,7 +120,7 @@ export default function Sidebar({ isOpen, onClose, hideMobileNav }) {
       {/* Mobile Top Navigation Bar (visible only on mobile) */}
       <header className={`fixed top-0 left-0 right-0 h-14 bg-surface-container-low/90 backdrop-blur-xl border-b border-white/5 flex items-center justify-between px-4 z-40 md:hidden shadow-sm ${hideMobileNav ? "hidden" : ""}`}>
         {/* App Logo & Brand Name */}
-        <div className="flex items-center gap-2 select-none">
+        <Link href="/" className="flex items-center gap-2 select-none cursor-pointer">
           <div className="w-7 h-7 flex items-center justify-center">
             <svg className="w-full h-full filter drop-shadow-[0_1.5px_6px_rgba(99,102,241,0.4)]" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
               <defs>
@@ -139,7 +139,7 @@ export default function Sidebar({ isOpen, onClose, hideMobileNav }) {
             </svg>
           </div>
           <span className="text-white font-extrabold text-xs tracking-tight">NexusChat</span>
-        </div>
+        </Link>
 
         {/* Right Side Icon: Notifications */}
         <div className="flex items-center gap-3">

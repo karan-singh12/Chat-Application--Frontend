@@ -208,8 +208,8 @@ export default function SignUpPage() {
           className="bg-surface-container/45 backdrop-blur-xl border border-white/5 rounded-[32px] p-8 sm:p-10 flex flex-col items-center shadow-2xl"
         >
           {/* Brand Identity */}
-          <div className="mb-8 text-center">
-            <div className="inline-flex items-center justify-center w-14 h-14 mb-4 select-none animate-fade-in hover:scale-105 hover:rotate-2 transition-transform duration-300">
+          <Link href="/" className="mb-8 text-center flex flex-col items-center cursor-pointer group">
+            <div className="inline-flex items-center justify-center w-14 h-14 mb-4 select-none animate-fade-in group-hover:scale-105 group-hover:rotate-2 transition-transform duration-300">
               <svg className="w-full h-full filter drop-shadow-[0_4px_12px_rgba(99,102,241,0.5)]" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <defs>
                   <linearGradient id="logo-grad-1-signup" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -232,7 +232,7 @@ export default function SignUpPage() {
             <p className="text-[11px] text-on-surface-variant font-semibold mt-1">
               Create an account and connect globally
             </p>
-          </div>
+          </Link>
 
           {/* Messages */}
           {errorMsg && (

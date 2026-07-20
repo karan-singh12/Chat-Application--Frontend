@@ -32,6 +32,9 @@ const apiClient = {
     const data = await response.json().catch(() => ({}));
 
     if (!response.ok) {
+      if (response.status === 401 && typeof window !== "undefined") {
+        window.dispatchEvent(new CustomEvent("auth:unauthorized"));
+      }
       throw new Error(data.message || `Request failed with status ${response.status}`);
     }
 

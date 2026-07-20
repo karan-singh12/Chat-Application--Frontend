@@ -6,22 +6,82 @@ import { authService } from "@/services/authService";
 
 const AuthContext = createContext();
 
+const isTokenExpired = (jwtToken) => {
+  if (!jwtToken) return true;
+  try {
+    const parts = jwtToken.split(".");
+    if (parts.length !== 3) return false;
+    const payloadBase64 = parts[1];
+    const base64 = payloadBase64.replace(/-/g, "+").replace(/_/g, "/");
+    const jsonPayload = decodeURIComponent(
+      atob(base64)
+        .split("")
+        .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+        .join("")
+    );
+    const { exp } = JSON.parse(jsonPayload);
+    if (!exp) return false;
+    return Date.now() >= exp * 1000;
+  } catch (e) {
+    return false;
+  }
+};
+
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
+  const logout = useCallback(() => {
+    setUser(null);
+    setToken(null);
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("nexus_user");
+      localStorage.removeItem("nexus_token");
+    }
+    router.push("/login");
+  }, [router]);
+
   useEffect(() => {
     // Load from localStorage on client side
     const savedUser = localStorage.getItem("nexus_user");
     const savedToken = localStorage.getItem("nexus_token");
     if (savedUser && savedToken) {
-      setUser(JSON.parse(savedUser));
-      setToken(savedToken);
+      if (isTokenExpired(savedToken)) {
+        localStorage.removeItem("nexus_user");
+        localStorage.removeItem("nexus_token");
+        setUser(null);
+        setToken(null);
+      } else {
+        setUser(JSON.parse(savedUser));
+        setToken(savedToken);
+      }
     }
     setLoading(false);
   }, []);
+
+  useEffect(() => {
+    const checkTokenExpiration = () => {
+      const savedToken = typeof window !== "undefined" ? localStorage.getItem("nexus_token") : null;
+      if (savedToken && isTokenExpired(savedToken)) {
+        logout();
+      }
+    };
+
+    checkTokenExpiration();
+    const interval = setInterval(checkTokenExpiration, 10000);
+    return () => clearInterval(interval);
+  }, [logout]);
+
+  useEffect(() => {
+    const handleUnauthorized = () => {
+      logout();
+    };
+
+    window.addEventListener("auth:unauthorized", handleUnauthorized);
+    return () => window.removeEventListener("auth:unauthorized", handleUnauthorized);
+  }, [logout]);
 
   const login = async (email, password) => {
     try {
@@ -86,14 +146,6 @@ export function AuthProvider({ children }) {
       console.error("Auth signup service error:", err);
       return { success: false, message: err.message };
     }
-  };
-
-  const logout = () => {
-    setUser(null);
-    setToken(null);
-    localStorage.removeItem("nexus_user");
-    localStorage.removeItem("nexus_token");
-    router.push("/login");
   };
 
   const refreshProfile = useCallback(async () => {
