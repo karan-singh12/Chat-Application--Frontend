@@ -30,7 +30,9 @@ export default function LiveStreamsPage() {
   // Track stream duration when active
   useEffect(() => {
     if (currentLiveStream) {
-      setStreamDuration(0);
+      setTimeout(() => {
+        setStreamDuration(0);
+      }, 0);
       timerRef.current = setInterval(() => {
         setStreamDuration((prev) => prev + 1);
       }, 1000);
@@ -301,7 +303,7 @@ export default function LiveStreamsPage() {
 
                   <div className="flex-grow max-w-sm px-4 hidden md:block">
                     <p className="text-xs font-bold text-white truncate text-center">
-                      Streaming: "{currentLiveStream.title}"
+                      Streaming: &quot;{currentLiveStream.title}&quot;
                     </p>
                   </div>
 
@@ -347,7 +349,7 @@ export default function LiveStreamsPage() {
                 <div className="flex-grow flex flex-col justify-center items-center p-6 text-center text-on-surface-variant/40 border border-dashed border-white/5 rounded-2xl mt-4">
                   <span className="material-symbols-outlined text-[32px] mb-2 animate-bounce">rocket_launch</span>
                   <p className="text-[10px] font-semibold leading-relaxed">
-                    You are live to all online users! Other users can join your stream from the "Live" tab.
+                    You are live to all online users! Other users can join your stream from the &quot;Live&quot; tab.
                   </p>
                 </div>
               </div>

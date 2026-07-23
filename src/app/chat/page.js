@@ -351,7 +351,7 @@ export default function ChatPage() {
                         </div>
                       ) : online && chat.type === "dm" ? (
                         <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-background-app rounded-full" />
-                      )}
+                      ) : null}
                       {chat.type === "group" && (
                         <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-purple-500 rounded-full border border-background-app flex items-center justify-center">
                           <span className="material-symbols-outlined text-[8px] text-white">group</span>
