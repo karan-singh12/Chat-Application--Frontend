@@ -47,6 +47,7 @@ export default function ChatPage() {
     messages,
     typingMap,
     onlineUsers,
+    activeLiveStreams = [],
     selectChat,
     sendMessage,
     sendTyping,
@@ -193,6 +194,7 @@ export default function ChatPage() {
   };
 
   const isOnline = (chat) => onlineUsers.has(chat.otherId);
+  const isLive = (chat) => activeLiveStreams.some((s) => s.broadcasterId === chat.otherId);
   const isTypingInChat = (chat) => !!typingMap[chat.id];
 
   const formatTime = (dateStr) => {
@@ -309,7 +311,13 @@ export default function ChatPage() {
                     <div className="relative flex-shrink-0">
                       {chat.avatar ? (
                         <img
-                          className={`w-9 h-9 rounded-full object-cover border ${isActive ? "border-white/20" : "border-white/10"}`}
+                          className={`w-9 h-9 rounded-full object-cover border ${
+                            isLive(chat)
+                              ? "border-pink-500 shadow-[0_0_8px_rgba(236,72,153,0.8)] animate-pulse"
+                              : isActive
+                              ? "border-white/20"
+                              : "border-white/10"
+                          }`}
                           alt={chat.name}
                           src={getAvatarUrl(chat.avatar)}
                           onError={(e) => {
@@ -320,7 +328,9 @@ export default function ChatPage() {
                       ) : (
                         <div
                           className={`w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold border ${
-                            isActive
+                            isLive(chat)
+                              ? "bg-pink-500/20 text-pink-300 border-pink-500 shadow-[0_0_8px_rgba(236,72,153,0.8)] animate-pulse"
+                              : isActive
                               ? "bg-white/20 text-white border-white/20"
                               : chat.type === "group"
                               ? "bg-purple-500/20 text-purple-300 border-purple-500/20"
@@ -334,7 +344,12 @@ export default function ChatPage() {
                           )}
                         </div>
                       )}
-                      {online && chat.type === "dm" && (
+                      {isLive(chat) && chat.type === "dm" ? (
+                        <div className="absolute bottom-0 right-0 w-2.5 h-2.5 flex items-center justify-center">
+                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75" />
+                          <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500" />
+                        </div>
+                      ) : online && chat.type === "dm" ? (
                         <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-background-app rounded-full" />
                       )}
                       {chat.type === "group" && (
@@ -395,7 +410,11 @@ export default function ChatPage() {
                     <div className="relative flex-shrink-0">
                       {activeChat.avatar ? (
                         <img
-                          className="w-9 h-9 rounded-full object-cover border border-white/10"
+                          className={`w-9 h-9 rounded-full object-cover border ${
+                            isLive(activeChat)
+                              ? "border-pink-500 shadow-[0_0_8px_rgba(236,72,153,0.8)] animate-pulse"
+                              : "border-white/10"
+                          }`}
                           alt={activeChat.name}
                           src={getAvatarUrl(activeChat.avatar)}
                           onError={(e) => {
@@ -404,8 +423,12 @@ export default function ChatPage() {
                           }}
                         />
                       ) : (
-                        <div className={`w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold border border-white/10 ${
-                          activeChat.type === "group" ? "bg-purple-500/20 text-purple-300" : "bg-primary-container/20 text-primary"
+                        <div className={`w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold border ${
+                          isLive(activeChat)
+                            ? "bg-pink-500/20 text-pink-300 border-pink-500 shadow-[0_0_8px_rgba(236,72,153,0.8)] animate-pulse"
+                            : activeChat.type === "group"
+                            ? "bg-purple-500/20 text-purple-300 border-white/10"
+                            : "bg-primary-container/20 text-primary border-white/10"
                         }`}>
                           {activeChat.type === "group" ? (
                             <span className="material-symbols-outlined text-[18px]">group</span>
@@ -414,15 +437,22 @@ export default function ChatPage() {
                           )}
                         </div>
                       )}
-                      {isOnline(activeChat) && activeChat.type === "dm" && (
+                      {isLive(activeChat) && activeChat.type === "dm" ? (
+                        <div className="absolute bottom-0 right-0 w-2.5 h-2.5 flex items-center justify-center">
+                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75" />
+                          <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500" />
+                        </div>
+                      ) : isOnline(activeChat) && activeChat.type === "dm" && (
                         <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-background-app rounded-full" />
                       )}
                     </div>
                     <div>
                       <h3 className="font-bold text-sm leading-tight text-white">{activeChat.name}</h3>
-                      <p className="text-[10px] font-semibold text-primary mt-0.5">
+                      <p className={`text-[10px] font-semibold mt-0.5 ${isLive(activeChat) ? "text-pink-500 animate-pulse font-bold" : "text-primary"}`}>
                         {activeChat.type === "group"
                           ? `${activeChat.memberCount || "?"} members`
+                          : isLive(activeChat)
+                          ? "LIVE ⚡"
                           : isOnline(activeChat)
                           ? "Online"
                           : "Offline"}

@@ -117,6 +117,12 @@ export function ChatProvider({ children }) {
   const [callHistory, setCallHistory] = useState([]);
   const activeCallLogRef = useRef(null);
 
+  // Live Stream States and Refs
+  const [activeLiveStreams, setActiveLiveStreams] = useState([]);
+  const [currentLiveStream, setCurrentLiveStream] = useState(null);
+  const livePeerConnectionsRef = useRef(new Map()); // viewerId -> RTCPeerConnection
+  const viewerPeerConnectionRef = useRef(null); // RTCPeerConnection (used when watching a live stream)
+
   const clearCallHistory = useCallback(async () => {
     try {
       await chatService.clearCallHistory();
@@ -328,6 +334,8 @@ export function ChatProvider({ children }) {
 
     socket.on("connect", () => {
       console.log("[WS] Connected:", socket.id);
+
+      socket.emit("getActiveStreams");
 
       // Join all conversation rooms on reconnect
       const currentChats = chatsRef.current || [];
@@ -584,7 +592,199 @@ export function ChatProvider({ children }) {
       console.warn("[WS] Connection error:", err.message);
     });
 
+    // --- Live Stream Event Listeners ---
+    socket.on("liveStreamStarted", (stream) => {
+      setActiveLiveStreams((prev) => {
+        if (prev.some((s) => s.broadcasterId === stream.broadcasterId)) return prev;
+        return [...prev, stream];
+      });
+    });
+
+    socket.on("liveStreamStopped", ({ broadcasterId }) => {
+      setActiveLiveStreams((prev) => prev.filter((s) => s.broadcasterId !== broadcasterId));
+    });
+
+    socket.on("activeStreamsList", (streams) => {
+      setActiveLiveStreams(streams);
+    });
+
+    socket.on("goLiveSuccess", (stream) => {
+      setCurrentLiveStream({
+        ...stream,
+        isBroadcaster: true,
+        localStream: localStreamRef.current,
+        viewerCount: 0,
+      });
+    });
+
+    socket.on("liveViewerCount", ({ broadcasterId, count }) => {
+      setCurrentLiveStream((prev) => {
+        if (prev && prev.broadcasterId === broadcasterId) {
+          return { ...prev, viewerCount: count };
+        }
+        return prev;
+      });
+    });
+
+    socket.on("liveStreamEnded", ({ broadcasterId }) => {
+      if (viewerPeerConnectionRef.current) {
+        viewerPeerConnectionRef.current.close();
+        viewerPeerConnectionRef.current = null;
+      }
+      remoteStreamRef.current = null;
+      setCurrentLiveStream(null);
+      alert("The live stream has ended.");
+    });
+
+    // --- Broadcaster Side WebRTC Coordination ---
+    socket.on("liveViewerJoined", async ({ viewerId, username }) => {
+      console.log(`[WS-Live] Viewer joined: ${username} (${viewerId})`);
+      
+      const localStream = localStreamRef.current;
+      if (!localStream) return;
+
+      const pc = new RTCPeerConnection({
+        iceServers: [
+          { urls: "stun:stun.l.google.com:19302" },
+          { urls: "stun:stun1.l.google.com:19302" },
+        ],
+      });
+
+      livePeerConnectionsRef.current.set(viewerId, pc);
+
+      pc.onicecandidate = (event) => {
+        if (event.candidate) {
+          socket.emit("liveIceCandidate", {
+            targetUserId: viewerId,
+            candidate: event.candidate,
+          });
+        }
+      };
+
+      localStream.getTracks().forEach((track) => {
+        pc.addTrack(track, localStream);
+      });
+
+      try {
+        const offer = await pc.createOffer();
+        await pc.setLocalDescription(offer);
+        socket.emit("liveOffer", {
+          targetUserId: viewerId,
+          offer,
+        });
+      } catch (err) {
+        console.error("Failed to create offer for live viewer", err);
+      }
+    });
+
+    socket.on("liveViewerLeft", ({ viewerId }) => {
+      console.log(`[WS-Live] Viewer left: ${viewerId}`);
+      const pc = livePeerConnectionsRef.current.get(viewerId);
+      if (pc) {
+        pc.close();
+        livePeerConnectionsRef.current.delete(viewerId);
+      }
+    });
+
+    socket.on("liveAnswer", async ({ fromViewerId, answer }) => {
+      const pc = livePeerConnectionsRef.current.get(fromViewerId);
+      if (pc) {
+        try {
+          await pc.setRemoteDescription(answer);
+        } catch (err) {
+          console.error("Failed to set remote description on liveAnswer", err);
+        }
+      }
+    });
+
+    // --- Viewer Side WebRTC Coordination ---
+    socket.on("liveOffer", async ({ fromBroadcasterId, offer }) => {
+      console.log(`[WS-Live] Received live stream offer from ${fromBroadcasterId}`);
+
+      const pc = new RTCPeerConnection({
+        iceServers: [
+          { urls: "stun:stun.l.google.com:19302" },
+          { urls: "stun:stun1.l.google.com:19302" },
+        ],
+      });
+
+      viewerPeerConnectionRef.current = pc;
+
+      pc.onicecandidate = (event) => {
+        if (event.candidate) {
+          socket.emit("liveIceCandidate", {
+            targetUserId: fromBroadcasterId,
+            candidate: event.candidate,
+          });
+        }
+      };
+
+      pc.ontrack = (event) => {
+        console.log("[WS-Live] Remote track received!");
+        remoteStreamRef.current = event.streams[0];
+        setCurrentLiveStream((prev) => {
+          if (prev) {
+            return { ...prev, remoteStream: event.streams[0] };
+          }
+          return prev;
+        });
+      };
+
+      try {
+        await pc.setRemoteDescription(offer);
+        const answer = await pc.createAnswer();
+        await pc.setLocalDescription(answer);
+        socket.emit("liveAnswer", {
+          targetUserId: fromBroadcasterId,
+          answer,
+        });
+
+        // Resolve title/username from current active streams state if possible
+        setActiveLiveStreams((currentStreams) => {
+          const match = currentStreams.find((s) => s.broadcasterId === fromBroadcasterId);
+          setCurrentLiveStream({
+            broadcasterId: fromBroadcasterId,
+            title: match?.title || "Live Broadcast",
+            username: match?.username || "Broadcaster",
+            avatar: match?.avatar || null,
+            isBroadcaster: false,
+            remoteStream: null, // will be set by ontrack
+            viewerCount: 1,
+          });
+          return currentStreams;
+        });
+      } catch (err) {
+        console.error("Failed to handle live offer WebRTC", err);
+      }
+    });
+
+    socket.on("liveIceCandidate", async ({ candidate, fromUserId }) => {
+      if (candidate) {
+        if (livePeerConnectionsRef.current.has(fromUserId)) {
+          const pc = livePeerConnectionsRef.current.get(fromUserId);
+          try {
+            await pc.addIceCandidate(candidate);
+          } catch (e) {
+            console.warn("Failed to add candidate to viewer pc", e);
+          }
+        } else if (viewerPeerConnectionRef.current) {
+          try {
+            await viewerPeerConnectionRef.current.addIceCandidate(candidate);
+          } catch (e) {
+            console.warn("Failed to add candidate to broadcaster pc", e);
+          }
+        }
+      }
+    });
+
     return () => {
+      if (viewerPeerConnectionRef.current) {
+        viewerPeerConnectionRef.current.close();
+        viewerPeerConnectionRef.current = null;
+      }
+      livePeerConnectionsRef.current.forEach((pc) => pc.close());
+      livePeerConnectionsRef.current.clear();
+
       socket.disconnect();
       socketRef.current = null;
     };
@@ -1036,6 +1236,63 @@ export function ChatProvider({ children }) {
     };
   }, [callState?.type]);
 
+  // --- Live Stream Actions ---
+  const startLiveStream = useCallback(async (title) => {
+    if (!socketRef.current?.connected) return;
+
+    let stream;
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: true,
+      });
+    } catch (err) {
+      console.warn("Failed to access camera/mic, trying virtual video fallback...", err);
+      const fakeVideoTrack = createFakeVideoTrack();
+      if (fakeVideoTrack) {
+        stream = new MediaStream([fakeVideoTrack]);
+      } else {
+        alert("Could not access camera. Please check permissions.");
+        return;
+      }
+    }
+
+    localStreamRef.current = stream;
+    socketRef.current.emit("goLive", { title });
+  }, []);
+
+  const stopLiveStream = useCallback(() => {
+    if (!socketRef.current?.connected) return;
+    socketRef.current.emit("stopLiveStream");
+
+    if (localStreamRef.current) {
+      localStreamRef.current.getTracks().forEach((t) => t.stop());
+      localStreamRef.current = null;
+    }
+
+    livePeerConnectionsRef.current.forEach((pc) => pc.close());
+    livePeerConnectionsRef.current.clear();
+
+    setCurrentLiveStream(null);
+  }, []);
+
+  const joinLiveStream = useCallback((broadcasterId) => {
+    if (!socketRef.current?.connected) return;
+    socketRef.current.emit("joinLiveStream", { broadcasterId });
+  }, []);
+
+  const leaveLiveStream = useCallback((broadcasterId) => {
+    if (!socketRef.current?.connected) return;
+    socketRef.current.emit("leaveLiveStream", { broadcasterId });
+
+    if (viewerPeerConnectionRef.current) {
+      viewerPeerConnectionRef.current.close();
+      viewerPeerConnectionRef.current = null;
+    }
+    remoteStreamRef.current = null;
+    setCurrentLiveStream(null);
+  }, []);
+
   return (
     <ChatContext.Provider
       value={{
@@ -1060,6 +1317,12 @@ export function ChatProvider({ children }) {
         endCall,
         callHistory,
         clearCallHistory,
+        activeLiveStreams,
+        currentLiveStream,
+        startLiveStream,
+        stopLiveStream,
+        joinLiveStream,
+        leaveLiveStream,
         socket: socketRef.current,
       }}
     >

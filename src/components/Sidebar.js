@@ -4,15 +4,18 @@ import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import { useChat } from "@/context/ChatContext";
 import { getAvatarUrl } from "@/utils/avatar";
 
 export default function Sidebar({ isOpen, onClose, hideMobileNav }) {
   const pathname = usePathname();
   const { logout, user } = useAuth();
+  const { activeLiveStreams = [] } = useChat() || {};
 
   const menuItems = [
     { name: "Feed", path: "/feed", icon: "home" },
     { name: "Chats", path: "/chat", icon: "chat" },
+    { name: "Live", path: "/live", icon: "sensors" },
     { name: "Search", path: "/friends", icon: "search" },
     { name: "Calls", path: "/calls", icon: "call" },
     { name: "Notifications", path: "/notifications", icon: "notifications" },
@@ -21,7 +24,7 @@ export default function Sidebar({ isOpen, onClose, hideMobileNav }) {
   const mobileMenuItems = [
     { name: "Home", path: "/feed", icon: "home" },
     { name: "Chat", path: "/chat", icon: "chat" },
-    { name: "Search", path: "/friends", icon: "search" },
+    { name: "Live", path: "/live", icon: "sensors" },
     { name: "Calls", path: "/calls", icon: "call" },
     { name: "Profile", path: "/profile", icon: "person" },
   ];
@@ -75,6 +78,9 @@ export default function Sidebar({ isOpen, onClose, hideMobileNav }) {
                   >
                     {item.icon}
                   </span>
+                  {item.name === "Live" && activeLiveStreams.length > 0 && (
+                    <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full ring-2 ring-surface-container-low animate-pulse shadow-[0_0_8px_rgba(239,68,68,0.8)]" />
+                  )}
                 </div>
                 
                 {/* Desktop Hover Tooltip */}
@@ -173,7 +179,7 @@ export default function Sidebar({ isOpen, onClose, hideMobileNav }) {
             >
               {/* Active highlights capsule */}
               <div
-                className={`w-12 h-7.5 rounded-full flex items-center justify-center transition-all duration-300 ${
+                className={`w-12 h-7.5 rounded-full flex items-center justify-center transition-all duration-300 relative ${
                   isActive ? "bg-primary/20 text-primary" : "text-on-surface-variant"
                 }`}
               >
@@ -183,6 +189,9 @@ export default function Sidebar({ isOpen, onClose, hideMobileNav }) {
                 >
                   {item.icon}
                 </span>
+                {item.name === "Live" && activeLiveStreams.length > 0 && (
+                  <span className="absolute top-0.5 right-1.5 w-2 h-2 bg-red-500 rounded-full ring-2 ring-surface-container-low animate-pulse shadow-[0_0_8px_rgba(239,68,68,0.8)]" />
+                )}
               </div>
               <span className={`text-[9px] mt-1 font-semibold ${isActive ? "text-primary" : "text-on-surface-variant"}`}>
                 {item.name}
