@@ -122,6 +122,8 @@ export function ChatProvider({ children }) {
   const [currentLiveStream, setCurrentLiveStream] = useState(null);
   const livePeerConnectionsRef = useRef(new Map()); // viewerId -> RTCPeerConnection
   const viewerPeerConnectionRef = useRef(null); // RTCPeerConnection (used when watching a live stream)
+  const viewerIceCandidatesQueueRef = useRef([]); // queued ICE candidates (viewer side)
+  const liveIceCandidatesQueueRef = useRef(new Map()); // viewerId -> queued ICE candidates (broadcaster side)
 
   const clearCallHistory = useCallback(async () => {
     try {
@@ -691,6 +693,19 @@ export function ChatProvider({ children }) {
       if (pc) {
         try {
           await pc.setRemoteDescription(answer);
+
+          // Process queued ICE candidates for this viewer
+          const queue = liveIceCandidatesQueueRef.current.get(fromViewerId);
+          if (queue && queue.length > 0) {
+            for (const candidate of queue) {
+              try {
+                await pc.addIceCandidate(candidate);
+              } catch (e) {
+                console.warn(`Failed to add queued candidate for viewer ${fromViewerId}`, e);
+              }
+            }
+            liveIceCandidatesQueueRef.current.delete(fromViewerId);
+          }
         } catch (err) {
           console.error("Failed to set remote description on liveAnswer", err);
         }
@@ -732,6 +747,19 @@ export function ChatProvider({ children }) {
 
       try {
         await pc.setRemoteDescription(offer);
+
+        // Process queued ICE candidates for the viewer
+        if (viewerIceCandidatesQueueRef.current.length > 0) {
+          for (const candidate of viewerIceCandidatesQueueRef.current) {
+            try {
+              await pc.addIceCandidate(candidate);
+            } catch (e) {
+              console.warn("Failed to add queued candidate to viewer pc", e);
+            }
+          }
+          viewerIceCandidatesQueueRef.current = [];
+        }
+
         const answer = await pc.createAnswer();
         await pc.setLocalDescription(answer);
         socket.emit("liveAnswer", {
@@ -762,16 +790,30 @@ export function ChatProvider({ children }) {
       if (candidate) {
         if (livePeerConnectionsRef.current.has(fromUserId)) {
           const pc = livePeerConnectionsRef.current.get(fromUserId);
-          try {
-            await pc.addIceCandidate(candidate);
-          } catch (e) {
-            console.warn("Failed to add candidate to viewer pc", e);
+          if (pc) {
+            if (pc.remoteDescription) {
+              try {
+                await pc.addIceCandidate(candidate);
+              } catch (e) {
+                console.warn("Failed to add candidate to viewer pc", e);
+              }
+            } else {
+              if (!liveIceCandidatesQueueRef.current.has(fromUserId)) {
+                liveIceCandidatesQueueRef.current.set(fromUserId, []);
+              }
+              liveIceCandidatesQueueRef.current.get(fromUserId).push(candidate);
+            }
           }
         } else if (viewerPeerConnectionRef.current) {
-          try {
-            await viewerPeerConnectionRef.current.addIceCandidate(candidate);
-          } catch (e) {
-            console.warn("Failed to add candidate to broadcaster pc", e);
+          const pc = viewerPeerConnectionRef.current;
+          if (pc.remoteDescription) {
+            try {
+              await pc.addIceCandidate(candidate);
+            } catch (e) {
+              console.warn("Failed to add candidate to broadcaster pc", e);
+            }
+          } else {
+            viewerIceCandidatesQueueRef.current.push(candidate);
           }
         }
       }
@@ -784,6 +826,8 @@ export function ChatProvider({ children }) {
       }
       livePeerConnectionsRef.current.forEach((pc) => pc.close());
       livePeerConnectionsRef.current.clear();
+      viewerIceCandidatesQueueRef.current = [];
+      liveIceCandidatesQueueRef.current.clear();
 
       socket.disconnect();
       socketRef.current = null;
@@ -1272,6 +1316,7 @@ export function ChatProvider({ children }) {
 
     livePeerConnectionsRef.current.forEach((pc) => pc.close());
     livePeerConnectionsRef.current.clear();
+    liveIceCandidatesQueueRef.current.clear();
 
     setCurrentLiveStream(null);
   }, []);
@@ -1289,6 +1334,7 @@ export function ChatProvider({ children }) {
       viewerPeerConnectionRef.current.close();
       viewerPeerConnectionRef.current = null;
     }
+    viewerIceCandidatesQueueRef.current = [];
     remoteStreamRef.current = null;
     setCurrentLiveStream(null);
   }, []);
