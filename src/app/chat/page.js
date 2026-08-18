@@ -234,7 +234,7 @@ export default function ChatPage() {
       {/* Main Content Area */}
       <main className={`flex-grow md:ml-sidebar-width flex h-screen overflow-hidden relative ${mobileShowChat && activeChat ? "pb-0 pt-0" : "pb-16 md:pb-0 pt-14 md:pt-0"}`}>
         {/* Ambient glows */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_0%_0%,rgba(77,94,247,0.05),transparent_40%),radial-gradient(circle_at_100%_100%,rgba(168,85,247,0.03),transparent_40%)] pointer-events-none -z-10" />
+        <div className="ambient-glow" />
 
         {/* —————————————— Chat List Panel —————————————— */}
         <section
@@ -276,7 +276,7 @@ export default function ChatPage() {
                 search
               </span>
               <input
-                className="w-full bg-surface-container-high/60 border border-white/5 rounded-full py-2 pl-9 pr-4 text-xs text-white placeholder:text-on-surface-variant/40 focus:outline-none focus:border-primary/50 transition-all"
+                className="w-full rounded-full py-2 pl-9 pr-4 text-xs text-on-surface placeholder:text-on-surface-variant/40 focus:outline-none focus:border-primary/50 transition-all input-glass"
                 placeholder="Search conversations..."
                 type="text"
                 value={chatSearch}
@@ -303,8 +303,8 @@ export default function ChatPage() {
                     onClick={() => handleSelectChat(chat)}
                     className={`flex items-center gap-3 p-2.5 rounded-xl border cursor-pointer transition-all duration-200 ${
                       isActive
-                        ? "bg-primary border-primary/15 shadow-md shadow-primary/10"
-                        : "bg-surface-container/30 border-white/5 hover:bg-surface-container-high/40 hover:translate-y-[-0.5px]"
+                        ? "bg-gradient-to-r from-primary to-indigo-600 border border-primary/15 shadow-md shadow-primary/10 text-white"
+                        : "glass-card hover:bg-surface-container-high/40 hover:translate-y-[-0.5px]"
                     }`}
                   >
                     {/* Avatar */}
@@ -315,8 +315,8 @@ export default function ChatPage() {
                             isLive(chat)
                               ? "border-pink-500 shadow-[0_0_8px_rgba(236,72,153,0.8)] animate-pulse"
                               : isActive
-                              ? "border-white/20"
-                              : "border-white/10"
+                              ? "border-primary/20"
+                              : "border-outline/10"
                           }`}
                           alt={chat.name}
                           src={getAvatarUrl(chat.avatar)}
@@ -362,7 +362,7 @@ export default function ChatPage() {
                     {/* Info */}
                     <div className="flex-1 min-w-0">
                       <div className="flex justify-between items-baseline mb-0.5">
-                        <h4 className="text-xs font-bold truncate text-white">{chat.name}</h4>
+                        <h4 className={`text-xs font-bold truncate ${isActive ? "text-white" : "text-on-surface"}`}>{chat.name}</h4>
                         <span className={`text-[9px] shrink-0 ml-1 ${isActive ? "text-white/70" : "text-on-surface-variant"}`}>
                           {formatTime(chat.lastMessageAt)}
                         </span>
@@ -447,7 +447,7 @@ export default function ChatPage() {
                       )}
                     </div>
                     <div>
-                      <h3 className="font-bold text-sm leading-tight text-white">{activeChat.name}</h3>
+                      <h3 className="font-bold text-sm leading-tight text-on-surface">{activeChat.name}</h3>
                       <p className={`text-[10px] font-semibold mt-0.5 ${isLive(activeChat) ? "text-pink-500 animate-pulse font-bold" : "text-primary"}`}>
                         {activeChat.type === "group"
                           ? `${activeChat.memberCount || "?"} members`
@@ -494,13 +494,14 @@ export default function ChatPage() {
               {/* Message Stream */}
               <div
                 ref={messageStreamRef}
-                className="flex-1 overflow-y-auto custom-scrollbar px-4 py-3 space-y-3 flex flex-col bg-surface-container-lowest/5"
+                className="flex-1 overflow-y-auto custom-scrollbar px-4 py-3 bg-surface-container-lowest/5"
               >
-                <div className="flex justify-center my-1">
-                  <span className="px-3 py-1 rounded-full bg-white/5 text-[9px] text-on-surface-variant/60 font-bold uppercase tracking-wider border border-white/5">
-                    Today
-                  </span>
-                </div>
+                <div className="max-w-[760px] mx-auto w-full flex flex-col gap-3 min-h-full justify-end pb-2">
+                  <div className="flex justify-center my-1.5">
+                    <span className="px-3 py-1 rounded-full bg-white/5 text-[9px] text-on-surface-variant/60 font-bold uppercase tracking-wider border border-white/5">
+                      Today
+                    </span>
+                  </div>
 
                 {messages.map((msg, index) => {
                   const isMe =
@@ -548,7 +549,7 @@ export default function ChatPage() {
                               ? msg.isFailed
                                 ? "bg-red-500/20 border border-red-500/30 text-red-200 rounded-br-sm"
                                 : "bg-primary text-white rounded-br-sm shadow-sm"
-                              : "bg-surface-variant text-on-surface rounded-bl-sm border border-white/5"
+                              : "chat-bubble-received text-on-surface rounded-bl-sm border border-outline/10"
                           } ${msg.isSending ? "opacity-60 scale-[0.98] select-none pointer-events-none" : ""}`}
                         >
                           {(() => {
@@ -652,14 +653,16 @@ export default function ChatPage() {
                     </div>
                   </div>
                 )}
+                </div>
               </div>
 
               {/* Message Input */}
               <footer className="p-3 bg-surface-container-lowest/15 border-t border-white/5 select-none">
-                <form
-                  onSubmit={handleSend}
-                  className="bg-surface-container-high/40 border border-white/5 rounded-full p-1.5 flex items-center gap-1.5 group transition-all focus-within:ring-1 focus-within:ring-primary/20 focus-within:bg-surface-container-high/60"
-                >
+                <div className="max-w-[760px] mx-auto w-full">
+                  <form
+                    onSubmit={handleSend}
+                    className="glass-card rounded-full p-1.5 flex items-center gap-1.5 group transition-all focus-within:ring-1 focus-within:ring-primary/25 focus-within:bg-surface"
+                  >
                   <div className="flex items-center">
                     <button type="button" className="w-7.5 h-7.5 rounded-full hover:bg-white/5 text-on-surface-variant flex items-center justify-center transition-colors cursor-pointer">
                       <span className="material-symbols-outlined text-[18px]">add_circle</span>
@@ -691,6 +694,7 @@ export default function ChatPage() {
                     </button>
                   </div>
                 </form>
+                </div>
               </footer>
             </div>
           ) : (

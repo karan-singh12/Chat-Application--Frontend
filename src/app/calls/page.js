@@ -87,7 +87,7 @@ export default function CallsPage() {
           <section className="pt-6 flex flex-col gap-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
-                <h1 className="text-xl font-black text-white tracking-tight">Call History</h1>
+                <h1 className="text-xl font-black text-on-surface tracking-tight">Call History</h1>
                 <p className="text-[11px] text-on-surface-variant font-bold mt-0.5">
                   Review and return recent audio & video calls
                 </p>
@@ -139,7 +139,7 @@ export default function CallsPage() {
                   search
                 </span>
                 <input
-                  className="w-full bg-surface-container-high/50 border border-white/5 rounded-full py-1.5 pl-9 pr-4 text-xs focus:outline-none focus:border-primary/50 focus:bg-surface-container-high transition-all text-white placeholder:text-on-surface-variant/40"
+                  className="w-full rounded-full py-1.5 pl-9 pr-4 text-xs placeholder:text-on-surface-variant/40 text-on-surface input-glass"
                   placeholder="Search calls by contact name..."
                   type="text"
                   value={searchQuery}
@@ -180,7 +180,7 @@ export default function CallsPage() {
 
                       {/* Caller info */}
                       <div className="min-w-0">
-                        <h2 className="text-xs font-bold text-white truncate">{log.name}</h2>
+                        <h2 className="text-xs font-bold text-on-surface truncate">{log.name}</h2>
                         <div className="flex items-center gap-1.5 mt-0.5 text-[10px] text-on-surface-variant">
                           <span>{callConfig.label}</span>
                           <span className="w-1 h-1 rounded-full bg-white/10" />
@@ -220,7 +220,7 @@ export default function CallsPage() {
                 <div className="w-10 h-10 rounded-2xl bg-surface-container-high/40 border border-white/5 flex items-center justify-center text-on-surface-variant/20 mx-auto mb-4">
                   <span className="material-symbols-outlined text-[24px]">call_end</span>
                 </div>
-                <h3 className="text-sm font-bold text-white mb-1">No call history</h3>
+                <h3 className="text-sm font-bold text-on-surface mb-1">No call history</h3>
                 <p className="text-[11px] text-on-surface-variant max-w-xs mx-auto leading-relaxed">
                   Call logs of voice and video calls will display here. You can callback directly from this page.
                 </p>

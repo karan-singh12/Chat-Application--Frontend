@@ -129,7 +129,7 @@ export default function LiveStreamsPage() {
             <div className="flex-grow flex flex-col gap-6 pt-6">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                  <h1 className="text-xl font-black text-white tracking-tight flex items-center gap-2">
+                  <h1 className="text-xl font-black text-on-surface tracking-tight flex items-center gap-2">
                     <span className="material-symbols-outlined text-primary text-[24px]">sensors</span>
                     Live Streams
                   </h1>
@@ -154,7 +154,7 @@ export default function LiveStreamsPage() {
                     {activeLiveStreams.map((stream) => (
                       <div
                         key={stream.broadcasterId}
-                        className="group bg-surface-container/30 border border-white/5 hover:bg-surface-container-high/45 rounded-2xl overflow-hidden flex flex-col transition-all duration-300 relative hover:-translate-y-1 hover:shadow-xl hover:shadow-black/20"
+                        className="group glass-card hover:bg-surface-container-high/45 rounded-2xl overflow-hidden flex flex-col transition-all duration-300 relative hover:-translate-y-1 hover:shadow-xl hover:shadow-black/20"
                       >
                         {/* Overlay Live Badge */}
                         <div className="absolute top-3 left-3 bg-red-500 text-white font-black text-[9px] px-2 py-0.5 rounded-full flex items-center gap-1 shadow-md shadow-red-500/20">
@@ -182,7 +182,7 @@ export default function LiveStreamsPage() {
                               }}
                             />
                             <div className="min-w-0 flex-grow">
-                              <h3 className="text-xs font-bold text-white truncate">{stream.title}</h3>
+                              <h3 className="text-xs font-bold text-on-surface truncate">{stream.title}</h3>
                               <p className="text-[10px] text-on-surface-variant mt-0.5 truncate">
                                 @{stream.username}
                               </p>
@@ -211,7 +211,7 @@ export default function LiveStreamsPage() {
                     <div className="w-14 h-14 rounded-2xl bg-surface-container-high/40 border border-white/5 flex items-center justify-center text-on-surface-variant/20 mx-auto mb-5 shadow-lg">
                       <span className="material-symbols-outlined text-[32px] text-primary">sensors_off</span>
                     </div>
-                    <h3 className="text-sm font-bold text-white mb-1.5">No Live Streams</h3>
+                    <h3 className="text-sm font-bold text-on-surface mb-1.5">No Live Streams</h3>
                     <p className="text-[11px] text-on-surface-variant leading-relaxed mb-6">
                       Nobody is broadcasting right now. Be the first to start a live stream and share your camera with other online users!
                     </p>
@@ -302,7 +302,7 @@ export default function LiveStreamsPage() {
                   </div>
 
                   <div className="flex-grow max-w-sm px-4 hidden md:block">
-                    <p className="text-xs font-bold text-white truncate text-center">
+                    <p className="text-xs font-bold text-on-surface truncate text-center">
                       Streaming: &quot;{currentLiveStream.title}&quot;
                     </p>
                   </div>
@@ -318,22 +318,22 @@ export default function LiveStreamsPage() {
               </div>
 
               {/* Side Stats Info Panel */}
-              <div className="w-full lg:w-80 bg-surface-container/20 border border-white/5 rounded-2xl p-4 flex flex-col gap-4 backdrop-blur-md">
-                <h3 className="text-xs font-bold text-white border-b border-white/5 pb-2">
+              <div className="w-full lg:w-80 glass-panel rounded-2xl p-4 flex flex-col gap-4">
+                <h3 className="text-xs font-bold text-on-surface border-b border-white/5 pb-2">
                   Broadcast Stats
                 </h3>
                 
                 <div className="space-y-4">
                   <div className="flex justify-between items-center bg-white/5 p-3 rounded-xl border border-white/5">
                     <span className="text-[10px] font-bold text-on-surface-variant">Stream Title</span>
-                    <span className="text-xs font-black text-white truncate max-w-[150px]">
+                    <span className="text-xs font-black text-on-surface truncate max-w-[150px]">
                       {currentLiveStream.title}
                     </span>
                   </div>
                   
                   <div className="flex justify-between items-center bg-white/5 p-3 rounded-xl border border-white/5">
                     <span className="text-[10px] font-bold text-on-surface-variant">Active Duration</span>
-                    <span className="text-xs font-black text-white">
+                    <span className="text-xs font-black text-on-surface">
                       {formatDuration(streamDuration)}
                     </span>
                   </div>
@@ -411,7 +411,7 @@ export default function LiveStreamsPage() {
                     }}
                   />
                   <div className="min-w-0">
-                    <h2 className="text-xs font-bold text-white truncate">
+                    <h2 className="text-xs font-bold text-on-surface truncate">
                       {currentLiveStream.title}
                     </h2>
                     <p className="text-[10px] text-on-surface-variant mt-0.5">
@@ -422,9 +422,9 @@ export default function LiveStreamsPage() {
               </div>
 
               {/* Side Info Panel */}
-              <div className="w-full lg:w-80 bg-surface-container/20 border border-white/5 rounded-2xl p-4 flex flex-col gap-4 backdrop-blur-md justify-between">
+              <div className="w-full lg:w-80 glass-panel rounded-2xl p-4 flex flex-col gap-4 justify-between">
                 <div className="space-y-4">
-                  <h3 className="text-xs font-bold text-white border-b border-white/5 pb-2">
+                  <h3 className="text-xs font-bold text-on-surface border-b border-white/5 pb-2">
                     Broadcast Info
                   </h3>
 
@@ -439,7 +439,7 @@ export default function LiveStreamsPage() {
                       }}
                     />
                     <div className="min-w-0">
-                      <p className="text-xs font-bold text-white truncate">@{currentLiveStream.username}</p>
+                      <p className="text-xs font-bold text-on-surface truncate">@{currentLiveStream.username}</p>
                       <span className="inline-block bg-primary/10 text-primary border border-primary/20 text-[8px] font-black uppercase tracking-wider px-2 py-0.5 rounded-md mt-1">
                         Streamer
                       </span>
@@ -448,7 +448,7 @@ export default function LiveStreamsPage() {
 
                   <div className="bg-white/5 p-3 rounded-xl border border-white/5 space-y-2.5">
                     <p className="text-[9px] font-black text-on-surface-variant uppercase tracking-wider">Stream Topic</p>
-                    <p className="text-xs font-bold text-white">
+                    <p className="text-xs font-bold text-on-surface">
                       {currentLiveStream.title}
                     </p>
                   </div>
@@ -476,7 +476,7 @@ export default function LiveStreamsPage() {
                   <span className="material-symbols-outlined text-[16px]">close</span>
                 </button>
 
-                <h3 className="text-sm font-bold text-white mb-1.5 flex items-center gap-1.5">
+                <h3 className="text-sm font-bold text-on-surface mb-1.5 flex items-center gap-1.5">
                   <span className="material-symbols-outlined text-primary text-[20px]">sensors</span>
                   Create Stream
                 </h3>
@@ -493,7 +493,7 @@ export default function LiveStreamsPage() {
                       required
                       type="text"
                       placeholder="e.g. Chill Coding Session, Gaming Stream..."
-                      className="w-full bg-surface-container border border-white/5 rounded-xl py-2 px-3.5 text-xs text-white placeholder:text-on-surface-variant/30 focus:outline-none focus:border-primary/50 focus:bg-surface-container-low transition-all"
+                      className="w-full bg-surface-container border border-white/5 rounded-xl py-2 px-3.5 text-xs text-on-surface placeholder:text-on-surface-variant/30 focus:outline-none focus:border-primary/50 focus:bg-surface-container-low transition-all"
                       value={streamTitle}
                       onChange={(e) => setStreamTitle(e.target.value)}
                     />

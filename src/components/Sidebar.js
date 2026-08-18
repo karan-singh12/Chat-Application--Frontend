@@ -34,7 +34,7 @@ export default function Sidebar({ isOpen, onClose, hideMobileNav }) {
   return (
     <>
       {/* Desktop Sidebar (hidden on mobile, visible on md+) */}
-      <aside className="fixed top-0 bottom-0 left-0 h-screen w-sidebar-width bg-surface-container-low border-r border-white/5 flex flex-col py-5 z-50 hidden md:flex items-center justify-between">
+      <aside className="fixed top-0 bottom-0 left-0 h-screen w-sidebar-width bg-surface-container-low border-r border-outline/10 flex flex-col py-5 z-50 hidden md:flex items-center justify-between">
         {/* Top Logo */}
         <Link href="/" className="flex flex-col items-center cursor-pointer">
           <div className="w-8 h-8 flex items-center justify-center select-none hover:scale-105 hover:rotate-2 transition-all duration-300">
@@ -98,7 +98,10 @@ export default function Sidebar({ isOpen, onClose, hideMobileNav }) {
         <div className="flex flex-col items-center gap-4 w-full px-2">
           {/* Quick Theme Toggle */}
           <button
-            onClick={toggleTheme}
+            onClick={() => {
+              console.log("[Sidebar] Desktop theme toggle clicked. Current state:", theme);
+              toggleTheme();
+            }}
             className="group relative w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/5 text-on-surface-variant hover:text-on-surface transition-all duration-300 cursor-pointer"
             title={theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
           >
@@ -140,7 +143,7 @@ export default function Sidebar({ isOpen, onClose, hideMobileNav }) {
       </aside>
 
       {/* Mobile Top Navigation Bar (visible only on mobile) */}
-      <header className={`fixed top-0 left-0 right-0 h-14 bg-surface-container-low/90 backdrop-blur-xl border-b border-white/5 flex items-center justify-between px-4 z-40 md:hidden shadow-sm ${hideMobileNav ? "hidden" : ""}`}>
+      <header className={`fixed top-0 left-0 right-0 h-14 bg-surface-container-low/90 backdrop-blur-xl border-b border-outline/10 flex items-center justify-between px-4 z-40 md:hidden shadow-sm ${hideMobileNav ? "hidden" : ""}`}>
         {/* App Logo & Brand Name */}
         <Link href="/" className="flex items-center gap-2 select-none cursor-pointer">
           <div className="w-7 h-7 flex items-center justify-center">
@@ -166,7 +169,10 @@ export default function Sidebar({ isOpen, onClose, hideMobileNav }) {
         {/* Right Side Icon: Theme Toggle & Notifications */}
         <div className="flex items-center gap-2">
           <button
-            onClick={toggleTheme}
+            onClick={() => {
+              console.log("[Sidebar] Mobile theme toggle clicked. Current state:", theme);
+              toggleTheme();
+            }}
             className="p-1.5 rounded-full hover:bg-white/5 text-on-surface-variant hover:text-on-surface transition-colors cursor-pointer"
             title={theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
           >
@@ -194,7 +200,7 @@ export default function Sidebar({ isOpen, onClose, hideMobileNav }) {
       <div className={`h-14 md:hidden flex-shrink-0 ${hideMobileNav ? "hidden" : ""}`} />
 
       {/* Mobile Bottom Navigation Bar (visible only on mobile) */}
-      <nav className={`fixed bottom-0 left-0 right-0 h-16 bg-surface-container-low/90 backdrop-blur-xl border-t border-white/5 flex items-center justify-around z-50 md:hidden pb-safe shadow-xl ${hideMobileNav ? "hidden" : ""}`}>
+      <nav className={`fixed bottom-0 left-0 right-0 h-16 bg-surface-container-low/90 backdrop-blur-xl border-t border-outline/10 flex items-center justify-around z-50 md:hidden pb-safe shadow-xl ${hideMobileNav ? "hidden" : ""}`}>
         {mobileMenuItems.map((item) => {
           const isActive = pathname === item.path;
           return (

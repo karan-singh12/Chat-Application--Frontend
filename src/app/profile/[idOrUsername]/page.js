@@ -229,7 +229,7 @@ export default function PublicProfilePage({ params: paramsPromise }) {
             <div className="w-10 h-10 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-400 mb-4 animate-scale-in">
               <span className="material-symbols-outlined text-[22px]">person_off</span>
             </div>
-            <h3 className="text-sm font-bold text-white mb-1.5">Profile Error</h3>
+            <h3 className="text-sm font-bold text-on-surface mb-1.5">Profile Error</h3>
             <p className="text-xs text-on-surface-variant max-w-xs leading-relaxed">{errorMsg}</p>
           </div>
         )}
@@ -240,7 +240,7 @@ export default function PublicProfilePage({ params: paramsPromise }) {
             {/* Banner & Avatar Hero container */}
             <section className="relative">
               {/* Premium Banner */}
-              <div className="w-full h-28 sm:h-36 rounded-xl overflow-hidden border border-white/5 relative group shadow-md">
+              <div className="w-full h-28 sm:h-36 rounded-xl overflow-hidden glass-border relative group shadow-md">
                 <div
                   className="w-full h-full bg-cover bg-center transition-transform duration-700 group-hover:scale-103"
                   style={{
@@ -283,7 +283,7 @@ export default function PublicProfilePage({ params: paramsPromise }) {
                   )}
                 </div>
                 <div className="pb-2 select-text">
-                  <h3 className="text-base sm:text-lg font-bold text-white leading-tight">
+                  <h3 className="text-base sm:text-lg font-bold text-on-surface leading-tight">
                     {profileUser.username}
                   </h3>
                   <p className="text-[10px] text-primary font-semibold mt-0.5">
@@ -299,7 +299,7 @@ export default function PublicProfilePage({ params: paramsPromise }) {
               {/* Left Column (Bio + Personal Fields) */}
               <div className="lg:col-span-8 flex flex-col gap-5 w-full">
                 {/* Bio Card */}
-                <div className="bg-surface-container/30 border border-white/5 rounded-xl p-4 shadow-md">
+                <div className="glass-card rounded-xl p-4 shadow-md">
                   <h4 className="text-[9px] font-bold tracking-widest text-on-surface-variant/50 uppercase mb-3 ml-1">
                     About
                   </h4>
@@ -307,7 +307,7 @@ export default function PublicProfilePage({ params: paramsPromise }) {
                     <textarea
                       value={bio}
                       onChange={(e) => setBio(e.target.value)}
-                      className="w-full bg-surface-container-low border border-white/5 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-primary/50 focus:bg-surface-container-low/80 transition-all min-h-[90px] resize-y placeholder:text-on-surface-variant/40"
+                      className="w-full bg-surface-container-low border border-white/5 rounded-xl p-3 text-xs text-on-surface focus:outline-none focus:border-primary/50 focus:bg-surface-container-low/80 transition-all min-h-[90px] resize-y placeholder:text-on-surface-variant/40"
                       placeholder="Tell us about yourself..."
                     />
                   ) : (
@@ -330,19 +330,19 @@ export default function PublicProfilePage({ params: paramsPromise }) {
 
                 {/* Personal Info Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                  <div className="bg-surface-container/30 border border-white/5 p-3 rounded-xl flex items-center gap-3.5 shadow-md">
+                  <div className="glass-card p-3 rounded-xl flex items-center gap-3.5 shadow-md">
                     <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary flex-shrink-0">
                       <span className="material-symbols-outlined text-[16px]">mail</span>
                     </div>
                     <div className="min-w-0 flex-1">
                       <p className="text-[9px] font-bold text-on-surface-variant uppercase tracking-wider">Email Address</p>
-                      <p className="font-semibold text-xs text-white truncate mt-0.5 select-text">
+                      <p className="font-semibold text-xs text-on-surface truncate mt-0.5 select-text">
                         {profileUser.email}
                       </p>
                     </div>
                   </div>
 
-                  <div className="bg-surface-container/30 border border-white/5 p-3 rounded-xl flex items-center gap-3.5 shadow-md">
+                  <div className="glass-card p-3 rounded-xl flex items-center gap-3.5 shadow-md">
                     <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary flex-shrink-0">
                       <span className="material-symbols-outlined text-[16px]">call</span>
                     </div>
@@ -356,14 +356,14 @@ export default function PublicProfilePage({ params: paramsPromise }) {
                           placeholder="Add phone number"
                         />
                       ) : (
-                        <p className="font-semibold text-xs text-white truncate mt-0.5">
+                        <p className="font-semibold text-xs text-on-surface truncate mt-0.5">
                           {profileUser.phone || "Not specified"}
                         </p>
                       )}
                     </div>
                   </div>
 
-                  <div className="bg-surface-container/30 border border-white/5 p-3 rounded-xl flex items-center gap-3.5 shadow-md">
+                  <div className="glass-card p-3 rounded-xl flex items-center gap-3.5 shadow-md">
                     <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary flex-shrink-0">
                       <span className="material-symbols-outlined text-[16px]">location_on</span>
                     </div>
@@ -377,20 +377,20 @@ export default function PublicProfilePage({ params: paramsPromise }) {
                           placeholder="Add location"
                         />
                       ) : (
-                        <p className="font-semibold text-xs text-white truncate mt-0.5 select-text">
+                        <p className="font-semibold text-xs text-on-surface truncate mt-0.5 select-text">
                           {profileUser.location || "Not specified"}
                         </p>
                       )}
                     </div>
                   </div>
 
-                  <div className="bg-surface-container/30 border border-white/5 p-3 rounded-xl flex items-center gap-3.5 shadow-md">
+                  <div className="glass-card p-3 rounded-xl flex items-center gap-3.5 shadow-md">
                     <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary flex-shrink-0">
                       <span className="material-symbols-outlined text-[16px]">calendar_month</span>
                     </div>
                     <div className="min-w-0 flex-1">
                       <p className="text-[9px] font-bold text-on-surface-variant uppercase tracking-wider">Joined Date</p>
-                      <p className="font-semibold text-xs text-white truncate mt-0.5">March 14, 2023</p>
+                      <p className="font-semibold text-xs text-on-surface truncate mt-0.5">March 14, 2023</p>
                     </div>
                   </div>
                 </div>
@@ -399,10 +399,10 @@ export default function PublicProfilePage({ params: paramsPromise }) {
               {/* Right Column (Stats, Save/Edit Actions, Socials) */}
               <div className="lg:col-span-4 flex flex-col gap-5 w-full">
                 {/* Stats Card */}
-                <div className="bg-surface-container/30 border border-white/5 p-4 rounded-xl text-center relative overflow-hidden shadow-md">
+                <div className="glass-card p-4 rounded-xl text-center relative overflow-hidden shadow-md">
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <p className="text-lg font-bold text-white">1,284</p>
+                      <p className="text-lg font-bold text-on-surface">1,284</p>
                       <p className="text-[9px] font-bold tracking-wider text-on-surface-variant uppercase mt-0.5">
                         Friends
                       </p>
@@ -417,7 +417,7 @@ export default function PublicProfilePage({ params: paramsPromise }) {
                 </div>
 
                 {/* Actions Card */}
-                <div className="bg-surface-container/30 border border-white/5 p-3.5 rounded-xl flex flex-col gap-2.5 shadow-md">
+                <div className="glass-card p-3.5 rounded-xl flex flex-col gap-2.5 shadow-md">
                   {isMe ? (
                     isEditing ? (
                       <>
@@ -492,7 +492,7 @@ export default function PublicProfilePage({ params: paramsPromise }) {
                 </div>
 
                 {/* Social Presence */}
-                <div className="bg-surface-container/30 border border-white/5 p-4 rounded-xl shadow-md">
+                <div className="glass-card p-4 rounded-xl shadow-md">
                   <h4 className="text-[9px] font-bold tracking-widest text-on-surface-variant/50 uppercase mb-3 ml-1">
                     Social Networks
                   </h4>
@@ -503,7 +503,7 @@ export default function PublicProfilePage({ params: paramsPromise }) {
                           <span className="material-symbols-outlined text-[16px]">language</span>
                         </div>
                         <div>
-                          <p className="font-bold text-xs text-white">Twitter / X</p>
+                          <p className="font-bold text-xs text-on-surface">Twitter / X</p>
                           <p className="text-[9px] text-on-surface-variant mt-0.5">@vance_codes</p>
                         </div>
                       </div>
@@ -518,7 +518,7 @@ export default function PublicProfilePage({ params: paramsPromise }) {
                           <span className="material-symbols-outlined text-[16px]">public</span>
                         </div>
                         <div>
-                          <p className="font-bold text-xs text-white">GitHub</p>
+                          <p className="font-bold text-xs text-on-surface">GitHub</p>
                           <p className="text-[9px] text-on-surface-variant mt-0.5">github.com/vance-codes</p>
                         </div>
                       </div>

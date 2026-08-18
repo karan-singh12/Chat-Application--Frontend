@@ -9,11 +9,13 @@ export function ThemeProvider({ children }) {
 
   useEffect(() => {
     const savedTheme = localStorage.getItem("nexus_theme") || "dark";
+    console.log("[ThemeContext] Initializing theme from storage:", savedTheme);
     setThemeState(savedTheme);
     document.documentElement.setAttribute("data-theme", savedTheme);
   }, []);
 
   const setTheme = (newTheme) => {
+    console.log("[ThemeContext] Setting theme to:", newTheme);
     setThemeState(newTheme);
     localStorage.setItem("nexus_theme", newTheme);
     document.documentElement.setAttribute("data-theme", newTheme);
@@ -21,6 +23,7 @@ export function ThemeProvider({ children }) {
 
   const toggleTheme = () => {
     const newTheme = theme === "dark" ? "light" : "dark";
+    console.log("[ThemeContext] Toggling theme from", theme, "to", newTheme);
     setTheme(newTheme);
   };
 

@@ -170,7 +170,7 @@ export default function FeedPage() {
           
 
           {/* Share Update Creator Card */}
-          <div className="bg-surface-container/30 border border-white/5 rounded-xl p-4 shadow-md">
+          <div className="glass-card rounded-xl p-4 shadow-md">
             <form onSubmit={handleCreatePost} className="space-y-3.5">
               <div className="flex gap-3">
                 <img
@@ -271,7 +271,7 @@ export default function FeedPage() {
                 return (
                   <div
                     key={post.id}
-                    className="bg-surface-container/30 border border-white/5 rounded-xl p-4 shadow-md flex flex-col gap-3"
+                    className="glass-card rounded-xl p-4 shadow-md flex flex-col gap-3"
                   >
                     {/* Post Header */}
                     <Link href={`/profile/${postUserName}`} className="flex items-center gap-3 hover:opacity-85 transition-all">

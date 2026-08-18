@@ -69,7 +69,7 @@ export default function SettingsPage() {
               <h3 className="text-[9px] font-bold tracking-widest text-on-surface-variant/50 uppercase ml-2">
                 Account
               </h3>
-              <div className="bg-surface-container/30 border border-white/5 rounded-xl p-3.5 shadow-md flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="glass-card rounded-xl p-3.5 shadow-md flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div className="flex items-center gap-3.5">
                   <div className="w-10 h-10 rounded-full overflow-hidden border border-white/10 p-0.5 flex-shrink-0">
                     <img
@@ -108,12 +108,12 @@ export default function SettingsPage() {
                 <h3 className="text-[9px] font-bold tracking-widest text-on-surface-variant/50 uppercase ml-2">
                   Privacy
                 </h3>
-                <div className="bg-surface-container/30 border border-white/5 rounded-xl p-3.5 space-y-4 shadow-md">
+                <div className="glass-card rounded-xl p-3.5 space-y-4 shadow-md">
                   
                   {/* Read Receipts */}
                   <div className="flex items-center justify-between gap-4">
                     <div>
-                      <p className="text-xs font-semibold text-white">Read Receipts</p>
+                      <p className="text-xs font-semibold text-on-surface">Read Receipts</p>
                       <p className="text-[9px] text-on-surface-variant mt-0.5">Show read statuses</p>
                     </div>
                     <label className="relative inline-flex items-center cursor-pointer select-none">
@@ -130,7 +130,7 @@ export default function SettingsPage() {
                   {/* Active Status */}
                   <div className="flex items-center justify-between gap-4">
                     <div>
-                      <p className="text-xs font-semibold text-white">Active Status</p>
+                      <p className="text-xs font-semibold text-on-surface">Active Status</p>
                       <p className="text-[9px] text-on-surface-variant mt-0.5">Show online status</p>
                     </div>
                     <label className="relative inline-flex items-center cursor-pointer select-none">
@@ -151,12 +151,12 @@ export default function SettingsPage() {
                 <h3 className="text-[9px] font-bold tracking-widest text-on-surface-variant/50 uppercase ml-2">
                   Security
                 </h3>
-                <div className="bg-surface-container/30 border border-white/5 rounded-xl p-3.5 space-y-4 shadow-md">
+                <div className="glass-card rounded-xl p-3.5 space-y-4 shadow-md">
                   
                   {/* Two Factor Auth */}
                   <div className="flex items-center justify-between gap-4">
                     <div>
-                      <p className="text-xs font-semibold text-white">Two-Factor Auth</p>
+                      <p className="text-xs font-semibold text-on-surface">Two-Factor Auth</p>
                       <p className="text-[9px] text-on-surface-variant mt-0.5">Use OTP security codes</p>
                     </div>
                     <button
@@ -174,7 +174,7 @@ export default function SettingsPage() {
                   {/* Password Change */}
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-xs font-semibold text-white">Password Change</p>
+                      <p className="text-xs font-semibold text-on-surface">Password Change</p>
                       <p className="text-[9px] text-on-surface-variant mt-0.5">Updated 45d ago</p>
                     </div>
                     <span className="material-symbols-outlined text-on-surface-variant hover:text-white cursor-pointer transition-colors text-[18px]">
@@ -190,11 +190,11 @@ export default function SettingsPage() {
               <h3 className="text-[9px] font-bold tracking-widest text-on-surface-variant/50 uppercase ml-2">
                 Appearance & Customization
               </h3>
-              <div className="bg-surface-container/30 border border-white/5 rounded-xl p-3.5 grid grid-cols-1 md:grid-cols-2 gap-4 shadow-md">
+              <div className="glass-card rounded-xl p-3.5 grid grid-cols-1 md:grid-cols-2 gap-4 shadow-md">
                 
                 {/* Theme mode */}
                 <div className="space-y-2">
-                  <p className="text-xs font-semibold text-white">Theme Mode</p>
+                  <p className="text-xs font-semibold text-on-surface">Theme Mode</p>
                   <div className="flex gap-1.5 p-1 bg-surface-container-low border border-white/5 rounded-full">
                     <button
                       onClick={() => setThemeMode("light")}
@@ -223,7 +223,7 @@ export default function SettingsPage() {
 
                 {/* Language Select */}
                 <div className="space-y-2">
-                  <p className="text-xs font-semibold text-white">Language</p>
+                  <p className="text-xs font-semibold text-on-surface">Language</p>
                   <div className="relative">
                     <select
                       value={language}
@@ -251,13 +251,13 @@ export default function SettingsPage() {
               </h3>
               <div className="space-y-2">
                 {sessions.map((sess) => (
-                  <div key={sess.id} className="bg-surface-container/30 border border-white/5 rounded-xl p-3 flex items-center justify-between group shadow-sm">
+                  <div key={sess.id} className="glass-card rounded-xl p-3 flex items-center justify-between group shadow-sm">
                     <div className="flex items-center gap-3.5 min-w-0">
                       <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary flex-shrink-0">
                         <span className="material-symbols-outlined text-[16px]">{sess.icon}</span>
                       </div>
                       <div className="min-w-0">
-                        <p className="text-xs font-bold text-white flex items-center gap-2">
+                        <p className="text-xs font-bold text-on-surface flex items-center gap-2">
                           <span className="truncate">{sess.device}</span>
                           {sess.current && (
                             <span className="px-1.5 py-0.5 bg-emerald-500/10 text-emerald-500 text-[8px] rounded-full uppercase tracking-wider font-extrabold">
@@ -299,7 +299,7 @@ export default function SettingsPage() {
                   <span className="material-symbols-outlined text-[16px]">help</span>
                 </div>
                 <div>
-                  <p className="text-[11px] font-bold text-white">Help Center</p>
+                  <p className="text-[11px] font-bold text-on-surface">Help Center</p>
                   <p className="text-[9px] text-on-surface-variant mt-0.5">FAQs and Tutorials</p>
                 </div>
               </a>
@@ -308,7 +308,7 @@ export default function SettingsPage() {
                   <span className="material-symbols-outlined text-[16px]">description</span>
                 </div>
                 <div>
-                  <p className="text-[11px] font-bold text-white">Terms &amp; Policy</p>
+                  <p className="text-[11px] font-bold text-on-surface">Terms &amp; Policy</p>
                   <p className="text-[9px] text-on-surface-variant mt-0.5">Legal information</p>
                 </div>
               </a>

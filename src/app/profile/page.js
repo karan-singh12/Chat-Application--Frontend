@@ -144,7 +144,7 @@ export default function ProfilePage() {
           {/* Banner & Avatar Hero container */}
           <section className="relative">
             {/* Premium Banner */}
-            <div className="w-full h-28 sm:h-36 rounded-xl overflow-hidden border border-white/5 relative group shadow-md">
+            <div className="w-full h-28 sm:h-36 rounded-xl overflow-hidden glass-border relative group shadow-md">
               <div
                 className="w-full h-full bg-cover bg-center transition-transform duration-700 group-hover:scale-103"
                 style={{
@@ -212,7 +212,7 @@ export default function ProfilePage() {
             {/* Left Column (Bio + Personal Fields) */}
             <div className="lg:col-span-8 flex flex-col gap-5 w-full">
               {/* Bio Card */}
-              <div className="bg-surface-container/30 border border-white/5 rounded-xl p-4 shadow-md">
+              <div className="glass-card rounded-xl p-4 shadow-md">
                 <h4 className="text-[9px] font-bold tracking-widest text-on-surface-variant/50 uppercase mb-3 ml-1">
                   About Me
                 </h4>
@@ -243,7 +243,7 @@ export default function ProfilePage() {
 
               {/* Personal Info Grid */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                <div className="bg-surface-container/30 border border-white/5 p-3 rounded-xl flex items-center gap-3.5 shadow-md">
+                <div className="glass-card p-3 rounded-xl flex items-center gap-3.5 shadow-md">
                   <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary flex-shrink-0">
                     <span className="material-symbols-outlined text-[16px]">mail</span>
                   </div>
@@ -255,7 +255,7 @@ export default function ProfilePage() {
                   </div>
                 </div>
 
-                <div className="bg-surface-container/30 border border-white/5 p-3 rounded-xl flex items-center gap-3.5 shadow-md">
+                <div className="glass-card p-3 rounded-xl flex items-center gap-3.5 shadow-md">
                   <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary flex-shrink-0">
                     <span className="material-symbols-outlined text-[16px]">call</span>
                   </div>
@@ -276,7 +276,7 @@ export default function ProfilePage() {
                   </div>
                 </div>
 
-                <div className="bg-surface-container/30 border border-white/5 p-3 rounded-xl flex items-center gap-3.5 shadow-md">
+                <div className="glass-card p-3 rounded-xl flex items-center gap-3.5 shadow-md">
                   <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary flex-shrink-0">
                     <span className="material-symbols-outlined text-[16px]">location_on</span>
                   </div>
@@ -297,7 +297,7 @@ export default function ProfilePage() {
                   </div>
                 </div>
 
-                <div className="bg-surface-container/30 border border-white/5 p-3 rounded-xl flex items-center gap-3.5 shadow-md">
+                <div className="glass-card p-3 rounded-xl flex items-center gap-3.5 shadow-md">
                   <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary flex-shrink-0">
                     <span className="material-symbols-outlined text-[16px]">calendar_month</span>
                   </div>
@@ -314,7 +314,7 @@ export default function ProfilePage() {
             {/* Right Column (Stats, Save/Edit Actions, Socials) */}
             <div className="lg:col-span-4 flex flex-col gap-5 w-full">
               {/* Stats Card */}
-              <div className="bg-surface-container/30 border border-white/5 p-4 rounded-xl text-center relative overflow-hidden shadow-md">
+              <div className="glass-card p-4 rounded-xl text-center relative overflow-hidden shadow-md">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <p className="text-lg font-bold text-white">{friendsCount}</p>
@@ -334,7 +334,7 @@ export default function ProfilePage() {
               </div>
 
               {/* Actions Card */}
-              <div className="bg-surface-container/30 border border-white/5 p-3.5 rounded-xl flex flex-col gap-2.5 shadow-md">
+              <div className="glass-card p-3.5 rounded-xl flex flex-col gap-2.5 shadow-md">
                 {isEditing ? (
                   <>
                     <button
@@ -379,7 +379,7 @@ export default function ProfilePage() {
               </div>
 
               {/* Social Presence */}
-              <div className="bg-surface-container/30 border border-white/5 p-4 rounded-xl shadow-md">
+              <div className="glass-card p-4 rounded-xl shadow-md">
                 <h4 className="text-[9px] font-bold tracking-widest text-on-surface-variant/50 uppercase mb-3 ml-1">
                   Social Networks
                 </h4>

@@ -127,7 +127,7 @@ export default function LandingPage() {
                 Next Generation Messaging
               </span>
             </div>
-            <h1 className="font-display-lg text-4xl sm:text-5xl md:text-6xl mb-6 leading-[1.1] tracking-tight text-white">
+            <h1 className="font-display-lg text-4xl sm:text-5xl md:text-6xl mb-6 leading-[1.1] tracking-tight text-on-surface">
               Connect <span className="text-gradient">Beyond</span> <br /> Boundaries
             </h1>
             <p className="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mx-auto mb-10 leading-relaxed">
@@ -145,7 +145,7 @@ export default function LandingPage() {
               </Link>
               <a
                 href="#features"
-                className="w-full sm:w-auto px-7 py-3.5 rounded-full glass-panel text-white font-semibold hover:bg-white/10 transition-all border border-white/20 text-sm flex items-center justify-center"
+                className="w-full sm:w-auto px-7 py-3.5 rounded-full glass-card text-on-surface hover:bg-surface-container-high/40 transition-all text-sm flex items-center justify-center"
               >
                 View Features
               </a>
@@ -161,7 +161,7 @@ export default function LandingPage() {
         {/* Feature Bento Grid */}
         <section className="py-16 md:py-24 px-gutter max-w-container-max mx-auto" id="features">
           <div className="text-center mb-20">
-            <h2 className="font-headline-lg text-headline-lg mb-4 text-white">Engineered for Excellence</h2>
+            <h2 className="font-headline-lg text-headline-lg mb-4 text-on-surface">Engineered for Excellence</h2>
             <p className="font-body-md text-body-md text-on-surface-variant max-w-lg mx-auto">
               Every detail refined for the ultimate communication workflow.
             </p>
@@ -173,7 +173,7 @@ export default function LandingPage() {
                 <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-6 text-primary border border-primary/20">
                   <span className="material-symbols-outlined text-[28px]">chat_bubble</span>
                 </div>
-                <h3 className="font-headline-md text-headline-md mb-3 text-white">Instant Synchronous Chat</h3>
+                <h3 className="font-headline-md text-headline-md mb-3 text-on-surface">Instant Synchronous Chat</h3>
                 <p className="font-body-md text-body-md text-on-surface-variant max-w-md">
                   Real-time message delivery with millisecond latency. Built on advanced WebSockets for seamless global scaling.
                 </p>
@@ -197,7 +197,7 @@ export default function LandingPage() {
               <div className="w-12 h-12 rounded-xl bg-error/10 flex items-center justify-center mb-6 text-error border border-error/20">
                 <span className="material-symbols-outlined text-[28px]">shield</span>
               </div>
-              <h3 className="font-headline-md text-headline-md mb-3 text-white">Fortified Security</h3>
+              <h3 className="font-headline-md text-headline-md mb-3 text-on-surface">Fortified Security</h3>
               <p className="font-body-md text-body-md text-on-surface-variant mb-6">
                 Military-grade AES-256 encryption for every packet. Your data never leaves your control.
               </p>
@@ -213,7 +213,7 @@ export default function LandingPage() {
               <div className="w-12 h-12 rounded-xl bg-tertiary/10 flex items-center justify-center mb-6 text-tertiary border border-tertiary/20">
                 <span className="material-symbols-outlined text-[28px]">videocam</span>
               </div>
-              <h3 className="font-headline-md text-headline-md mb-3 text-white">Crystal Clear Voice</h3>
+              <h3 className="font-headline-md text-headline-md mb-3 text-on-surface">Crystal Clear Voice</h3>
               <p className="font-body-md text-body-md text-on-surface-variant">
                 Immersive audio quality with adaptive bitrate technology. Hear every nuance without the lag.
               </p>
@@ -222,7 +222,7 @@ export default function LandingPage() {
             {/* Integrations */}
             <div className="md:col-span-7 glass-card rounded-3xl p-6 md:p-8 flex items-center justify-between group overflow-hidden">
               <div className="max-w-[60%]">
-                <h3 className="font-headline-md text-headline-md mb-3 text-white">Ecosystem Integration</h3>
+                <h3 className="font-headline-md text-headline-md mb-3 text-on-surface">Ecosystem Integration</h3>
                 <p className="font-body-md text-body-md text-on-surface-variant">
                   Connect your favorite workflow tools in seconds. Slack, Jira, GitHub—all in one hub.
                 </p>
@@ -250,7 +250,7 @@ export default function LandingPage() {
           <div className="absolute inset-0 bg-primary/5 blur-[120px] pointer-events-none"></div>
           <div className="max-w-container-max mx-auto px-gutter grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
             <div className="lg:col-span-5">
-              <h2 className="font-headline-lg text-headline-lg mb-6 text-white">The Interface of the Future</h2>
+              <h2 className="font-headline-lg text-headline-lg mb-6 text-on-surface">The Interface of the Future</h2>
               <p className="font-body-lg text-body-lg text-on-surface-variant mb-8 leading-relaxed">
                 Say goodbye to cluttered sidebars and confusing settings. NexusChat utilizes a fluid, glassmorphic design that prioritizes your conversations.
               </p>
@@ -260,7 +260,7 @@ export default function LandingPage() {
                     <span className="material-symbols-outlined text-[14px] text-primary">check</span>
                   </div>
                   <div>
-                    <h4 className="font-label-md text-label-md text-white">Adaptive Focus Mode</h4>
+                    <h4 className="font-label-md text-label-md text-on-surface">Adaptive Focus Mode</h4>
                     <p className="font-body-md text-body-md text-on-surface-variant">Only see what matters. Intelligent filtering reduces noise.</p>
                   </div>
                 </li>
@@ -269,7 +269,7 @@ export default function LandingPage() {
                     <span className="material-symbols-outlined text-[14px] text-primary">check</span>
                   </div>
                   <div>
-                    <h4 className="font-label-md text-label-md text-white">Unified Inbox</h4>
+                    <h4 className="font-label-md text-label-md text-on-surface">Unified Inbox</h4>
                     <p className="font-body-md text-body-md text-on-surface-variant">One place for all channels, groups, and direct messages.</p>
                   </div>
                 </li>
@@ -311,7 +311,7 @@ export default function LandingPage() {
               {/* Content Area */}
               <div className="flex-1 flex flex-col">
                 <header className="h-16 border-b border-white/5 flex items-center justify-between px-6">
-                  <h3 className="font-headline-md text-headline-md text-white">Nexus General</h3>
+                  <h3 className="font-headline-md text-headline-md text-on-surface">Nexus General</h3>
                   <div className="flex gap-4">
                     <span className="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-white transition-colors">videocam</span>
                     <span className="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-white transition-colors">call</span>
@@ -356,7 +356,7 @@ export default function LandingPage() {
         <section className="py-16 md:py-24 px-gutter">
           <div className="max-w-4xl mx-auto glass-panel rounded-[40px] p-8 md:p-12 text-center relative overflow-hidden border-primary/20">
             <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-tertiary/10 pointer-events-none"></div>
-            <h2 className="font-display-lg text-display-lg mb-6 relative z-10 text-white">
+            <h2 className="font-display-lg text-display-lg mb-6 relative z-10 text-on-surface">
               Ready to Elevate Your Communication?
             </h2>
             <p className="font-body-lg text-body-lg text-on-surface-variant mb-12 max-w-2xl mx-auto relative z-10">
@@ -371,7 +371,7 @@ export default function LandingPage() {
                   </Link>
                   <Link
                     href="/login"
-                    className="px-7 py-3.5 rounded-full bg-white/5 text-white font-semibold hover:bg-white/10 transition-all border border-white/10 w-full sm:w-auto flex items-center justify-center text-sm"
+                    className="px-7 py-3.5 rounded-full glass-card text-on-surface hover:bg-surface-container-high/40 transition-all w-full sm:w-auto flex items-center justify-center text-sm"
                   >
                     Login
                   </Link>
@@ -393,7 +393,7 @@ export default function LandingPage() {
               </p>
             </div>
             <div>
-              <h5 className="font-label-md text-label-md text-white mb-6">Product</h5>
+              <h5 className="font-label-md text-label-md text-on-surface mb-6">Product</h5>
               <ul className="space-y-4 text-on-surface-variant text-sm">
                 <li><a className="hover:text-primary transition-colors" href="#">Features</a></li>
                 <li><a className="hover:text-primary transition-colors" href="#">Security</a></li>
@@ -401,7 +401,7 @@ export default function LandingPage() {
               </ul>
             </div>
             <div>
-              <h5 className="font-label-md text-label-md text-white mb-6">Company</h5>
+              <h5 className="font-label-md text-label-md text-on-surface mb-6">Company</h5>
               <ul className="space-y-4 text-on-surface-variant text-sm">
                 <li><a className="hover:text-primary transition-colors" href="#">About</a></li>
                 <li><a className="hover:text-primary transition-colors" href="#">Careers</a></li>
@@ -409,7 +409,7 @@ export default function LandingPage() {
               </ul>
             </div>
             <div>
-              <h5 className="font-label-md text-label-md text-white mb-6">Legal</h5>
+              <h5 className="font-label-md text-label-md text-on-surface mb-6">Legal</h5>
               <ul className="space-y-4 text-on-surface-variant text-sm">
                 <li><a className="hover:text-primary transition-colors" href="#">Privacy</a></li>
                 <li><a className="hover:text-primary transition-colors" href="#">Terms</a></li>

@@ -29,6 +29,7 @@ export default function RootLayout({ children }) {
     <html
       lang="en"
       className={`${geistSans.variable} ${inter.variable} ${manrope.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
       <head>
         <link

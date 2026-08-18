@@ -290,7 +290,7 @@ export default function FriendsPage() {
                   onKeyDown={(e) => {
                     if (e.key === "Enter") handleAddFriendSubmit();
                   }}
-                  className="w-full h-10 bg-white/5 border border-white/5 rounded-full pl-11 pr-32 text-xs text-white placeholder:text-on-surface-variant/40 focus:outline-none focus:border-primary/50 focus:bg-white/10 transition-all animate-fade-in"
+                  className="w-full h-10 rounded-full pl-11 pr-32 text-xs text-on-surface placeholder:text-on-surface-variant/40 focus:outline-none focus:border-primary/50 transition-all animate-fade-in input-glass"
                   placeholder="Enter username or email to add friend..."
                 />
                 <button
@@ -346,7 +346,7 @@ export default function FriendsPage() {
                   search
                 </span>
                 <input
-                  className="w-full bg-surface-container-high/50 border border-white/5 rounded-full py-1.5 pl-8.5 pr-4 text-xs focus:outline-none focus:border-primary/50 focus:bg-surface-container-high transition-all text-white placeholder:text-on-surface-variant/45"
+                  className="w-full rounded-full py-1.5 pl-8.5 pr-4 text-xs placeholder:text-on-surface-variant/45 text-on-surface input-glass"
                   placeholder="Search connections..."
                   type="text"
                   value={searchQuery}
@@ -374,7 +374,7 @@ export default function FriendsPage() {
                       {filteredFriends.map((friend) => (
                         <div
                           key={friend.id}
-                          className="group bg-surface-container/30 border border-white/5 rounded-xl p-3 flex items-center justify-between hover:bg-surface-container-high/40 transition-all duration-300"
+                          className="group glass-card rounded-xl p-3 flex items-center justify-between hover:bg-surface-container-high/40 transition-all duration-300"
                         >
                           <Link href={`/profile/${friend.id}`} className="flex items-center gap-3 hover:opacity-85 transition-all">
                             <div className="relative">
@@ -386,7 +386,7 @@ export default function FriendsPage() {
                               <div className={`status-dot absolute bottom-0.5 right-0.5 status-${onlineUsers.has(friend.userId) ? "online" : "offline"}`}></div>
                             </div>
                             <div>
-                              <h4 className="font-bold text-xs text-white group-hover:text-primary transition-colors">
+                              <h4 className="font-bold text-xs text-on-surface group-hover:text-primary transition-colors">
                                 {friend.name}
                               </h4>
                               <p className="text-[10px] text-on-surface-variant mt-0.5 leading-normal">
@@ -436,7 +436,7 @@ export default function FriendsPage() {
                       {requests.map((req) => (
                         <div
                           key={req.id}
-                          className="bg-surface-container/30 border border-white/5 rounded-xl p-3 flex items-center justify-between"
+                          className="glass-card rounded-xl p-3 flex items-center justify-between"
                         >
                           <div className="flex items-center gap-3">
                             <img
@@ -445,7 +445,7 @@ export default function FriendsPage() {
                               src={req.avatar}
                             />
                             <div>
-                              <h4 className="font-bold text-xs text-white">{req.name}</h4>
+                              <h4 className="font-bold text-xs text-on-surface">{req.name}</h4>
                               <p className="text-[10px] text-on-surface-variant mt-0.5">Wants to chat</p>
                             </div>
                           </div>
@@ -489,7 +489,7 @@ export default function FriendsPage() {
                       {sentRequests.map((req) => (
                         <div
                           key={req.id}
-                          className="bg-surface-container/30 border border-white/5 rounded-xl p-3 flex items-center justify-between"
+                          className="glass-card rounded-xl p-3 flex items-center justify-between"
                         >
                           <div className="flex items-center gap-3">
                             <img
@@ -498,7 +498,7 @@ export default function FriendsPage() {
                               src={req.avatar}
                             />
                             <div>
-                              <h4 className="font-bold text-xs text-white">{req.name}</h4>
+                              <h4 className="font-bold text-xs text-on-surface">{req.name}</h4>
                               <p className="text-[10px] text-on-surface-variant mt-0.5">Awaiting approval</p>
                             </div>
                           </div>
@@ -524,8 +524,8 @@ export default function FriendsPage() {
             <div className="lg:col-span-4 flex flex-col gap-4 w-full">
 
               {/* Suggestion Card */}
-              <div className="bg-surface-container/30 border border-white/5 rounded-xl p-5 shadow-md">
-                <h3 className="text-xs text-white font-bold mb-3 flex items-center gap-1.5">
+              <div className="glass-card rounded-xl p-5 shadow-md">
+                <h3 className="text-xs text-on-surface font-bold mb-3 flex items-center gap-1.5">
                   <span className="material-symbols-outlined text-primary text-[18px]" style={{ fontVariationSettings: "'FILL' 1" }}>
                     auto_awesome
                   </span>
@@ -542,7 +542,7 @@ export default function FriendsPage() {
                           src={sug.avatar}
                         />
                         <div className="overflow-hidden">
-                          <h5 className="font-semibold text-xs text-white truncate">{sug.name}</h5>
+                          <h5 className="font-semibold text-xs text-on-surface truncate">{sug.name}</h5>
                           <p className="text-[9px] text-on-surface-variant truncate mt-0.5">{sug.detail}</p>
                         </div>
                       </div>
@@ -587,7 +587,7 @@ export default function FriendsPage() {
                           src={req.avatar}
                         />
                         <div className="flex-1 overflow-hidden">
-                          <h5 className="font-semibold text-xs text-white truncate">{req.name}</h5>
+                          <h5 className="font-semibold text-xs text-on-surface truncate">{req.name}</h5>
                           <div className="flex gap-1 mt-1.5">
                             <button
                               onClick={() => handleAcceptRequest(req)}
