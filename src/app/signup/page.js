@@ -189,7 +189,7 @@ export default function SignUpPage() {
     <div 
       className="font-body-md text-on-surface p-gutter min-h-screen flex items-center justify-center relative overflow-hidden bg-background-app cyber-grid"
       style={{
-        background: "radial-gradient(circle at center, #16193f 0%, #090a10 100%)"
+        background: "radial-gradient(circle at center, var(--login-gradient-1) 0%, var(--login-gradient-2) 100%)"
       }}
     >
       {/* Ambient Blobs */}
@@ -226,7 +226,7 @@ export default function SignUpPage() {
                 <path d="M27.5 18 L72.5 82" stroke="url(#logo-grad-2-signup)" strokeWidth="15" strokeLinecap="round" />
               </svg>
             </div>
-            <h1 className="text-2xl font-black text-white tracking-tight">
+            <h1 className="text-2xl font-black text-on-surface tracking-tight">
               NexusChat
             </h1>
             <p className="text-[11px] text-on-surface-variant font-semibold mt-1">
@@ -346,7 +346,7 @@ export default function SignUpPage() {
                   person
                 </span>
                 <input
-                  className="w-full h-11 pl-11 pr-4 bg-white/5 border border-white/5 rounded-full text-xs text-white placeholder:text-on-surface-variant/40 focus:outline-none focus:border-primary/50 focus:bg-white/10 transition-all"
+                  className="w-full h-11 pl-11 pr-4 rounded-full text-xs text-on-surface placeholder:text-on-surface-variant/40 input-glass"
                   id="username"
                   placeholder="e.g. jordan_dev"
                   type="text"
@@ -366,7 +366,7 @@ export default function SignUpPage() {
                   mail
                 </span>
                 <input
-                  className="w-full h-11 pl-11 pr-4 bg-white/5 border border-white/5 rounded-full text-xs text-white placeholder:text-on-surface-variant/40 focus:outline-none focus:border-primary/50 focus:bg-white/10 transition-all"
+                  className="w-full h-11 pl-11 pr-4 rounded-full text-xs text-on-surface placeholder:text-on-surface-variant/40 input-glass"
                   id="email"
                   placeholder="name@company.com"
                   type="email"
@@ -386,7 +386,7 @@ export default function SignUpPage() {
                   lock
                 </span>
                 <input
-                  className="w-full h-11 pl-11 pr-4 bg-white/5 border border-white/5 rounded-full text-xs text-white placeholder:text-on-surface-variant/40 focus:outline-none focus:border-primary/50 focus:bg-white/10 transition-all"
+                  className="w-full h-11 pl-11 pr-4 rounded-full text-xs text-on-surface placeholder:text-on-surface-variant/40 input-glass"
                   id="password"
                   placeholder="Min. 8 characters"
                   type="password"

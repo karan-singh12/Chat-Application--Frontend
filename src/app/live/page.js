@@ -120,7 +120,7 @@ export default function LiveStreamsPage() {
       {/* Main Container */}
       <main className="flex-grow md:ml-sidebar-width h-screen overflow-y-auto flex flex-col relative z-10 custom-scrollbar pt-14 md:pt-0 pb-24 md:pb-8 select-none">
         {/* Neon Ambient Glows */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_0%_0%,rgba(99,102,241,0.06),transparent_50%),radial-gradient(circle_at_100%_100%,rgba(236,72,153,0.04),transparent_50%)] pointer-events-none -z-10" />
+        <div className="ambient-glow" />
 
         <div className="p-4 flex-grow flex flex-col max-w-[1200px] mx-auto w-full">
           

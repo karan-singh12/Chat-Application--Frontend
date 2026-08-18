@@ -666,7 +666,7 @@ export default function ChatPage() {
                     </button>
                   </div>
                   <input
-                    className="flex-1 bg-transparent border-none focus:ring-0 text-xs py-1.5 px-0.5 placeholder:text-on-surface-variant/45 text-white outline-none"
+                    className="flex-1 bg-transparent border-none focus:ring-0 text-xs py-1.5 px-0.5 placeholder:text-on-surface-variant/45 text-on-surface outline-none"
                     placeholder="Send a message..."
                     type="text"
                     value={messageText}
@@ -698,7 +698,7 @@ export default function ChatPage() {
               <div className="w-12 h-12 rounded-2xl bg-surface-container-high/40 border border-white/5 flex items-center justify-center text-on-surface-variant/20 mb-4.5">
                 <span className="material-symbols-outlined text-[26px]">chat_bubble</span>
               </div>
-              <h3 className="text-base font-bold mb-1.5 text-white">Select a conversation</h3>
+              <h3 className="text-base font-bold mb-1.5 text-on-surface">Select a conversation</h3>
               <p className="text-xs text-on-surface-variant max-w-xs leading-relaxed">
                 Choose a chat from the sidebar or start a new one with a friend.
               </p>
@@ -848,7 +848,7 @@ export default function ChatPage() {
         <div className="fixed inset-0 bg-background-app/85 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-surface-container border border-white/10 rounded-[24px] w-full max-w-[400px] overflow-hidden flex flex-col max-h-[85vh] shadow-2xl">
             <div className="p-5 pb-3 flex items-center justify-between border-b border-white/5">
-              <h2 className="text-sm font-bold text-white">New Conversation</h2>
+              <h2 className="text-sm font-bold text-on-surface">New Conversation</h2>
               <button
                 onClick={() => setIsNewChatOpen(false)}
                 className="w-7 h-7 rounded-full hover:bg-white/5 text-on-surface-variant flex items-center justify-center cursor-pointer"
@@ -860,7 +860,7 @@ export default function ChatPage() {
               <div className="relative">
                 <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant text-[16px]">search</span>
                 <input
-                  className="w-full bg-surface-container-high border border-white/5 rounded-full py-1.5 pl-9 pr-4 text-xs text-white placeholder:text-on-surface-variant/40 focus:outline-none focus:border-primary/50 transition-all"
+                  className="w-full bg-surface-container-high border border-white/5 rounded-full py-1.5 pl-9 pr-4 text-xs text-on-surface placeholder:text-on-surface-variant/40 focus:outline-none focus:border-primary/50 transition-all"
                   placeholder="Search friends..."
                   type="text"
                   value={friendSearchQuery}
@@ -893,7 +893,7 @@ export default function ChatPage() {
                           {getInitials(friend.name)}
                         </div>
                       )}
-                      <span className="text-xs font-semibold text-white">{friend.name}</span>
+                      <span className="text-xs font-semibold text-on-surface">{friend.name}</span>
                     </div>
                   ))
               ) : (
@@ -912,7 +912,7 @@ export default function ChatPage() {
         <div className="fixed inset-0 bg-background-app/85 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-surface-container border border-white/10 rounded-[24px] w-full max-w-[420px] overflow-hidden flex flex-col max-h-[90vh] shadow-2xl">
             <div className="p-5 pb-3 flex items-center justify-between border-b border-white/5">
-              <h2 className="text-sm font-bold text-white">Create Group</h2>
+              <h2 className="text-sm font-bold text-on-surface">Create Group</h2>
               <button
                 onClick={() => { setIsNewGroupOpen(false); setGroupName(""); setSelectedGroupMembers([]); }}
                 className="w-7 h-7 rounded-full hover:bg-white/5 text-on-surface-variant flex items-center justify-center cursor-pointer"
@@ -926,7 +926,7 @@ export default function ChatPage() {
               <div>
                 <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider mb-1.5 block">Group Name</label>
                 <input
-                  className="w-full bg-surface-container-high border border-white/5 rounded-xl py-2 px-3 text-xs text-white placeholder:text-on-surface-variant/40 focus:outline-none focus:border-primary/50 transition-all"
+                  className="w-full bg-surface-container-high border border-white/5 rounded-xl py-2 px-3 text-xs text-on-surface placeholder:text-on-surface-variant/40 focus:outline-none focus:border-primary/50 transition-all"
                   placeholder="e.g. Team Alpha"
                   value={groupName}
                   onChange={(e) => setGroupName(e.target.value)}
@@ -976,7 +976,7 @@ export default function ChatPage() {
                             {getInitials(friend.name)}
                           </div>
                         )}
-                        <span className="text-xs font-semibold text-white flex-1">{friend.name}</span>
+                        <span className="text-xs font-semibold text-on-surface flex-1">{friend.name}</span>
                         {selected && <span className="material-symbols-outlined text-[16px] text-primary">check_circle</span>}
                       </div>
                     );

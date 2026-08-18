@@ -5,12 +5,14 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { useChat } from "@/context/ChatContext";
+import { useTheme } from "@/context/ThemeContext";
 import { getAvatarUrl } from "@/utils/avatar";
 
 export default function Sidebar({ isOpen, onClose, hideMobileNav }) {
   const pathname = usePathname();
   const { logout, user } = useAuth();
   const { activeLiveStreams = [] } = useChat() || {};
+  const { theme, toggleTheme } = useTheme();
 
   const menuItems = [
     { name: "Feed", path: "/feed", icon: "home" },
@@ -84,7 +86,7 @@ export default function Sidebar({ isOpen, onClose, hideMobileNav }) {
                 </div>
                 
                 {/* Desktop Hover Tooltip */}
-                <div className="absolute left-[48px] bg-surface-container-high border border-white/10 px-2 py-1 rounded-md text-[9px] text-white font-bold whitespace-nowrap opacity-0 translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 pointer-events-none transition-all duration-200 z-50 shadow-xl">
+                <div className="absolute left-[48px] bg-inverse-surface border border-outline px-2 py-1 rounded-md text-[9px] text-inverse-on-surface font-bold whitespace-nowrap opacity-0 translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 pointer-events-none transition-all duration-200 z-50 shadow-xl">
                   {item.name}
                 </div>
               </Link>
@@ -94,6 +96,20 @@ export default function Sidebar({ isOpen, onClose, hideMobileNav }) {
 
         {/* Bottom Avatar & Logout */}
         <div className="flex flex-col items-center gap-4 w-full px-2">
+          {/* Quick Theme Toggle */}
+          <button
+            onClick={toggleTheme}
+            className="group relative w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/5 text-on-surface-variant hover:text-on-surface transition-all duration-300 cursor-pointer"
+            title={theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
+          >
+            <span className="material-symbols-outlined text-[17px] transition-transform duration-300 group-hover:rotate-45">
+              {theme === "dark" ? "light_mode" : "dark_mode"}
+            </span>
+            <div className="absolute left-[48px] bg-inverse-surface border border-outline px-2 py-1 rounded-md text-[9px] text-inverse-on-surface font-bold whitespace-nowrap opacity-0 translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 pointer-events-none transition-all duration-200 z-50 shadow-xl">
+              {theme === "dark" ? "Light Mode" : "Dark Mode"}
+            </div>
+          </button>
+
           <Link href="/profile" className="group relative flex justify-center w-8 h-8 rounded-full border border-white/10 p-0.5 hover:border-primary/50 transition-colors">
             <img
               className="w-full h-full rounded-full object-cover"
@@ -104,7 +120,7 @@ export default function Sidebar({ isOpen, onClose, hideMobileNav }) {
                 e.target.src = "/default-avatar.png";
               }}
             />
-            <div className="absolute left-[48px] bg-surface-container-high border border-white/10 px-2 py-1 rounded-md text-[9px] text-white font-bold whitespace-nowrap opacity-0 translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 pointer-events-none transition-all duration-200 z-50 shadow-xl">
+            <div className="absolute left-[48px] bg-inverse-surface border border-outline px-2 py-1 rounded-md text-[9px] text-inverse-on-surface font-bold whitespace-nowrap opacity-0 translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 pointer-events-none transition-all duration-200 z-50 shadow-xl">
               Profile Settings
             </div>
           </Link>
@@ -144,14 +160,24 @@ export default function Sidebar({ isOpen, onClose, hideMobileNav }) {
               <path d="M27.5 18 L72.5 82" stroke="url(#logo-grad-2-mob)" strokeWidth="15" strokeLinecap="round" />
             </svg>
           </div>
-          <span className="text-white font-extrabold text-xs tracking-tight">NexusChat</span>
+          <span className="text-on-surface font-extrabold text-xs tracking-tight">NexusChat</span>
         </Link>
 
-        {/* Right Side Icon: Notifications */}
-        <div className="flex items-center gap-3">
+        {/* Right Side Icon: Theme Toggle & Notifications */}
+        <div className="flex items-center gap-2">
+          <button
+            onClick={toggleTheme}
+            className="p-1.5 rounded-full hover:bg-white/5 text-on-surface-variant hover:text-on-surface transition-colors cursor-pointer"
+            title={theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
+          >
+            <span className="material-symbols-outlined text-[20px]">
+              {theme === "dark" ? "light_mode" : "dark_mode"}
+            </span>
+          </button>
+
           <Link
             href="/notifications"
-            className={`relative p-1.5 rounded-full hover:bg-white/5 text-on-surface-variant hover:text-white transition-colors cursor-pointer ${
+            className={`relative p-1.5 rounded-full hover:bg-white/5 text-on-surface-variant hover:text-on-surface transition-colors cursor-pointer ${
               pathname === "/notifications" ? "text-primary" : ""
             }`}
           >

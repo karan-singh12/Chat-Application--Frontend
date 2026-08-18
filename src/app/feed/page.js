@@ -145,7 +145,7 @@ export default function FeedPage() {
     <div 
       className="bg-background-app cyber-grid flex min-h-screen overflow-hidden text-on-surface"
       style={{
-        background: "radial-gradient(circle at center, #141739 0%, #090a10 100%)"
+        background: "radial-gradient(circle at center, var(--login-gradient-1) 0%, var(--login-gradient-2) 100%)"
       }}
     >
       {/* Sidebar Navigation */}
@@ -185,7 +185,7 @@ export default function FeedPage() {
                 <textarea
                   value={newPostText}
                   onChange={(e) => setNewPostText(e.target.value)}
-                  className="flex-1 bg-transparent text-xs text-white placeholder:text-on-surface-variant/45 focus:ring-0 outline-none resize-none pt-1 min-h-[50px] leading-relaxed"
+                  className="flex-1 bg-transparent text-xs text-on-surface placeholder:text-on-surface-variant/45 focus:ring-0 outline-none resize-none pt-1 min-h-[50px] leading-relaxed"
                   placeholder="Share a status update or technical note..."
                 />
               </div>
@@ -252,7 +252,7 @@ export default function FeedPage() {
                 <span className="material-symbols-outlined text-[32px] text-on-surface-variant/40">
                   article
                 </span>
-                <p className="text-xs font-semibold text-white">No posts in the feed yet.</p>
+                <p className="text-xs font-semibold text-on-surface">No posts in the feed yet.</p>
                 <p className="text-[10px] text-on-surface-variant/60 max-w-[250px] leading-relaxed">
                   Type a status update or technical note above and click "Post Update" to start sharing!
                 </p>
@@ -285,7 +285,7 @@ export default function FeedPage() {
                         }}
                       />
                       <div>
-                        <h4 className="font-bold text-xs text-white leading-none">
+                        <h4 className="font-bold text-xs text-on-surface leading-none">
                           {postUserName}
                         </h4>
                         <p className="text-[9px] text-on-surface-variant/70 font-semibold mt-1">
@@ -360,7 +360,7 @@ export default function FeedPage() {
                                 handleAddComment(post.id);
                               }
                             }}
-                            className="flex-1 bg-surface-container-low border border-white/5 rounded-full py-1.5 px-4 text-[10px] text-white placeholder:text-on-surface-variant/40 focus:outline-none focus:border-primary/50 transition-all outline-none"
+                            className="flex-1 bg-surface-container-low border border-white/5 rounded-full py-1.5 px-4 text-[10px] text-on-surface placeholder:text-on-surface-variant/40 focus:outline-none focus:border-primary/50 transition-all outline-none"
                             placeholder="Write a comment..."
                           />
                           <button
@@ -396,7 +396,7 @@ export default function FeedPage() {
                                   <div className="bg-white/[0.02] border border-white/5 rounded-xl px-3 py-2 flex-1">
                                     <div className="flex justify-between items-baseline mb-0.5">
                                       <Link href={`/profile/${commentUserName}`} className="hover:underline">
-                                        <span className="font-bold text-[10px] text-white">{commentUserName}</span>
+                                        <span className="font-bold text-[10px] text-on-surface">{commentUserName}</span>
                                       </Link>
                                       <span className="text-[8px] text-on-surface-variant/40">{commentTime}</span>
                                     </div>

@@ -5,10 +5,12 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import GlassmorphicShowcase from "@/components/GlassmorphicShowcase";
 import { API_BASE_URL } from "@/config/api";
+import { useTheme } from "@/context/ThemeContext";
 
 export default function LandingPage() {
   const router = useRouter();
   const [particles, setParticles] = useState([]);
+  const { theme, toggleTheme } = useTheme();
 
   useEffect(() => {
     // Ping backend health check in background to wake/keep the server active
@@ -70,9 +72,20 @@ export default function LandingPage() {
           </a>
         </nav>
         <div className="flex items-center gap-4">
+          {/* Theme Toggle Button */}
+          <button
+            onClick={toggleTheme}
+            className="p-2 rounded-full hover:bg-white/5 text-on-surface-variant hover:text-on-surface transition-colors cursor-pointer"
+            title={theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
+          >
+            <span className="material-symbols-outlined text-[20px]">
+              {theme === "dark" ? "light_mode" : "dark_mode"}
+            </span>
+          </button>
+
           <Link
             href="/login"
-            className="font-label-md text-label-md px-4 py-2 text-on-surface-variant hover:text-white transition-colors"
+            className="font-label-md text-label-md px-4 py-2 text-on-surface-variant hover:text-on-surface transition-colors"
           >
             Login
           </Link>

@@ -4,17 +4,18 @@ import React, { useState } from "react";
 import Link from "next/link";
 import Sidebar from "@/components/Sidebar";
 import { useAuth } from "@/context/AuthContext";
+import { useTheme } from "@/context/ThemeContext";
 import { getAvatarUrl } from "@/utils/avatar";
 
 export default function SettingsPage() {
   const { user } = useAuth();
+  const { theme: themeMode, setTheme: setThemeMode } = useTheme();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   // States for toggles
   const [readReceipts, setReadReceipts] = useState(true);
   const [activeStatus, setActiveStatus] = useState(true);
   const [twoFactor, setTwoFactor] = useState(false);
-  const [themeMode, setThemeMode] = useState("dark"); // "light" or "dark"
   const [language, setLanguage] = useState("English (US)");
 
   // Active sessions state
@@ -55,7 +56,7 @@ export default function SettingsPage() {
       {/* Main Content Canvas */}
       <main className="flex-grow md:ml-sidebar-width min-h-screen relative overflow-hidden flex flex-col pt-14 md:pt-0 pb-24 md:pb-8 select-none">
         {/* Ambient background glows */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_0%_0%,rgba(77,94,247,0.05),transparent_45%),radial-gradient(circle_at_100%_100%,rgba(168,85,247,0.03),transparent_45%)] pointer-events-none -z-10" />
+        <div className="ambient-glow" />
 
 
 
