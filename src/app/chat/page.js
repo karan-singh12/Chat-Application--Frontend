@@ -238,7 +238,7 @@ export default function ChatPage() {
 
         {/* —————————————— Chat List Panel —————————————— */}
         <section
-          className={`w-full md:w-[310px] h-full flex flex-col bg-surface-container-low/20 transition-all duration-300 ${
+          className={`w-full md:w-[310px] h-full flex flex-col bg-surface-container-low border-r border-outline/10 transition-all duration-300 ${
             mobileShowChat ? "hidden md:flex" : "flex"
           }`}
         >
@@ -384,7 +384,7 @@ export default function ChatPage() {
 
         {/* —————— Chat Window —Status Bar ————————————————— */}
         <section
-          className={`flex-grow h-full flex flex-col relative border-l border-white/5 transition-all duration-300 ${
+          className={`flex-grow h-full flex flex-col relative border-l border-outline/15 transition-all duration-300 ${
             !mobileShowChat ? "hidden md:flex" : "flex"
           }`}
         >
@@ -392,7 +392,7 @@ export default function ChatPage() {
             <div className="flex-grow flex flex-col h-full bg-transparent overflow-hidden relative">
 
               {/* Chat Header */}
-              <header className="h-14 flex items-center justify-between px-4 border-b border-white/5 bg-surface-container-low/40 backdrop-blur-md z-10 select-none">
+              <header className="h-14 flex items-center justify-between px-4 border-b border-outline/15 bg-surface-container-low/80 backdrop-blur-md z-10 select-none">
                 <div className="flex items-center gap-3">
                   <button
                     onClick={() => {
@@ -657,7 +657,7 @@ export default function ChatPage() {
               </div>
 
               {/* Message Input */}
-              <footer className="p-3 bg-surface-container-lowest/15 border-t border-white/5 select-none">
+              <footer className="p-3 bg-surface-container-lowest/15 border-t border-outline/15 select-none">
                 <div className="max-w-[760px] mx-auto w-full">
                   <form
                     onSubmit={handleSend}

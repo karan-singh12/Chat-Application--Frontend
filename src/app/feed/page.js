@@ -271,7 +271,7 @@ export default function FeedPage() {
                 return (
                   <div
                     key={post.id}
-                    className="glass-card rounded-xl p-4 shadow-md flex flex-col gap-3"
+                    className="glass-card rounded-xl p-4 shadow-md flex flex-col gap-3 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/5 hover:border-primary/20 transition-all duration-300"
                   >
                     {/* Post Header */}
                     <Link href={`/profile/${postUserName}`} className="flex items-center gap-3 hover:opacity-85 transition-all">
@@ -322,7 +322,7 @@ export default function FeedPage() {
                       <button
                         onClick={() => handleLikePost(post.id)}
                         className={`flex items-center gap-1.5 text-[10px] font-bold cursor-pointer transition-colors ${
-                          postHasLiked ? "text-primary" : "text-on-surface-variant hover:text-white"
+                          postHasLiked ? "text-primary" : "text-on-surface-variant hover:text-on-surface"
                         }`}
                       >
                         <span className="material-symbols-outlined text-[16px]" style={{ fontVariationSettings: postHasLiked ? "'FILL' 1" : "'FILL' 0" }}>
@@ -333,7 +333,7 @@ export default function FeedPage() {
 
                       <button
                         onClick={() => handleToggleComments(post.id)}
-                        className="flex items-center gap-1.5 text-[10px] font-bold text-on-surface-variant hover:text-white cursor-pointer transition-colors"
+                        className="flex items-center gap-1.5 text-[10px] font-bold text-on-surface-variant hover:text-on-surface cursor-pointer transition-colors"
                       >
                         <span className="material-symbols-outlined text-[16px]">
                           chat_bubble
@@ -344,7 +344,7 @@ export default function FeedPage() {
 
                     {/* Comments Section Drawer */}
                     {activeCommentsPostId === post.id && (
-                      <div className="mt-2.5 bg-white/[0.01] border border-white/5 rounded-lg p-3 space-y-3 animate-fade-in">
+                      <div className="mt-2.5 glass-panel rounded-lg p-3 space-y-3 animate-fade-in">
                         {/* Add Comment Input */}
                         <div className="flex gap-2.5">
                           <input
@@ -360,7 +360,7 @@ export default function FeedPage() {
                                 handleAddComment(post.id);
                               }
                             }}
-                            className="flex-1 bg-surface-container-low border border-white/5 rounded-full py-1.5 px-4 text-[10px] text-on-surface placeholder:text-on-surface-variant/40 focus:outline-none focus:border-primary/50 transition-all outline-none"
+                            className="flex-1 rounded-full py-1.5 px-4 text-[10px] text-on-surface placeholder:text-on-surface-variant/40 focus:outline-none focus:border-primary/50 transition-all outline-none input-glass"
                             placeholder="Write a comment..."
                           />
                           <button
@@ -393,7 +393,7 @@ export default function FeedPage() {
                                       }}
                                     />
                                   </Link>
-                                  <div className="bg-white/[0.02] border border-white/5 rounded-xl px-3 py-2 flex-1">
+                                  <div className="glass-card rounded-xl px-3 py-2 flex-1 hover:bg-surface-container-high/20 transition-colors">
                                     <div className="flex justify-between items-baseline mb-0.5">
                                       <Link href={`/profile/${commentUserName}`} className="hover:underline">
                                         <span className="font-bold text-[10px] text-on-surface">{commentUserName}</span>

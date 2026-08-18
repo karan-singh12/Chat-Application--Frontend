@@ -71,7 +71,7 @@ export default function Sidebar({ isOpen, onClose, hideMobileNav }) {
                   className={`w-9 h-7.5 rounded-lg flex items-center justify-center transition-all duration-300 relative ${
                     isActive
                       ? "bg-primary/20 text-primary"
-                      : "text-on-surface-variant hover:bg-white/5 hover:text-on-surface"
+                      : "sidebar-icon-btn"
                   }`}
                 >
                   <span
@@ -102,7 +102,7 @@ export default function Sidebar({ isOpen, onClose, hideMobileNav }) {
               console.log("[Sidebar] Desktop theme toggle clicked. Current state:", theme);
               toggleTheme();
             }}
-            className="group relative w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/5 text-on-surface-variant hover:text-on-surface transition-all duration-300 cursor-pointer"
+            className="group relative w-8 h-8 flex items-center justify-center rounded-lg sidebar-icon-btn transition-all duration-300 cursor-pointer"
             title={theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
           >
             <span className="material-symbols-outlined text-[17px] transition-transform duration-300 group-hover:rotate-45">
@@ -173,7 +173,7 @@ export default function Sidebar({ isOpen, onClose, hideMobileNav }) {
               console.log("[Sidebar] Mobile theme toggle clicked. Current state:", theme);
               toggleTheme();
             }}
-            className="p-1.5 rounded-full hover:bg-white/5 text-on-surface-variant hover:text-on-surface transition-colors cursor-pointer"
+            className="p-1.5 rounded-full sidebar-icon-btn transition-colors cursor-pointer"
             title={theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
           >
             <span className="material-symbols-outlined text-[20px]">
@@ -183,7 +183,7 @@ export default function Sidebar({ isOpen, onClose, hideMobileNav }) {
 
           <Link
             href="/notifications"
-            className={`relative p-1.5 rounded-full hover:bg-white/5 text-on-surface-variant hover:text-on-surface transition-colors cursor-pointer ${
+            className={`relative p-1.5 rounded-full sidebar-icon-btn transition-colors cursor-pointer ${
               pathname === "/notifications" ? "text-primary" : ""
             }`}
           >

@@ -255,6 +255,21 @@ body {
   background: rgba(0, 0, 0, 0.18);
 }
 
+/* Premium Sidebar Icon Buttons Hover style */
+.sidebar-icon-btn {
+  transition: all 0.2s ease-in-out;
+  color: var(--color-on-surface-variant);
+}
+.sidebar-icon-btn:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: var(--color-on-surface);
+}
+:root[data-theme="light"] .sidebar-icon-btn:hover {
+  background-color: rgba(77, 94, 247, 0.08);
+  color: var(--color-primary);
+}
+
+
 .glass-card {
   background: rgba(30, 41, 59, 0.5);
   backdrop-filter: blur(20px);
