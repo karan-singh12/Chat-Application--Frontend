@@ -78,7 +78,7 @@
   --color-surface-container-highest: #e2e8f0;
   --color-background-app: #f8fafc;
   --color-background: #f8fafc;
-  --color-inverse-on-surface: #0f172a;
+  --color-inverse-on-surface: #ffffff;
   --color-inverse-primary: #3b82f6;
   --color-primary-container: #e0e7ff;
   --color-outline-variant: #cbd5e1;
@@ -265,8 +265,8 @@ body {
   color: var(--color-on-surface);
 }
 :root[data-theme="light"] .sidebar-icon-btn:hover {
-  background-color: rgba(77, 94, 247, 0.08);
-  color: var(--color-primary);
+  background-color: #0f172a;
+  color: #ffffff;
 }
 
 
